@@ -47,6 +47,16 @@ export const routes: Routes = [
       import( './features/pulse-home/pulse-home.component' ).then( ( m ) => m.PulseHomeComponent ),
   },
   {
+    path: 'login',
+    loadComponent: () =>
+      import( './features/sign-in/sign-in.component' ).then( ( m ) => m.SignInComponent ),
+  },
+  {
+    path: 'auth/callback',
+    loadComponent: () =>
+      import( './features/auth-callback/auth-callback.component' ).then( ( m ) => m.AuthCallbackComponent ),
+  },
+  {
     // Catches any unmatched URL (typos, stale links, deep links to routes
     // that never existed here) - without this, the router just silently
     // fails to navigate instead of showing anything. Not in the plan's

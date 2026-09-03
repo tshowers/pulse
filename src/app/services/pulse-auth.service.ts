@@ -2,10 +2,8 @@ import { Injectable } from '@angular/core';
 import {
   Auth,
   getAuth,
-  GoogleAuthProvider,
   onAuthStateChanged,
-  signInWithEmailAndPassword,
-  signInWithPopup,
+  signInWithCustomToken,
   signOut,
   User,
 } from 'firebase/auth';
@@ -13,18 +11,24 @@ import { doc, getDoc, getFirestore } from 'firebase/firestore';
 import { Observable, shareReplay, switchMap, of } from 'rxjs';
 
 /**
- * Trimmed, purpose-built auth service for the standalone Pulse app - copied
- * from web-products/network's NetworkAuthService (same shape, same
- * tenant-resolution rule) rather than re-derived. Pulse serves the same
- * multi-tenant TODD customers as Network, so it needs the same real tenant
- * resolution, not a single-tenant shortcut.
+ * Auth service for the standalone Pulse app. Sign-in itself no longer
+ * happens here - it redirects to TODD's hosted login
+ * (todd.taliferro.tech/login), the same page network-ios/pulse-ios open
+ * via TODDAuthKit's HostedLogin (ASWebAuthenticationSession) and that
+ * Network web now redirects to as well, so every TODD client presents the
+ * identical sign-in screen instead of each maintaining its own copy of
+ * Google/Apple/email-link/phone code that can drift out of sync (this
+ * service previously offered Google + email/password only - a narrower,
+ * inconsistent set). This service only holds the two things every client
+ * still needs locally: completing the redirect back from that page, and
+ * tenant/session reads.
  *
  * Mirrors the exact same resolution TODD's own `AuthService` uses
- * (`resolveAssignedTenantId`): `users/{uid}.companyId` if set, else the uid
- * itself is the tenant. Keeping this identical across every TODD client is
- * deliberate - independent reimplementations of the same rule are fine;
- * different *rules* would silently fragment which tenant a user lands in
- * depending which client they signed in from.
+ * (`resolveAssignedTenantId`): `users/{uid}.companyId` if set, else the
+ * uid itself is the tenant. Keeping this identical across every TODD
+ * client is deliberate - independent reimplementations of the same rule
+ * are fine; different *rules* would silently fragment which tenant a user
+ * lands in depending which client they signed in from.
  */
 @Injectable( { providedIn: 'root' } )
 export class PulseAuthService {
@@ -34,6 +38,8 @@ export class PulseAuthService {
 
   private userId$?: Observable<string>;
   private tenantId$?: Observable<string>;
+
+  private readonly pendingLoginStorageKey = 'pulse_hosted_login_pending';
 
   getUser (): Observable<User | null> {
     return new Observable( ( subscriber ) => {
@@ -79,14 +85,42 @@ export class PulseAuthService {
     return this.auth.currentUser?.uid || '';
   }
 
-  async signInWithGoogle (): Promise<User> {
-    const provider = new GoogleAuthProvider();
-    const result = await signInWithPopup( this.auth, provider );
-    return result.user;
+  /**
+   * Leaves the app entirely for TODD's hosted login
+   * (todd.taliferro.tech/login?client=pulse-web&state=...), the same page
+   * every TODD client signs in through. `state` is a random value stashed
+   * alongside `returnUrl` in sessionStorage before leaving, and checked
+   * again in AuthCallbackComponent when the page sends the user back - a
+   * CSRF guard against a forged callback.
+   */
+  signIn ( returnUrl?: string ): void {
+    const state = crypto.randomUUID();
+    sessionStorage.setItem( this.pendingLoginStorageKey, JSON.stringify( { state, returnUrl } ) );
+    window.location.href = `https://todd.taliferro.tech/login?client=pulse-web&state=${state}`;
   }
 
-  async signInWithEmail ( email: string, password: string ): Promise<User> {
-    const result = await signInWithEmailAndPassword( this.auth, email, password );
+  /**
+   * Reads back what signIn() stashed before leaving, verifies the state
+   * value matches what the hosted login page is handing back, and clears
+   * it either way so a stale/reused entry can't validate a later attempt.
+   */
+  consumePendingLogin ( state: string | null ): { returnUrl?: string } | null {
+    const raw = sessionStorage.getItem( this.pendingLoginStorageKey );
+    sessionStorage.removeItem( this.pendingLoginStorageKey );
+    if ( !raw ) return null;
+
+    try {
+      const pending = JSON.parse( raw ) as { state: string; returnUrl?: string };
+      if ( !state || pending.state !== state ) return null;
+      return { returnUrl: pending.returnUrl };
+    } catch {
+      return null;
+    }
+  }
+
+  /** Redeems the custom token AuthCallbackComponent received from the hosted login page. */
+  async signInWithCustomToken ( token: string ): Promise<User> {
+    const result = await signInWithCustomToken( this.auth, token );
     return result.user;
   }
 
