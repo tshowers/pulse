@@ -1,0 +1,127 @@
+<div class="survey-dashboard-shell">
+  <div class="survey-dashboard-topbar">
+    <nav class="survey-breadcrumbs">
+      <span class="todd-crumb" (click)="onClickRoute('/')">Home</span>
+      <span class="survey-breadcrumbs__sep">›</span>
+      <span class="todd-crumb" (click)="onClickRoute('/app')">Pulse</span>
+      <span class="survey-breadcrumbs__sep">›</span>
+      <span *ngIf="survey?.title as surveyTitle">{{ surveyTitle | truncate:20 }}</span>
+    </nav>
+  </div>
+  <div class="container d-flex justify-content-center">
+    <app-section-jump [items]="anchorItems" label="On this page"></app-section-jump>
+  </div>
+  <section id="sd-overview" class="survey-hero glass-panel">
+    <div class="survey-hero__copy">
+      <span class="dashboard-pill">Pulse View</span>
+      <h1>{{ survey?.title || 'Pulse Dashboard' }}</h1>
+      <p>{{ survey?.description || 'Review response flow, question coverage, and what the latest pulse is telling you.' }}</p>
+      <div class="survey-hero__momentum">
+        <span>Responses</span>
+        <strong>{{ totalResponses }}</strong>
+      </div>
+    </div>
+    <div class="survey-hero__meta">
+      <article class="hero-mini-card" *ngFor="let metric of metricCards">
+        <span>{{ metric.label }}</span>
+        <strong>{{ metric.value }}</strong>
+        <small>{{ metric.detail }}</small>
+      </article>
+    </div>
+  </section>
+  <div class="survey-dashboard-grid">
+    <section id="sd-status" class="glass-panel dashboard-panel dashboard-panel--status">
+      <span class="dashboard-pill">Pulse Status</span>
+      <div class="dashboard-progress-stack">
+        <div class="dashboard-progress-row" *ngFor="let metric of progressMetrics">
+          <div class="dashboard-progress-copy">
+            <span>{{ metric.label }}</span>
+            <strong>{{ metric.value }}</strong>
+          </div>
+          <div class="progress-track">
+            <span [style.width.%]="metric.progress"></span>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="sd-queue" class="glass-panel dashboard-panel dashboard-panel--queue">
+      <span class="dashboard-pill">Action Queue</span>
+      <div class="dashboard-queue">
+        <article class="dashboard-queue-item" *ngFor="let item of signalItems" [attr.data-tone]="item.tone">
+          <strong>{{ item.count }}</strong>
+          <div>
+            <h3>{{ item.title }}</h3>
+            <p>{{ item.description }}</p>
+          </div>
+        </article>
+      </div>
+    </section>
+    <section id="sd-command" class="glass-panel dashboard-panel dashboard-panel--command">
+      <span class="dashboard-pill">Command View</span>
+      <article class="command-card">
+        <h2>{{ responseModeLabel }}</h2>
+        <p>{{ commandFocus }}</p>
+        <div class="command-card__meta">
+          <div class="command-fact">
+            <span>Date added</span>
+            <strong>{{ survey?.dateAdded ? (survey?.dateAdded | date:'medium') : 'No timestamp' }}</strong>
+          </div>
+          <div class="command-fact">
+            <span>Primary question</span>
+            <strong>{{ priorityQuestion?.questionText || 'No question selected' }}</strong>
+          </div>
+        </div>
+      </article>
+    </section>
+    <section id="sd-responses" class="glass-panel dashboard-panel dashboard-panel--responses">
+      <span class="dashboard-pill">Question Signals</span>
+      <div class="question-grid" *ngIf="questionCards.length; else noQuestions">
+        <article class="question-card" *ngFor="let question of questionCards">
+          <div class="question-card__header">
+            <span class="question-card__index">{{ question.index + 1 }}</span>
+            <span class="question-card__type">{{ question.questionTypeLabel }}</span>
+          </div>
+          <h3>{{ question.questionText }}</h3>
+          <div class="question-card__summary">
+            <div>
+              <span class="question-stat__label">Responses</span>
+              <strong>{{ question.responsesCount }}</strong>
+            </div>
+            <div>
+              <span class="question-stat__label">Coverage</span>
+              <strong>{{ question.responseShare }}%</strong>
+            </div>
+          </div>
+          <div class="question-options" *ngIf="question.options.length; else textSignals">
+            <div class="question-option" *ngFor="let option of question.options">
+              <div class="question-option__copy">
+                <span>{{ option.label }}</span>
+                <strong>{{ option.value }}</strong>
+              </div>
+              <div class="progress-track progress-track--compact">
+                <span [style.width.%]="option.share"></span>
+              </div>
+            </div>
+          </div>
+          <ng-template #textSignals>
+            <div class="question-text-list" *ngIf="question.textResponses.length; else noResponsesYet">
+              <p *ngFor="let response of question.textResponses">“{{ response }}”</p>
+            </div>
+          </ng-template>
+          <ng-template #noResponsesYet>
+            <div class="question-empty">
+              <p>No responses yet for this question.</p>
+            </div>
+          </ng-template>
+        </article>
+      </div>
+      <ng-template #noQuestions>
+        <div class="dashboard-empty">
+          <h3>No questions configured</h3>
+          <p>Add questions to this pulse to start seeing response signals here.</p>
+        </div>
+      </ng-template>
+    </section>
+  </div>
+</div>
+<app-back-to-top></app-back-to-top>

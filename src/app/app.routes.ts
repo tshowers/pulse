@@ -22,4 +22,9 @@ export const routes: Routes = [
     loadComponent: () =>
       import( './features/survey-list/survey-list.component' ).then( ( m ) => m.SurveyListComponent ),
   },
+  {
+    path: 'survey-dashboard/:surveyId',
+    loadComponent: () =>
+      import( './features/survey-dashboard/survey-dashboard.component' ).then( ( m ) => m.SurveyDashboardComponent ),
+  },
 ];
