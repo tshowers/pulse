@@ -1,0 +1,395 @@
+:host {
+  display: block;
+}
+
+/*
+ * .tal-app, .pv-title, .pv-subtitle, .btn-todd, .btn-todd-danger only
+ * exist in TODD's un-ported global stylesheet - pulled in locally here,
+ * same pattern used throughout this app (e.g. survey-list.component.css).
+ */
+.tal-app {
+  width: 100%;
+  padding: 1.5rem clamp(12px, 3vw, 32px) 3rem;
+}
+
+.btn-todd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 149, 204, 0.3);
+  background: #fff;
+  color: #0095cc;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.btn-todd:hover:not(:disabled) {
+  background: rgba(0, 149, 204, 0.08);
+}
+
+.btn-todd:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btn-todd-danger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  background: rgba(239, 68, 68, 0.1);
+  color: #991b1b;
+  font-weight: 600;
+  font-size: 0.88rem;
+  cursor: pointer;
+}
+
+.btn-todd-danger:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.18);
+  border-color: rgba(220, 38, 38, 0.5);
+}
+
+.container-fluid.tal-app {
+  color: #0f172a;
+}
+
+/* Keep the video background visible but let the content sit above it */
+.container-fluid.tal-app {
+  position: relative;
+  z-index: 1;
+}
+
+/* Header card */
+.container-fluid.tal-app>.row.no-print.m-2,
+.container-fluid.tal-app>.row>.col-md-6>div,
+.pulse-warning-banner {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.92));
+  border: 1px solid rgba(15, 15, 15, 0.08);
+  border-radius: 24px;
+  box-shadow:
+    0 18px 40px rgba(15, 15, 15, 0.10),
+    inset 0 1px 0 rgba(255, 255, 255, 0.75);
+}
+
+.container-fluid.tal-app>.row.no-print.m-2 {
+  padding: 1.5rem 1.6rem;
+  margin-top: 0.75rem !important;
+  margin-bottom: 1.25rem !important;
+}
+
+.container-fluid.tal-app>.row>.col-md-6>div {
+  padding: 1.5rem;
+  height: 100%;
+}
+
+/* Two-column layout polish */
+.container-fluid.tal-app>.row:last-of-type {
+  align-items: start;
+}
+
+.container-fluid.tal-app>.row:last-of-type>.col-md-6 {
+  margin-bottom: 1rem;
+}
+
+.pv-title {
+  margin: 0;
+  font-size: clamp(2.2rem, 4vw, 3.1rem);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+  color: #0f172a;
+  font-weight: 800;
+}
+
+.pv-subtitle {
+  margin: 0.75rem 0 0;
+  max-width: 58ch;
+  color: rgba(15, 15, 15, 0.58);
+  font-size: 1rem;
+  line-height: 1.65;
+}
+
+app-todd-tip {
+  display: block;
+  max-width: 430px;
+  margin-left: auto;
+}
+
+/* Guest warning */
+.pulse-warning-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.15rem;
+  margin: 0.5rem 0 1rem;
+}
+
+.pulse-warning-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.pulse-warning-title {
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.pulse-warning-text {
+  color: rgba(15, 15, 15, 0.68);
+}
+
+/* Generic headings inside panels */
+h5 {
+  margin: 0 0 1rem;
+  color: #0f172a;
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+/* Treat empty wrapper divs as spacing groups */
+form>div,
+form>div>div,
+form>div>div>div,
+.live-responses-container>div>div {
+  min-width: 0;
+}
+
+/* Labels */
+form>div>div>div:first-child,
+form>div>div:first-child>div:first-child,
+.live-responses-container>div>div>h5,
+.live-responses-container h5 {
+  color: #0f172a;
+}
+
+form>div>div>div:first-child,
+form>div>div:first-child>div:first-child {
+  margin-bottom: 0.5rem;
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+/* Form spacing */
+form>div,
+form [formArrayName="questions"]>div,
+form [formArrayName="options"]>div,
+.live-responses-container>div>div {
+  margin-bottom: 1rem;
+}
+
+[formArrayName="questions"] {
+  margin-top: 1rem;
+}
+
+[formArrayName="questions"]>div {
+  padding: 1rem;
+  border-radius: 20px;
+  background: linear-gradient(180deg, rgba(248, 250, 252, 0.9), rgba(241, 245, 249, 0.88));
+  border: 1px solid rgba(148, 163, 184, 0.16);
+}
+
+
+[formArrayName="options"] {
+  margin-top: 0.75rem;
+  padding: 0.9rem;
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(248, 250, 252, 0.88));
+  border: 1px solid rgba(148, 163, 184, 0.14);
+}
+
+.text-danger {
+  font-size: 0.88rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+[formArrayName="questions"]>.text-danger {
+  padding: 0.85rem 1rem;
+  border-radius: 16px;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.16);
+}
+
+[formArrayName="questions"] input.ng-invalid.ng-touched,
+[formArrayName="questions"] textarea.ng-invalid.ng-touched,
+[formArrayName="questions"] select.ng-invalid.ng-touched,
+input.ng-invalid.ng-touched,
+textarea.ng-invalid.ng-touched,
+select.ng-invalid.ng-touched {
+  border-color: rgba(220, 38, 38, 0.45);
+  box-shadow:
+    0 0 0 4px rgba(239, 68, 68, 0.10),
+    inset 0 1px 0 rgba(255, 255, 255, 0.72);
+}
+
+
+
+/* Preview panel */
+.live-responses-container {
+  min-height: 100%;
+  padding: 1rem;
+  border-radius: 20px;
+  background: linear-gradient(180deg, rgba(248, 250, 252, 0.92), rgba(241, 245, 249, 0.90));
+  border: 1px solid rgba(148, 163, 184, 0.16);
+}
+
+.preview-empty {
+  min-height: 360px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.preview-empty-inner {
+  max-width: 26rem;
+}
+
+.preview-empty h5,
+.live-responses-container h4,
+.live-responses-container h5 {
+  color: #0f172a;
+}
+
+.live-responses-container h4 {
+  margin: 0 0 0.5rem;
+  font-size: 1.35rem;
+  font-weight: 800;
+}
+
+.live-responses-container p {
+  color: rgba(15, 15, 15, 0.72);
+  line-height: 1.6;
+}
+
+.live-responses-container ul {
+  margin: 0.4rem 0 0;
+  padding-left: 1.15rem;
+}
+
+.live-responses-container li {
+  margin-bottom: 0.4rem;
+}
+
+.live-responses-container input[disabled] {
+  opacity: 1;
+  cursor: not-allowed;
+}
+
+/* Bottom action row */
+form>.container {
+  margin-top: 1rem;
+  padding-top: 0.25rem;
+}
+
+/* Responsive */
+@media (max-width: 980px) {
+  app-todd-tip {
+    max-width: none;
+    margin-left: 0;
+    margin-top: 1rem;
+  }
+
+  .pulse-warning-banner {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+@media (max-width: 640px) {
+
+  .container-fluid.tal-app>.row.no-print.m-2,
+  .container-fluid.tal-app>.row>.col-md-6>div,
+  .pulse-warning-banner {
+    border-radius: 18px;
+  }
+
+  .container-fluid.tal-app>.row.no-print.m-2,
+  .container-fluid.tal-app>.row>.col-md-6>div {
+    padding: 1rem;
+  }
+
+  .btn,
+  .btn-todd,
+  .btn-todd-danger,
+  .pulse-warning-btn {
+    width: 100%;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+
+  .container-fluid.tal-app {
+    color: #f8fafc;
+  }
+
+  .container-fluid.tal-app>.row.no-print.m-2,
+  .container-fluid.tal-app>.row>.col-md-6>div,
+  .pulse-warning-banner {
+    background: linear-gradient(180deg, rgba(36, 39, 46, 0.82), rgba(30, 33, 39, 0.72));
+    border-color: rgba(148, 163, 184, 0.16);
+    box-shadow:
+      0 18px 40px rgba(0, 0, 0, 0.30),
+      inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+
+  .pv-title,
+  h5,
+  .pulse-question,
+  .pulse-warning-title,
+  .preview-empty h5,
+  .live-responses-container h4,
+  .live-responses-container h5 {
+    color: #f8fafc !important;
+  }
+
+  .pv-subtitle,
+  .pulse-warning-text,
+  .live-responses-container p,
+  .text-muted {
+    color: rgba(232, 232, 232, 0.76) !important;
+  }
+
+  .text-danger {
+    color: #fca5a5 !important;
+  }
+
+  [formArrayName="questions"]>.text-danger {
+    background: rgba(29, 29, 29, 0.30);
+    border-color: rgba(248, 113, 113, 0.24);
+  }
+
+  [formArrayName="questions"] input.ng-invalid.ng-touched,
+  [formArrayName="questions"] textarea.ng-invalid.ng-touched,
+  [formArrayName="questions"] select.ng-invalid.ng-touched,
+  input.ng-invalid.ng-touched,
+  textarea.ng-invalid.ng-touched,
+  select.ng-invalid.ng-touched {
+    border-color: rgba(248, 113, 113, 0.42);
+    box-shadow:
+      0 0 0 4px rgba(248, 113, 113, 0.10),
+      0 10px 24px rgba(0, 0, 0, 0.22),
+      inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  }
+
+  [formArrayName="questions"]>div,
+  [formArrayName="options"],
+  .live-responses-container {
+    background: linear-gradient(180deg, rgba(40, 43, 50, 0.72), rgba(30, 33, 39, 0.66));
+    border-color: rgba(148, 163, 184, 0.12);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+}

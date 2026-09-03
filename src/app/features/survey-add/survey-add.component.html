@@ -1,0 +1,133 @@
+<div class="container-fluid tal-app" data-demo="survey-create-shell">
+    <div class="row no-print m-2">
+        <div class="col-12 col-xl-8">
+            <h1 class="pv-title" data-demo="survey-create-title">Create a Pulse</h1>
+            <p class="pv-subtitle d-none d-xl-block">Create a Pulse you can send through TODD. Add questions, choose text, multiple-choice, or checkbox answers, and see a live preview as you build.</p>
+        </div>
+        <div class="col-12 col-xl-4 text-xl-end mt-3 mt-xl-0 d-none d-xl-block">
+            <div class="page-header">
+                <app-todd-tip icon="lightbulb" label="Tip">
+                    {{ surveyTipText }}
+                </app-todd-tip>
+            </div>
+        </div>
+    </div>
+    <div class="row" *ngIf="!uid && hasUnsavedPulseInput()">
+        <div class="col-12">
+            <div class="pulse-warning-banner guest-warning">
+                <div class="pulse-warning-copy">
+                    <div class="pulse-warning-title">You are building as a guest</div>
+                    <div class="pulse-warning-text">Your changes will stay on this screen, but they cannot be saved until you sign in.</div>
+                </div>
+                <button type="button" class="btn-todd pulse-warning-btn" (click)="goToLoginForPulse()">Sign In to Save</button>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="">
+                <div class="">
+                    <form [formGroup]="surveyForm" (ngSubmit)="submitSurvey()">
+                        <!-- Pulse Title -->
+                        <div class="">
+                            <div class="">Pulse Title</div>
+                            <input id="surveyTitle" type="text" formControlName="title" class="form-control" placeholder="Enter Pulse title" autocomplete="off" autocorrect="off" autocapitalize="off">
+                            <div class="text-danger mt-1" *ngIf="surveyForm.get('title')?.touched && surveyForm.get('title')?.invalid"> Pulse title is required. </div>
+                        </div>
+                        <!-- Pulse Description -->
+                        <div class="">
+                            <div class="">Pulse Description</div>
+                            <textarea id="surveyDescription" formControlName="description" class="form-control" rows="3" placeholder="Describe your survey"></textarea>
+                            <div class="text-danger mt-1" *ngIf="surveyForm.get('description')?.touched && surveyForm.get('description')?.invalid"> Pulse description is required. </div>
+                        </div>
+                        <!-- Questions Container -->
+                        <div formArrayName="questions">
+                            <div class="text-danger mb-3" *ngIf="questions.touched && questions.errors?.['minItems']"> Add at least one question before creating a Pulse. </div>
+                            <div *ngFor="let question of questions.controls; let i = index" [formGroupName]="i" class="">
+                                <div class="">
+                                    <div class="pulse-question">Question {{ i + 1 }}</div>
+                                    <input type="text" formControlName="questionText" class="form-control" placeholder="Enter your question" autocomplete="off" autocorrect="off" autocapitalize="off">
+                                    <div class="text-danger mt-1" *ngIf="question.get('questionText')?.touched && question.get('questionText')?.invalid"> Question text is required. </div>
+                                </div>
+                                <div class="">
+                                    <!-- Question Type Selector -->
+                                    <div class="pulse-question">Question Type</div>
+                                    <select formControlName="questionType" class="form-select">
+                                        <option value="text">Text</option>
+                                        <option value="multiple_choice">Multiple Choice</option>
+                                        <option value="checkbox">Checkboxes</option>
+                                    </select>
+                                    <div class="text-danger mt-1" *ngIf="question.get('questionType')?.touched && question.get('questionType')?.invalid"> Question type is required. </div>
+                                </div>
+                                <!-- Options for Multiple Choice -->
+                                <div *ngIf="requiresOptions(question.get('questionType')?.value)" formArrayName="options" class="">
+                                    <div *ngFor="let option of getOptions(i).controls; let j = index" class="">
+                                        <div class="">Option {{ j + 1 }}</div>
+                                        <input type="text" [formControlName]="j" class="form-control" placeholder="Enter option">
+                                        <div class="text-danger mt-1" *ngIf="option.touched && option.invalid"> Option text is required. </div>
+                                        <button type="button" (click)="removeOption(i, j)" class="btn-todd-danger mt-2">Remove Option</button>
+                                    </div>
+                                    <button type="button" (click)="addOption(i)" class="btn-todd">Add Option</button>
+                                    <div class="text-danger mt-2" *ngIf="question.touched && question.errors?.['multipleChoiceOptionsRequired']"> Add at least one option for this question type. </div>
+                                </div>
+                                <!-- Remove Question Button -->
+                                <button type="button" (click)="removeQuestion(i)" class="btn-todd-danger mt-2">Remove Question</button>
+                            </div>
+                        </div>
+                        <div class="container">
+                            <div class="row">
+                                <div class="col">
+                                    <button type="button" data-cy="pulse-add-question" (click)="addQuestion()" class="btn-todd" [disabled]="isLoading">Add Question</button>
+                                </div>
+                                <div class="col text-end">
+                                    <div class="form-group">
+                                        <button type="submit" class="btn-todd" [disabled]="!surveyForm.get('title')?.valid || !surveyForm.get('description')?.valid || isLoading">
+                                            <span *ngIf="(editSurvey && editSurvey.id)">Update </span>
+                                            <span *ngIf="!(editSurvey && editSurvey.id)">Create</span> Pulse</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="">
+                <h5 data-demo="survey-create-preview">Preview</h5>
+                <div class="live-responses-container">
+                    <div *ngIf="!surveyForm.get('title')?.value && !surveyForm.get('description')?.value && questions.length === 0" class="preview-empty">
+                        <div class="preview-empty-inner text-center">
+                            <i class="fa-regular fa-square-poll-vertical fa-2x mb-3"></i>
+                            <h5>Your Pulse preview will appear here</h5>
+                            <p class="text-muted">Add a title, description, or question to see how your Pulse will look when sent.</p>
+                        </div>
+                    </div>
+                    <div *ngIf="surveyForm.get('title')?.value || surveyForm.get('description')?.value || questions.length > 0">
+                        <h4 *ngIf="surveyForm.get('title')?.value">{{ surveyForm.get('title')?.value }}</h4>
+                        <p *ngIf="surveyForm.get('description')?.value">{{ surveyForm.get('description')?.value }}</p>
+                        <div *ngFor="let question of questions.controls; let i = index" class="">
+                            <h5>Question {{ i + 1 }}: {{ question.get('questionText')?.value }}</h5>
+                            <input *ngIf="question.get('questionType')?.value === 'text'" type="text" class="form-control" disabled placeholder="Your Answer">
+                            <div *ngIf="question.get('questionType')?.value === 'multiple_choice'">
+                                <ul>
+                                    <li *ngFor="let option of getOptions(i).controls">
+                                        <input type="radio" [value]="option.value" disabled> {{ option.value }}
+                                    </li>
+                                </ul>
+                            </div>
+                            <div *ngIf="question.get('questionType')?.value === 'checkbox'">
+                                <ul>
+                                    <li *ngFor="let option of getOptions(i).controls">
+                                        <input type="checkbox" [checked]="false" disabled> {{ option.value }}
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<app-back-to-top></app-back-to-top>

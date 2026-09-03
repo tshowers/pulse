@@ -37,4 +37,9 @@ export const routes: Routes = [
     loadComponent: () =>
       import( './features/pulse-pricing/pulse-pricing.component' ).then( ( m ) => m.PulsePricingComponent ),
   },
+  {
+    path: 'survey-edit',
+    loadComponent: () =>
+      import( './features/survey-add/survey-add.component' ).then( ( m ) => m.SurveyAddComponent ),
+  },
 ];
