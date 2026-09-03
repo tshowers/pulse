@@ -42,4 +42,9 @@ export const routes: Routes = [
     loadComponent: () =>
       import( './features/survey-add/survey-add.component' ).then( ( m ) => m.SurveyAddComponent ),
   },
+  {
+    path: 'app',
+    loadComponent: () =>
+      import( './features/pulse-home/pulse-home.component' ).then( ( m ) => m.PulseHomeComponent ),
+  },
 ];
