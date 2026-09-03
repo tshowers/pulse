@@ -12,4 +12,9 @@ export const routes: Routes = [
     loadComponent: () =>
       import( './features/take-survey/take-survey.component' ).then( ( m ) => m.TakeSurveyComponent ),
   },
+  {
+    path: 'success',
+    loadComponent: () =>
+      import( './features/pulse-paid-success/pulse-paid-success.component' ).then( ( m ) => m.PulsePaidSuccessComponent ),
+  },
 ];
