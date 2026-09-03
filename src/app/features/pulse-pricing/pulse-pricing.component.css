@@ -1,0 +1,479 @@
+:host {
+    display: block;
+    --tl-dark: #0d1117;
+    --tl-dark-mid: rgba(26, 37, 53, 0.85);
+    --tl-dark-soft: rgba(31, 45, 64, 0.78);
+    --tl-blue: #00bfff;
+    --tl-blue-mid: #0095cc;
+}
+
+.pulse-pricing-page {
+    padding: 1.5rem;
+}
+
+.pulse-pricing-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.5fr) minmax(220px, 0.9fr);
+    gap: 1.5rem;
+    align-items: center;
+    padding: 1.75rem;
+    border-radius: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.pulse-pricing-copy h1 {
+    margin: 0 0 0.75rem;
+    font-size: clamp(2rem, 3vw, 2.8rem);
+    line-height: 1.05;
+}
+
+.pulse-pricing-eyebrow {
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+    opacity: 0.75;
+}
+
+.pulse-pricing-lead {
+    margin: 0;
+    font-size: 1.05rem;
+    line-height: 1.65;
+    max-width: 56rem;
+}
+
+.pulse-pricing-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-top: 1.25rem;
+}
+
+.pulse-pricing-visual {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.pulse-heading-logo {
+    max-width: 240px;
+    width: 100%;
+    height: auto;
+}
+
+.pulse-pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem;
+}
+
+.pulse-pricing-card {
+    padding: 1.5rem;
+    border-radius: 1.25rem;
+    height: 100%;
+}
+
+.pulse-pricing-offer-card {
+    display: flex;
+    flex-direction: column;
+}
+
+.pulse-pricing-card-accent {
+    backdrop-filter: blur(10px);
+}
+
+.pulse-pricing-card-header h2 {
+    margin: 0.5rem 0 0.5rem;
+    font-size: 1.4rem;
+}
+
+.pulse-pricing-card-header p {
+    margin: 0;
+    line-height: 1.6;
+}
+
+.pulse-pricing-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    background: rgba(0, 0, 0, 0.06);
+}
+
+.pulse-pricing-price-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-top: 1.25rem;
+    padding: 1rem 1.1rem;
+    border-radius: 1rem;
+    background: rgba(0, 0, 0, 0.03);
+}
+
+.pulse-pricing-price-label {
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    opacity: 0.75;
+    margin-bottom: 0.35rem;
+}
+
+.pulse-pricing-price {
+    font-size: clamp(1.8rem, 3vw, 2.4rem);
+    font-weight: 800;
+    line-height: 1;
+}
+
+.pulse-pricing-price-note {
+    max-width: 15rem;
+    line-height: 1.55;
+    opacity: 0.8;
+}
+
+.pulse-pricing-form {
+    margin-top: 1.25rem;
+    display: grid;
+    gap: 0.9rem;
+}
+
+/*
+ * Base layout for the login callout - missing in the monorepo original
+ * (which only carries color overrides for these classes in its light/dark
+ * theme blocks), so pulled in from Network's equivalent
+ * .network-pricing-login-* rules instead of reproducing the gap.
+ */
+.pulse-pricing-login-callout {
+    padding: 1rem 1.1rem;
+    border-radius: 1rem;
+    background: rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.pulse-pricing-login-title {
+    font-size: 1rem;
+    font-weight: 800;
+    margin-bottom: 0.35rem;
+}
+
+.pulse-pricing-login-text {
+    margin: 0 0 0.9rem;
+    line-height: 1.55;
+    opacity: 0.82;
+}
+
+.pulse-pricing-login-btn {
+    min-height: 48px;
+    border-radius: 0.9rem;
+    font-weight: 700;
+}
+
+.pulse-pricing-field {
+    display: grid;
+    gap: 0.4rem;
+}
+
+.pulse-pricing-field span {
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+
+.pulse-pricing-field input {
+    width: 100%;
+    min-height: 46px;
+    border-radius: 0.85rem;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    background: rgba(255, 255, 255, 0.9);
+    padding: 0.8rem 0.95rem;
+    outline: none;
+}
+
+.pulse-pricing-field input:focus {
+    border-color: rgba(0, 0, 0, 0.35);
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.08);
+}
+
+.pulse-pricing-subscribe {
+    min-height: 48px;
+    border-radius: 0.9rem;
+    font-weight: 700;
+}
+
+.pulse-pricing-subscribe[disabled] {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.pulse-pricing-error {
+    padding: 0.8rem 0.95rem;
+    border-radius: 0.85rem;
+    background: rgba(220, 53, 69, 0.08);
+    border: 1px solid rgba(220, 53, 69, 0.18);
+    color: #842029;
+    line-height: 1.5;
+}
+
+.pulse-pricing-list {
+    margin: 1.25rem 0 0;
+    padding-left: 1.15rem;
+}
+
+.pulse-pricing-list li {
+    margin-bottom: 0.8rem;
+    line-height: 1.55;
+}
+
+.pulse-pricing-list-notes li {
+    list-style: square;
+}
+
+@media (max-width: 900px) {
+
+    .pulse-pricing-hero,
+    .pulse-pricing-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .pulse-pricing-visual {
+        order: -1;
+    }
+}
+
+@media (max-width: 640px) {
+    .pulse-pricing-page {
+        padding: 1rem;
+    }
+
+    .pulse-pricing-hero,
+    .pulse-pricing-card {
+        padding: 1.1rem;
+    }
+
+    .pulse-pricing-price-row {
+        flex-direction: column;
+    }
+
+    .pulse-pricing-price-note {
+        max-width: none;
+    }
+}
+
+/* ─── Mobile resilience ─────────────────────────────────────────── */
+.pulse-pricing-hero > *,
+.pulse-pricing-grid > *,
+.pulse-pricing-card,
+.pulse-pricing-copy,
+.pulse-pricing-card-header,
+.pulse-pricing-price-row > * {
+    min-width: 0;
+}
+
+.pulse-pricing-copy h1,
+.pulse-pricing-card-header h2,
+.pulse-pricing-card-header p,
+.pulse-pricing-lead,
+.pulse-pricing-price-note,
+.pulse-pricing-list li,
+.pulse-pricing-login-text,
+.pulse-pricing-badge,
+.pulse-pricing-price-label {
+    word-break: normal;
+    overflow-wrap: break-word;
+}
+
+@media (max-width: 640px) {
+    .pulse-pricing-copy h1 {
+        font-size: clamp(1.85rem, 9vw, 2.35rem);
+        line-height: 1.08;
+    }
+
+    .pulse-pricing-card-header h2 {
+        font-size: 1.2rem;
+    }
+
+    .pulse-pricing-actions .btn,
+    .pulse-pricing-login-btn,
+    .pulse-pricing-subscribe {
+        width: 100%;
+        justify-content: center;
+        text-align: center;
+    }
+}
+
+
+/* ─── Light Theme (default) ─────────────────────────────────────── */
+.pulse-pricing-page {
+    color: #111827;
+    min-height: 100vh;
+}
+
+.pulse-pricing-hero,
+.pulse-pricing-card {
+    background: rgba(255, 255, 255, 0.92) !important;
+    border: 1px solid rgba(0, 191, 255, 0.14) !important;
+    box-shadow: 0 20px 50px rgba(15, 23, 42, 0.08) !important;
+    color: #111827;
+}
+
+.pulse-pricing-card-accent {
+    background: rgba(248, 250, 252, 0.95) !important;
+    border-color: rgba(0, 191, 255, 0.08) !important;
+    backdrop-filter: blur(14px);
+}
+
+.pulse-pricing-eyebrow {
+    color: var(--tl-blue-mid);
+    opacity: 1;
+}
+
+.pulse-pricing-copy h1,
+.pulse-pricing-card-header h2 {
+    color: #111827;
+}
+
+.pulse-pricing-lead,
+.pulse-pricing-card-header p,
+.pulse-pricing-list li,
+.pulse-pricing-price-note {
+    color: rgba(17, 24, 39, 0.72);
+}
+
+.pulse-pricing-badge {
+    background: rgba(0, 191, 255, 0.08);
+    border: 1px solid rgba(0, 191, 255, 0.18);
+    color: var(--tl-blue-mid);
+}
+
+.pulse-pricing-price-row {
+    background: rgba(248, 250, 252, 0.9) !important;
+    border: 1px solid rgba(0, 191, 255, 0.08) !important;
+}
+
+.pulse-pricing-price-label {
+    color: rgba(17, 24, 39, 0.55);
+    opacity: 1;
+}
+
+.pulse-pricing-price {
+    color: var(--tl-blue-mid);
+}
+
+.pulse-pricing-field span {
+    color: #111827;
+}
+
+.pulse-pricing-field input {
+    background: #ffffff;
+    border-color: rgba(15, 23, 42, 0.12);
+    color: #111827;
+}
+
+.pulse-pricing-field input::placeholder {
+    color: rgba(17, 24, 39, 0.4);
+}
+
+.pulse-pricing-field input:focus {
+    border-color: var(--tl-blue-mid);
+    box-shadow: 0 0 0 3px rgba(0, 191, 255, 0.12);
+}
+
+.pulse-pricing-error {
+    background: rgba(248, 113, 113, 0.08);
+    border-color: rgba(248, 113, 113, 0.18);
+    color: #b91c1c;
+}
+
+.btn.btn-dark,
+.pulse-pricing-login-btn,
+.pulse-pricing-subscribe {
+    background: var(--tl-blue) !important;
+    border-color: var(--tl-blue) !important;
+    color: #06101a !important;
+    border-radius: 999px !important;
+}
+
+.btn.btn-outline-dark {
+    background: transparent !important;
+    border-color: var(--tl-blue-mid) !important;
+    color: var(--tl-blue-mid) !important;
+    border-radius: 999px !important;
+}
+
+.btn.btn-outline-dark:hover {
+    background: rgba(0, 191, 255, 0.08) !important;
+}
+
+/* ─── Dark Mode ─────────────────────────────────────────────────── */
+@media (prefers-color-scheme: dark) {
+
+    .pulse-pricing-page {
+        color: #fff;
+    }
+
+    .pulse-pricing-hero,
+    .pulse-pricing-card {
+        background: var(--tl-dark-mid) !important;
+        border: 1px solid rgba(0, 191, 255, 0.14) !important;
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45) !important;
+        color: #fff;
+    }
+
+    .pulse-pricing-card-accent {
+        background: var(--tl-dark-soft) !important;
+    }
+
+    .pulse-pricing-copy h1,
+    .pulse-pricing-card-header h2 {
+        color: #fff;
+    }
+
+    .pulse-pricing-lead,
+    .pulse-pricing-card-header p,
+    .pulse-pricing-list li,
+    .pulse-pricing-price-note {
+        color: rgba(255, 255, 255, 0.72);
+    }
+
+    .pulse-pricing-badge {
+        background: rgba(0, 191, 255, 0.1);
+        border: 1px solid rgba(0, 191, 255, 0.2);
+        color: var(--tl-blue);
+    }
+
+    .pulse-pricing-price-row {
+        background: rgba(255, 255, 255, 0.04) !important;
+    }
+
+    .pulse-pricing-price {
+        color: var(--tl-blue);
+    }
+
+    .pulse-pricing-field span {
+        color: rgba(255, 255, 255, 0.85);
+    }
+
+    .pulse-pricing-field input {
+        background: rgba(255, 255, 255, 0.06);
+        border-color: rgba(0, 191, 255, 0.2);
+        color: #fff;
+    }
+
+    .pulse-pricing-field input::placeholder {
+        color: rgba(255, 255, 255, 0.35);
+    }
+
+    .pulse-pricing-error {
+        background: rgba(248, 113, 113, 0.1);
+        border-color: rgba(248, 113, 113, 0.25);
+        color: #fca5a5;
+    }
+
+    .btn.btn-outline-dark {
+        border-color: var(--tl-blue) !important;
+        color: var(--tl-blue) !important;
+    }
+}

@@ -32,4 +32,9 @@ export const routes: Routes = [
     loadComponent: () =>
       import( './features/survey-view/survey-view.component' ).then( ( m ) => m.SurveyViewComponent ),
   },
+  {
+    path: 'pricing',
+    loadComponent: () =>
+      import( './features/pulse-pricing/pulse-pricing.component' ).then( ( m ) => m.PulsePricingComponent ),
+  },
 ];

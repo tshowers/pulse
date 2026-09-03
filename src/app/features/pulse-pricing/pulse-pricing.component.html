@@ -1,0 +1,61 @@
+<div class="pulse-pricing-page">
+    <section class="pulse-pricing-hero card shadow-sm border-0">
+        <div class="pulse-pricing-copy">
+            <div class="pulse-pricing-eyebrow">Pulse Pricing</div>
+            <h1>Publish surveys and collect real answers</h1>
+            <p class="pulse-pricing-lead"> Pulse lets you create as many surveys as you want. The paid plan unlocks publishing so you can send surveys, collect responses, and learn what people really think. </p>
+            <div class="pulse-pricing-actions">
+                <a class="btn btn-outline-dark" routerLink="/app">Back to Pulse</a>
+                <a class="btn btn-outline-dark" *ngIf="!(entitlements$ | async)?.suite" href="https://todd.taliferro.tech/suite/pricing">Suite Pricing</a>
+                <a class="btn btn-outline-dark" href="https://todd.taliferro.tech/pricing">Enterprise Pricing</a>
+            </div>
+        </div>
+        <div class="pulse-pricing-visual">
+            <img src="assets/pulse/pulse.png" alt="Pulse" class="pulse-heading-logo img-fluid">
+        </div>
+    </section>
+    <section class="pulse-pricing-grid">
+        <article class="pulse-pricing-card card shadow-sm border-0 pulse-pricing-offer-card">
+            <div class="pulse-pricing-card-header">
+                <span class="pulse-pricing-badge">What you get</span>
+                <h2>Pulse Publishing</h2>
+                <p>Everything you need to move from drafting questions to getting usable feedback.</p>
+            </div>
+            <div class="pulse-pricing-price-row">
+                <div>
+                    <div class="pulse-pricing-price-label">Monthly price</div>
+                    <div class="pulse-pricing-price">{{ monthlyPrice }}</div>
+                </div>
+                <div class="pulse-pricing-price-note">Create for free. Upgrade when you are ready to publish.</div>
+            </div>
+            <ul class="pulse-pricing-list">
+                <li *ngFor="let item of highlights">{{ item }}</li>
+            </ul>
+            <div class="pulse-pricing-form">
+                <div class="pulse-pricing-login-callout" *ngIf="requiresLogin">
+                    <div class="pulse-pricing-login-title">Sign in first </div>
+                    <p class="pulse-pricing-login-text"> We use your login to find you before starting checkout. </p>
+                    <button type="button" class="btn btn-dark pulse-pricing-login-btn" (click)="goToLogin()"> Sign in to purchase </button>
+                </div>
+                <label class="pulse-pricing-field" *ngIf="!requiresLogin">
+                    <span>Email</span>
+                    <input type="email" [(ngModel)]="email" placeholder="Enter your billing email">
+                </label>
+                <button *ngIf="!requiresLogin" type="button" class="btn btn-dark pulse-pricing-subscribe" (click)="startCheckout()" [disabled]="isStartingCheckout">
+                    {{ isStartingCheckout ? 'Starting checkout...' : 'Subscribe to Pulse' }}
+                </button>
+                <div class="pulse-pricing-error" *ngIf="checkoutError">{{ checkoutError }}</div>
+            </div>
+        </article>
+        <article class="pulse-pricing-card card shadow-sm border-0 pulse-pricing-card-accent">
+            <div class="pulse-pricing-card-header">
+                <span class="pulse-pricing-badge">Good to know</span>
+                <h2>How Pulse works</h2>
+                <p>Keep building for free. Upgrade when you are ready to go live.</p>
+            </div>
+            <ul class="pulse-pricing-list pulse-pricing-list-notes">
+                <li *ngFor="let item of notes">{{ item }}</li>
+            </ul>
+        </article>
+    </section>
+</div>
