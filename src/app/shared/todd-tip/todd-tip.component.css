@@ -1,0 +1,91 @@
+/*
+ * --todd-card-bg/--todd-border/--todd-text/--todd-subtext/--todd-panel-
+ * border are TODD theme tokens from the monorepo's un-ported global
+ * stylesheet - given fallbacks here (unlike Network's tab-bar/cockpit-
+ * command-deck, which use the same tokens unfallbacked) so this renders
+ * correctly without requiring the full stylesheet.
+ */
+.todd-tip {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px 18px;
+  border-radius: 14px;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  font-size: 13px;
+  background: color-mix(in srgb, var(--todd-card-bg, #1f2937) 78%, transparent);
+  border: 1px solid color-mix(in srgb, var(--todd-border, rgba(255, 255, 255, 0.14)) 70%, transparent);
+  color: var(--todd-text, #f8fafc);
+}
+
+.todd-tip__icon {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.todd-tip__icon i {
+  color: #ffcc33;
+}
+
+.todd-tip__content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.todd-tip__label {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.todd-tip__text {
+  font-size: 13px;
+  opacity: 0.75;
+}
+
+.todd-tip--subtle {
+  background: color-mix(in srgb, var(--todd-card-bg, #1f2937) 72%, transparent);
+  box-shadow: none;
+}
+
+@media (prefers-color-scheme: light) {
+  .todd-tip {
+    background: color-mix(in srgb, #ffffff 78%, transparent);
+    border-color: rgba(15, 23, 42, 0.12);
+    color: #0f172a;
+  }
+
+  .todd-tip__text {
+    color: rgba(15, 23, 42, 0.68);
+  }
+
+  .todd-tip__label {
+    color: #0f172a;
+  }
+}
+
+.todd-tip {
+  position: relative;
+}
+
+.todd-tip__close {
+  position: relative;
+  top: 0px;
+  right: 12px;
+  font-size: 20px;
+  line-height: 1;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  opacity: 0.4;
+}
+
+.todd-tip__close:hover {
+  opacity: 0.7;
+}
+
+.hidden {
+  display: none !important;
+}

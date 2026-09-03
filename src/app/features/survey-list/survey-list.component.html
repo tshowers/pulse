@@ -1,0 +1,114 @@
+<app-preloader [isLoading]="isLoading"></app-preloader>
+<div class="container-fluid tal-app" [class.pulse-list-page--embedded]="isEmbedded" data-cy="pulse-list-page">
+  <div class="row no-print m-2" *ngIf="!isEmbedded">
+    <div class="col-12 col-xl-8">
+      <h1 class="pv-title" data-cy="pulse-list-heading" data-demo="survey-page-title">Current Pulse</h1>
+      <p class="pv-subtitle d-none d-xl-block"> The Pulse you've created with TODD. Edit them, track responses, or view their charts from here. </p>
+    </div>
+    <div class="col-12 col-xl-4 text-xl-end mt-3 mt-xl-0 d-none d-xl-block">
+      <app-todd-tip icon="lightbulb" label="Tip">
+        {{ surveyTipText }}
+      </app-todd-tip>
+    </div>
+  </div>
+  <app-cockpit-browse-mode-banner
+    *ngIf="!uid || uid === 'user not logged in'"
+    surfaceLabel="Pulse"
+    customTitle="You can explore Pulse, but you won't be able to save"
+    customCopy="You are not signed in, so feel free to look around and see how Pulse works. Sign in to create, view saved surveys, edit, or delete."
+  ></app-cockpit-browse-mode-banner>
+  <div class="row" *ngIf="surveys && surveys.length > 0">
+    <div class="col-12">
+      <div class="pulse-instruments" data-demo="survey-instruments">
+        <div class="pulse-instrument-gauge" [class.pulse-instrument-gauge--on]="publishedCount > 0">
+          <span class="cockpit-status-light" [class.cockpit-status-light--active]="publishedCount > 0" [class.cockpit-status-light--pulse]="publishedCount > 0" style="--light-on-color: #22c55e;"></span>
+          <span class="pulse-instrument-count">{{ publishedCount }}</span>
+          <span class="pulse-instrument-label">Published</span>
+        </div>
+        <div class="pulse-instrument-gauge" [class.pulse-instrument-gauge--on]="activeCount > 0">
+          <span class="cockpit-status-light" [class.cockpit-status-light--active]="activeCount > 0" [class.cockpit-status-light--pulse]="activeCount > 0" style="--light-on-color: #f59e0b;"></span>
+          <span class="pulse-instrument-count">{{ activeCount }}</span>
+          <span class="pulse-instrument-label">Collecting</span>
+        </div>
+        <div class="pulse-instrument-gauge">
+          <span class="cockpit-status-light" [class.cockpit-status-light--active]="draftCount > 0"></span>
+          <span class="pulse-instrument-count">{{ draftCount }}</span>
+          <span class="pulse-instrument-label">Drafts</span>
+        </div>
+        <div class="pulse-instrument-gauge pulse-instrument-gauge--total">
+          <span class="pulse-instrument-count pulse-instrument-count--large">{{ totalResponses }}</span>
+          <span class="pulse-instrument-label">Total Responses</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <div class="survey-list-container">
+        <!-- Empty state when there are no surveys -->
+        <ng-container *ngIf="!surveys || surveys.length === 0">
+          <div class="todd-empty-state text-center py-5 mt-3">
+            <i class="fa-regular fa-circle-question todd-empty-icon"></i>
+            <h4 class="mt-3 mb-1">No Pulse yet</h4>
+            <p class="text-muted mb-3"> Create your first pulse to start collecting responses with TODD Pulse. </p>
+            <button class="btn-todd" (click)="onClickRoute('/survey-edit')">
+              <i class="fa-solid fa-square-poll-horizontal"></i> Create Pulse </button>
+          </div>
+        </ng-container>
+        <!-- Premium Survey List -->
+        <div class="pulse-list-shell" *ngIf="surveys && surveys.length > 0" data-cy="pulse-list-shell" data-demo="survey-list-shell">
+          <div class="pulse-list-toolbar">
+            <button type="button" class="pulse-sort-btn" (click)="sortColumn('title')">
+              <span>Title</span>
+              <i class="fa-solid fa-arrow-up-a-z" *ngIf="sortedColumn !== 'title'"></i>
+              <i class="fa-solid fa-arrow-up" *ngIf="sortedColumn === 'title' && sortDirection === 'asc'"></i>
+              <i class="fa-solid fa-arrow-down" *ngIf="sortedColumn === 'title' && sortDirection === 'desc'"></i>
+            </button>
+            <button type="button" class="pulse-sort-btn" (click)="sortColumn('dateAdded')">
+              <span>Created</span>
+              <i class="fa-regular fa-calendar" *ngIf="sortedColumn !== 'dateAdded'"></i>
+              <i class="fa-solid fa-arrow-up" *ngIf="sortedColumn === 'dateAdded' && sortDirection === 'asc'"></i>
+              <i class="fa-solid fa-arrow-down" *ngIf="sortedColumn === 'dateAdded' && sortDirection === 'desc'"></i>
+            </button>
+          </div>
+          <div class="pulse-list-row" *ngFor="let survey of surveys" [attr.data-cy]="'pulse-list-row-' + survey.id">
+            <div class="pulse-list-main" (click)="onSelect(survey)" [attr.data-cy]="'pulse-list-main-' + survey.id">
+              <div class="pulse-list-title-row">
+                <div class="pulse-list-title-wrap">
+                  <div class="pulse-list-title" [title]="survey.title" [attr.data-cy]="'pulse-list-title-' + survey.id">{{ survey.title | truncate:32 }}</div>
+                  <div class="pulse-list-cta">{{ getSurveyLifecycleLabel(survey) }}</div>
+                </div>
+                <span class="pulse-row-health" [attr.data-cy]="'pulse-list-status-' + survey.id" [attr.title]="survey.status || 'draft'" [attr.aria-label]="survey.status || 'draft'">
+                  <span class="cockpit-status-light" [class.cockpit-status-light--active]="getSurveyHealthLight(survey) !== 'grey'" [class.cockpit-status-light--pulse]="getSurveyHealthPulse(survey)" [class.pulse-light--amber]="getSurveyHealthLight(survey) === 'amber'"></span>
+                  <span class="pulse-status-label">{{ survey.status || 'draft' }}</span>
+                </span>
+              </div>
+              <div class="pulse-list-description" [title]="survey.description">
+                {{ survey.description | truncate:90 }}
+              </div>
+              <div class="pulse-list-hint">
+                {{ getSurveyLifecycleHint(survey) }}
+              </div>
+              <div class="pulse-list-meta">
+                <span><i class="fa-regular fa-calendar"></i> {{ survey.dateAdded | date }}</span>
+                <span><i class="fa-regular fa-rectangle-list" *ngIf="survey && survey.questions"></i> {{ survey.questions.length || 0 }} questions</span>
+                <span><i class="fa-regular fa-message"></i> {{ survey.responseCount || 0 }} responses</span>
+              </div>
+            </div>
+            <div class="pulse-list-actions">
+              <button type="button" class="pulse-action-btn" title="Edit Pulse" (click)="$event.stopPropagation(); editSurvey(survey)" [attr.data-cy]="'pulse-list-edit-' + survey.id">
+                <i class="fa-regular fa-pen-to-square"></i>
+              </button>
+              <button type="button" class="pulse-action-btn" title="Open Results" (click)="$event.stopPropagation(); survey.id && chartSurvey(survey.id)">
+                <i class="fa-solid fa-chart-column"></i>
+              </button>
+              <button type="button" class="pulse-action-btn pulse-action-danger" title="Delete" (click)="$event.stopPropagation(); survey.id && deleteSurvey(survey.id)" [attr.data-cy]="'pulse-list-delete-' + survey.id">
+                <i class="fa fa-trash"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

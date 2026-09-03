@@ -17,4 +17,9 @@ export const routes: Routes = [
     loadComponent: () =>
       import( './features/pulse-paid-success/pulse-paid-success.component' ).then( ( m ) => m.PulsePaidSuccessComponent ),
   },
+  {
+    path: 'survey-list',
+    loadComponent: () =>
+      import( './features/survey-list/survey-list.component' ).then( ( m ) => m.SurveyListComponent ),
+  },
 ];

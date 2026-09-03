@@ -1,0 +1,452 @@
+/*
+ * The monorepo original `@import`s a shared todd-status-indicators.css for
+ * `.todd-status-pill`/`.todd-status-dot` - neither class is actually used
+ * in this component's template (it uses its own local `.cockpit-status-
+ * light` dots, defined below), so the import was dropped rather than
+ * ported. `.pv-title`, `.pv-subtitle`, `.todd-empty-state`, `.todd-empty-
+ * icon`, and `.btn-todd` are pulled in locally here too, matching the
+ * pattern established elsewhere in this app (e.g. contact-edit.component.css
+ * in Network) for classes that otherwise only exist in TODD's un-ported
+ * global stylesheet.
+ */
+
+/*
+ * The monorepo's global `.tal-app` adds margin to clear TODD's fixed nav/
+ * footer chrome, which this standalone app doesn't have - redefined here
+ * locally with just the responsive side padding, same approach take-survey
+ * .component.css already takes for its own `.tal-app`.
+ */
+.tal-app {
+  width: 100%;
+  padding: 1.5rem clamp(12px, 3vw, 32px) 3rem;
+}
+
+.pv-title {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  letter-spacing: -0.3px;
+}
+
+.pv-subtitle {
+  font-size: 16px;
+  opacity: 0.7;
+  margin: 0;
+}
+
+.todd-empty-state {
+  max-width: 420px;
+  margin: 40px auto;
+  background: rgba(17, 17, 17, 0.9);
+  border-radius: 14px;
+  padding: 32px 24px;
+  border: 1px solid rgba(255, 255, 255, .08);
+  box-shadow:
+    0 6px 16px rgba(0, 0, 0, 0.35),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+}
+
+.todd-empty-icon {
+  font-size: 48px;
+  color: #f7931a;
+  opacity: 0.85;
+}
+
+.todd-empty-state .btn-todd {
+  padding: 8px 18px;
+  font-size: 15px;
+}
+
+@media (prefers-color-scheme: light) {
+  .todd-empty-state {
+    background-color: #ffffff;
+    border-color: rgba(0, 0, 0, .08);
+    color: #222;
+  }
+
+  .todd-empty-state h4 {
+    color: #222;
+  }
+
+  .todd-empty-state p {
+    color: #555;
+  }
+}
+
+.btn-todd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 149, 204, 0.3);
+  background: #fff;
+  color: #0095cc;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.btn-todd:hover:not(:disabled) {
+  background: rgba(0, 149, 204, 0.08);
+}
+
+.btn-todd:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.pulse-list-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.pulse-list-toolbar {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  margin-bottom: 0.35rem;
+}
+
+.pulse-sort-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 40px;
+  padding: 0.7rem 1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(248, 250, 252, 0.9);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+}
+
+.pulse-sort-btn:hover {
+  background: rgba(255, 255, 255, 0.09);
+  border-color: rgba(255, 255, 255, 0.18);
+  transform: translateY(-1px);
+}
+
+.pulse-list-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1rem;
+  align-items: center;
+  padding: 1rem 1.1rem;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.045);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+  backdrop-filter: blur(10px);
+  transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+}
+
+.pulse-list-row:hover {
+  transform: translateY(-1px);
+  border-color: rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 16px 28px rgba(0, 0, 0, 0.16);
+}
+
+.pulse-list-main {
+  min-width: 0;
+  cursor: pointer;
+}
+
+.pulse-list-title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  justify-content: space-between;
+  margin-bottom: 0.45rem;
+}
+
+.pulse-list-title-wrap {
+  min-width: 0;
+  display: grid;
+  gap: 0.28rem;
+}
+
+.pulse-list-title {
+  font-size: 1.08rem;
+  font-weight: 700;
+  color: #f8fafc;
+  letter-spacing: -0.015em;
+  min-width: 0;
+}
+
+.pulse-list-cta {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #8fd3ff;
+}
+
+.pulse-status-pill {
+  flex: 0 0 auto;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.pulse-list-description {
+  font-size: 0.96rem;
+  line-height: 1.6;
+  color: rgba(232, 232, 232, 0.78);
+  margin-bottom: 0.45rem;
+}
+
+.pulse-list-hint {
+  font-size: 0.84rem;
+  line-height: 1.5;
+  color: rgba(203, 213, 225, 0.72);
+  margin-bottom: 0.75rem;
+}
+
+.pulse-list-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem 1.2rem;
+  color: rgba(203, 213, 225, 0.72);
+  font-size: 0.86rem;
+}
+
+.pulse-list-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.pulse-list-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.pulse-action-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.045);
+  color: rgba(248, 250, 252, 0.92);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease, color 0.18s ease;
+}
+
+.pulse-action-btn:hover {
+  background: rgba(255, 255, 255, 0.09);
+  border-color: rgba(255, 255, 255, 0.18);
+  transform: translateY(-1px);
+}
+
+.pulse-action-btn.pulse-action-danger {
+  border-color: rgba(248, 113, 113, 0.18);
+  color: rgba(248, 113, 113, 0.92);
+  background: rgba(29, 29, 29, 0.08);
+}
+
+.pulse-action-btn.pulse-action-danger:hover {
+  background: rgba(29, 29, 29, 0.16);
+  border-color: rgba(248, 113, 113, 0.3);
+  color: rgba(252, 165, 165, 0.98);
+}
+
+@media (max-width: 768px) {
+  .pulse-list-row {
+    grid-template-columns: 1fr;
+    align-items: flex-start;
+  }
+
+  .pulse-list-title-row {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.55rem;
+  }
+
+  .pulse-list-actions {
+    justify-content: flex-start;
+  }
+
+  .pulse-list-toolbar {
+    flex-wrap: wrap;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  .pulse-sort-btn {
+    background: rgba(15, 15, 15, 0.03);
+    border-color: rgba(15, 15, 15, 0.1);
+    color: #1f2937;
+  }
+
+  .pulse-sort-btn:hover {
+    background: rgba(15, 15, 15, 0.06);
+    border-color: rgba(15, 15, 15, 0.14);
+  }
+
+  .pulse-list-row {
+    background: rgba(255, 255, 255, 0.8);
+    border-color: rgba(15, 15, 15, 0.08);
+    box-shadow: 0 12px 24px rgba(15, 15, 15, 0.08);
+  }
+
+  .pulse-list-row:hover {
+    background: rgba(255, 255, 255, 0.92);
+    border-color: rgba(15, 15, 15, 0.12);
+  }
+
+  .pulse-list-title {
+    color: #111827;
+  }
+
+  .pulse-list-cta {
+    color: var(--tl-blue-mid, #0095cc);
+  }
+
+  .pulse-list-description {
+    color: #4b5563;
+  }
+
+  .pulse-list-hint {
+    color: #6b7280;
+  }
+
+  .pulse-list-meta {
+    color: #6b7280;
+  }
+
+  .pulse-action-btn {
+    background: rgba(15, 15, 15, 0.03);
+    border-color: rgba(15, 15, 15, 0.1);
+    color: #1f2937;
+  }
+
+  .pulse-action-btn:hover {
+    background: rgba(15, 15, 15, 0.06);
+    border-color: rgba(15, 15, 15, 0.14);
+  }
+
+  .pulse-action-btn.pulse-action-danger {
+    background: rgba(239, 68, 68, 0.05);
+    border-color: rgba(239, 68, 68, 0.18);
+    color: #b91c1c;
+  }
+
+  .pulse-action-btn.pulse-action-danger:hover {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: rgba(239, 68, 68, 0.24);
+    color: #991b1b;
+  }
+}
+
+/* ── Pulse instrument panel ── */
+.pulse-instruments {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 1.5rem;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.25rem;
+  background: rgba(148, 163, 184, 0.05);
+  border-radius: 10px;
+  border: 1px solid rgba(148, 163, 184, 0.12);
+}
+
+.pulse-instrument-gauge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  min-width: 68px;
+  text-align: center;
+}
+
+.pulse-instrument-gauge--total {
+  align-items: flex-start;
+  text-align: left;
+  border-left: 1px solid rgba(148, 163, 184, 0.18);
+  padding-left: 1.5rem;
+  margin-left: 0.25rem;
+}
+
+.pulse-instrument-count {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1;
+  color: #1e293b;
+}
+
+.pulse-instrument-count--large {
+  font-size: 1.9rem;
+}
+
+.pulse-instrument-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #64748b;
+}
+
+/* ── Indicator light (local copy of cockpit pattern) ── */
+.cockpit-status-light {
+  width: 12px;
+  height: 12px;
+  flex: 0 0 12px;
+  border-radius: 50%;
+  background: rgba(148, 163, 184, 0.38);
+  box-shadow: 0 0 0 1px rgba(148, 163, 184, 0.18);
+  display: inline-block;
+}
+
+.cockpit-status-light--active {
+  background: #22c55e;
+  box-shadow:
+    0 0 0 1px rgba(34, 197, 94, 0.18),
+    0 0 0 6px rgba(34, 197, 94, 0.10),
+    0 0 18px rgba(34, 197, 94, 0.28);
+}
+
+.pulse-light--amber.cockpit-status-light--active {
+  background: #f59e0b;
+  box-shadow:
+    0 0 0 1px rgba(245, 158, 11, 0.18),
+    0 0 0 6px rgba(245, 158, 11, 0.10),
+    0 0 18px rgba(245, 158, 11, 0.28);
+}
+
+@keyframes cockpitStatusPulseSurvey {
+  0% { transform: scale(1); box-shadow: 0 0 0 1px rgba(34,197,94,0.18), 0 0 0 0 rgba(34,197,94,0.18); }
+  70% { transform: scale(1.05); box-shadow: 0 0 0 1px rgba(34,197,94,0.18), 0 0 0 8px rgba(34,197,94,0.04), 0 0 22px rgba(34,197,94,0.30); }
+  100% { transform: scale(1); box-shadow: 0 0 0 1px rgba(34,197,94,0.18), 0 0 0 0 rgba(34,197,94,0); }
+}
+
+.cockpit-status-light--pulse {
+  animation: cockpitStatusPulseSurvey 1.2s ease-in-out infinite;
+}
+
+/* ── Per-row health light ── */
+.pulse-row-health {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.pulse-status-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  color: #64748b;
+}
+.pulse-list-page--embedded .pulse-list-toolbar,
+.pulse-list-page--embedded .todd-empty-state,
+.pulse-list-page--embedded .pulse-list-actions { display: none !important; }
