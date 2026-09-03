@@ -1,0 +1,142 @@
+<app-preloader [isLoading]="isLoading"></app-preloader>
+<div class="container-fluid mt-3">
+    <div *ngIf="surveyCompleted" class="thank-you">
+        <h2>Thank you for completing the <strong>"{{ survey?.title }}"</strong> pulse!</h2>
+        <p>We appreciate your time and feedback.</p>
+        <p>{{ countdownDisplay }} seconds...</p>
+    </div>
+    <app-section-jump *ngIf="!surveyCompleted && survey" [items]="anchorItems" label="On this page"></app-section-jump>
+    <div class="row mt-4" *ngIf="!surveyCompleted">
+        <div class="col-12 mb-4" *ngIf="internal && survey">
+            <section id="sv-command" class="pulse-command-shell" data-cy="pulse-command-shell">
+                <div class="pulse-command-copy">
+                    <span class="pulse-command-eyebrow" data-cy="pulse-command-eyebrow">Pulse Command View</span>
+                    <h1>{{ survey.title }}</h1>
+                    <p>{{ survey.description }}</p>
+                    <div class="pulse-lifecycle-card" data-cy="pulse-lifecycle-card">
+                        <span class="pulse-lifecycle-label" data-cy="pulse-lifecycle-heading">{{ pulseLifecycleHeading }}</span>
+                        <p>{{ pulseLifecycleCopy }}</p>
+                    </div>
+                    <div class="pulse-command-pills" data-cy="pulse-command-pills">
+                        <span class="pulse-state-pill todd-status-pill" [attr.data-tone]="getPulseStatusTone(survey.status || 'draft')" [attr.title]="survey.status || 'draft'" [attr.aria-label]="survey.status || 'draft'">{{ survey.status || 'draft' }}</span>
+                        <span class="pulse-state-pill">{{ survey.visibility || 'private' }}</span>
+                        <span class="pulse-state-pill">{{ pulseResultsLabel }}</span>
+                        <span class="pulse-state-pill todd-status-pill pulse-state-pill--subtle" [attr.data-tone]="getPulseStatusTone(pulseLinkAvailabilityLabel)" [attr.title]="pulseLinkAvailabilityLabel" [attr.aria-label]="pulseLinkAvailabilityLabel" data-cy="pulse-link-availability">{{ pulseLinkAvailabilityLabel }}</span>
+                    </div>
+                    <p class="pulse-results-hint">Collected participant responses live in the results dashboard. The panel below only previews answers entered in this screen.</p>
+                </div>
+                <div class="pulse-command-actions" data-cy="pulse-command-actions">
+                    <button type="button" class="btn-todd" data-cy="pulse-back-to-edit" (click)="backToEdit()">Back to Edit</button>
+                    <button type="button" class="btn-todd" data-cy="pulse-publish" (click)="publishSurvey()" [disabled]="survey.status === 'published'">{{ hasPaidSurveyAccess() ? 'Publish Pulse' : 'Pay to Publish Pulse' }}</button>
+                    <button type="button" class="btn-todd" data-cy="pulse-copy-share-link" (click)="copyToClipboard(getSurveyLink())">Copy Share Link</button>
+                    <button type="button" class="btn-todd" data-cy="pulse-preview" (click)="previewPublicSurvey()">Preview Pulse</button>
+                    <button *ngIf="survey.status === 'published'" type="button" class="btn-todd" data-cy="pulse-open-live" (click)="openLiveSurvey()">Open Live Survey</button>
+                    <button type="button" class="btn-todd" data-cy="pulse-open-results" (click)="openResults()">Open Results Dashboard</button>
+                    <button *ngIf="survey.status === 'published'" type="button" class="btn-todd" data-cy="pulse-move-to-draft" (click)="unpublishSurvey()">Move Back to Draft</button>
+                </div>
+                <p class="pulse-results-hint" *ngIf="internal && survey && !hasPaidSurveyAccess()">Pay to publish your survey. Creating and editing Pulse is free, but publishing requires a paid plan.</p>
+            </section>
+        </div>
+        <div id="sv-questions" class="col-md-6">
+            <div class="survey-container" *ngIf="survey">
+                <div *ngIf="survey" class="survey-header">
+                    <h2>{{ survey.title }}</h2>
+                    <p>{{ survey.description }}</p>
+                </div>
+                <div class="row mt-2 mb-3">
+                    <div class="col">
+                        <div class="stepper">
+                            <!-- Previous Button -->
+                            <button (click)="previousStep()" class="btn-step-nav" *ngIf="currentStep > 0">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </button>
+                            <!-- Display the calculated visible steps -->
+                            <div class="step" *ngFor="let step of displayedSteps" [ngClass]="{'active': currentStep === step.index}">
+                                <div class="label">Step</div>
+                                <div class="circle">{{ step.index + 1 }}</div>
+                            </div>
+                            <!-- Next Button -->
+                            <button (click)="nextStep()" class="btn-step-nav" *ngIf="currentStep < totalSteps - 1" [disabled]="!canAdvanceCurrentStep()">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="row">
+                        <div class="col">
+                            <!-- Survey Content -->
+                            <form [formGroup]="surveyForm">
+                                <div *ngIf="survey">
+                                    <div formArrayName="responses" class="custom-wizard">
+                                        <!-- Render each question step-by-step -->
+                                        <div *ngFor="let question of survey.questions; let i = index" [ngClass]="{ 'hidden': currentStep !== i }" class="m-3">
+                                            <div class="form-group">
+                                                <label class="large-text">{{ question.questionText }}</label>
+                                                <!-- Handle text input -->
+                                                <input *ngIf="question.questionType === 'text'" type="text" class="form-control large-text" [formControlName]="i" placeholder="Your answer">
+                                                <!-- Handle multiple choice options -->
+                                                <!-- Single-choice as independent iOS-style toggle switches -->
+                                                <!-- Handle single-choice as independent iOS-style toggle switches -->
+                                                <div *ngIf="question.questionType === 'multiple_choice'" class="form-group">
+                                                    <div *ngFor="let option of question.options; let j = index" class="d-flex align-items-center mt-3">
+                                                        <!-- Wrap the switch and text in a flex container -->
+                                                        <label class="form-check-label switch me-3">
+                                                            <input type="radio" [formControlName]="'' + i" [value]="option" [name]="'' + i">
+                                                            <span class="slider"></span> <!-- iOS slider -->
+                                                        </label>
+                                                        <!-- Ensure text aligns left -->
+                                                        <span class="setting-text text-start" title="{{ option }}">{{ option }}</span>
+                                                    </div>
+                                                </div>
+                                                <div *ngIf="question.questionType === 'checkbox'" class="form-group">
+                                                    <div *ngFor="let option of question.options; let j = index" class="d-flex align-items-center mt-3">
+                                                        <input type="checkbox" class="form-check-input me-3" [checked]="isCheckboxSelected(i, option)" (change)="toggleCheckboxOption(i, option, $any($event.target).checked)">
+                                                        <span class="setting-text text-start" title="{{ option }}">{{ option }}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Submit Button on the last step -->
+                                        <button *ngIf="currentStep === totalSteps - 1" class="btn btn-success" (click)="submitSurvey()">Submit Pulse</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <button (click)="previousStep()" class="btn-step-nav" *ngIf="currentStep > 0">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </button>
+                        </div>
+                        <div class="col text-end">
+                            <button (click)="nextStep()" class="btn-step-nav" *ngIf="currentStep < totalSteps - 1" [disabled]="!canAdvanceCurrentStep()">
+                                <span class="d-none d-md-inline">Next</span>
+                                <i class="fa-solid fa-chevron-right d-inline d-md-none"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="sv-live-preview" class="col-md-6" *ngIf="survey && hasAnyResponses()">
+            <div class="live-responses-container">
+                <div class="response-preview-header">
+                    <h3 class="survey-header">Live Answer Preview</h3>
+                    <p>This is only a preview of answers being entered in this form. Open the results dashboard to review participant submissions.</p>
+                </div>
+                <ul>
+                    <!-- Only show answered questions -->
+                    <li *ngFor="let question of survey.questions; let i = index">
+                        <div *ngIf="hasResponseValue(responses.at(i).value)">
+                            <strong>{{ question.questionText }}:</strong>
+                            <span class="answer">{{ formatResponsePreview(responses.at(i).value) }}</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<app-back-to-top></app-back-to-top>

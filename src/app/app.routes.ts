@@ -27,4 +27,9 @@ export const routes: Routes = [
     loadComponent: () =>
       import( './features/survey-dashboard/survey-dashboard.component' ).then( ( m ) => m.SurveyDashboardComponent ),
   },
+  {
+    path: 'survey/:id',
+    loadComponent: () =>
+      import( './features/survey-view/survey-view.component' ).then( ( m ) => m.SurveyViewComponent ),
+  },
 ];
