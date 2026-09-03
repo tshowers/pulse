@@ -1,12 +1,11 @@
 import { Routes } from '@angular/router';
 
-/**
- * Routes are added incrementally as each component is ported per the
- * extraction plan's build order - every ported component must be wired in
- * here before `ng build` is trusted, since `ng build` doesn't type-check
- * anything unreachable from a route.
- */
 export const routes: Routes = [
+  {
+    path: '',
+    loadComponent: () =>
+      import( './features/landing/landing.component' ).then( ( m ) => m.LandingComponent ),
+  },
   {
     path: 'take/:id',
     loadComponent: () =>
@@ -46,5 +45,14 @@ export const routes: Routes = [
     path: 'app',
     loadComponent: () =>
       import( './features/pulse-home/pulse-home.component' ).then( ( m ) => m.PulseHomeComponent ),
+  },
+  {
+    // Catches any unmatched URL (typos, stale links, deep links to routes
+    // that never existed here) - without this, the router just silently
+    // fails to navigate instead of showing anything. Not in the plan's
+    // route table, added anyway matching Network's own convention.
+    path: '**',
+    loadComponent: () =>
+      import( './features/not-found/not-found.component' ).then( ( m ) => m.NotFoundComponent ),
   },
 ];
