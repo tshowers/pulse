@@ -6,4 +6,10 @@ import { Routes } from '@angular/router';
  * here before `ng build` is trusted, since `ng build` doesn't type-check
  * anything unreachable from a route.
  */
-export const routes: Routes = [];
+export const routes: Routes = [
+  {
+    path: 'take/:id',
+    loadComponent: () =>
+      import( './features/take-survey/take-survey.component' ).then( ( m ) => m.TakeSurveyComponent ),
+  },
+];
