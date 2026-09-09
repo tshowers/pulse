@@ -1,0 +1,31 @@
+:host { display:block; --dark:#141a1e; --mid:#1c2228; --blue:#00bfff; --text:#0d1820; --sub:#536878; }
+.ios-page { min-height:100%; background:#f2f7fb; color:var(--text); }
+.ios-hero { padding:0 24px; color:#fff; background:var(--dark); background-image:radial-gradient(ellipse 60% 55% at 70% 50%,rgba(0,191,255,.09),transparent 70%); }
+.ios-hero__inner,.ios-section__inner { max-width:1140px; margin:0 auto; }
+.ios-hero__inner { padding:80px 0 72px; display:grid; grid-template-columns:minmax(0,1.15fr) minmax(320px,.85fr); gap:48px; align-items:center; }
+.ios-eyebrow { display:inline-block; margin-bottom:14px; color:var(--blue); text-transform:uppercase; letter-spacing:.14em; font-size:.75rem; font-weight:800; }
+.ios-eyebrow a { color:inherit; }
+h1,h2,h3 { font-weight:900; letter-spacing:-.025em; }
+h1 { margin:0 0 24px; color:#fff; font-size:clamp(2.8rem,5.5vw,4.8rem); line-height:1.04; }
+h2 { margin:0 0 16px; font-size:clamp(2rem,3.5vw,3rem); line-height:1.1; }
+.ios-hero__lead { max-width:54ch; margin:0 0 32px; color:rgba(255,255,255,.68); font-size:1.1rem; line-height:1.75; }
+.ios-hero__visual { display:flex; justify-content:center; }
+.ios-ios-shot { display:block; width:min(100%,420px); max-height:620px; object-fit:contain; border-radius:22px; filter:drop-shadow(0 32px 72px rgba(0,0,0,.5)) drop-shadow(0 0 40px rgba(0,191,255,.12)); }
+.ios-badge { display:inline-flex; padding:10px 20px; border:1px solid rgba(0,191,255,.28); border-radius:999px; background:rgba(0,191,255,.1); color:var(--blue); font-size:.85rem; font-weight:700; }
+.ios-solution { background:#fff; }
+.ios-section__inner { padding:72px 24px; }
+.ios-section__heading { max-width:680px; margin-bottom:44px; }
+.ios-section__heading p,.ios-features p { color:var(--sub); font-size:1.05rem; line-height:1.7; }
+.ios-features { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:40px; }
+.ios-features h3 { margin:0 0 12px; font-size:1.35rem; line-height:1.3; }
+.ios-features p { margin:0; font-size:1rem; }
+.ios-cta { color:#fff; background:var(--mid); }
+.ios-cta__shell { display:flex; align-items:center; justify-content:space-between; gap:40px; }
+.ios-cta h2 { color:#fff; }
+.ios-cta p { max-width:62ch; color:rgba(255,255,255,.62); line-height:1.7; }
+.ios-eyebrow--light { color:rgba(0,191,255,.75); }
+.ios-cta__actions { display:flex; flex-wrap:wrap; gap:12px; }
+.ios-btn { display:inline-flex; padding:14px 28px; border-radius:999px; font-weight:700; text-decoration:none; white-space:nowrap; }
+.ios-btn--primary { color:#06101a; background:var(--blue); }
+.ios-btn--ghost { color:rgba(255,255,255,.68); }
+@media (max-width:760px) { .ios-hero__inner,.ios-features { grid-template-columns:1fr; } .ios-hero__inner { padding:56px 0; } .ios-hero__visual { order:-1; } .ios-ios-shot { width:min(100%,360px); max-height:540px; } .ios-cta__shell { display:block; } .ios-cta__actions { margin-top:24px; } }

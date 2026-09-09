@@ -19,6 +19,8 @@ import { SoundService } from '../../services/sound.service';
 import { PulsePageActionsService } from '../../services/pulse-page-actions.service';
 import { PageAction } from '../../models/page-actions.models';
 import { ClickSoundDirective } from '../../shared/directives/click-sound.directive';
+import { PrimaryNavComponent } from '../../shared/primary-nav/primary-nav.component';
+import { CockpitBrowseModeBannerComponent } from '../../shared/cockpit-browse-mode-banner/cockpit-browse-mode-banner.component';
 
 /**
  * Trimmed port of the monorepo's
@@ -40,7 +42,7 @@ import { ClickSoundDirective } from '../../shared/directives/click-sound.directi
 @Component( {
   selector: 'app-survey-add',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, ToddTipComponent, BackToTopComponent, ClickSoundDirective],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, ToddTipComponent, BackToTopComponent, ClickSoundDirective, PrimaryNavComponent, CockpitBrowseModeBannerComponent],
   templateUrl: './survey-add.component.html',
   styleUrl: './survey-add.component.css'
 } )

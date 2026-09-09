@@ -1,0 +1,37 @@
+<div class="ios-page">
+  <section class="ios-hero">
+    <div class="ios-hero__inner">
+      <div class="ios-hero__copy">
+        <div class="ios-eyebrow"><a href="https://todd.taliferro.tech">Home</a> · <a routerLink="/">Pulse</a> · iOS</div>
+        <h1>Pulse in your pocket</h1>
+        <p class="ios-hero__lead">The question, the responses, and the read on the room — wherever the moment happens.</p>
+        <span class="ios-badge">Coming soon on the App Store</span>
+      </div>
+      <div class="ios-hero__visual">
+        <img class="ios-ios-shot" src="assets/pulse/pulse-ios.png" alt="Pulse for iOS">
+      </div>
+    </div>
+  </section>
+
+  <section class="ios-solution">
+    <div class="ios-section__inner">
+      <div class="ios-section__heading">
+        <div class="ios-eyebrow">Built for the moment feedback happens</div>
+        <h2>What if the signal stayed with you?</h2>
+        <p>Pulse for iOS brings the survey loop out of the office and into the conversations, meetings, and decisions that create the need for feedback.</p>
+      </div>
+      <div class="ios-features">
+        <article *ngFor="let h of highlights"><h3>{{ h.heading }}</h3><p>{{ h.copy }}</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="ios-cta">
+    <div class="ios-section__inner">
+      <div class="ios-cta__shell">
+        <div><div class="ios-eyebrow ios-eyebrow--light">Coming soon</div><h2>Pulse for iOS is coming soon.</h2><p>Build, share, and read the responses that matter from wherever the question starts.</p></div>
+        <div class="ios-cta__actions"><a class="ios-btn ios-btn--primary" routerLink="/app">Open Pulse</a><a class="ios-btn ios-btn--ghost" routerLink="/">Back to Pulse</a></div>
+      </div>
+    </div>
+  </section>
+</div>

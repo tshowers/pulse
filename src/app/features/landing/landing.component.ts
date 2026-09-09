@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { LandingEngagementService } from '../../services/landing-engagement.service';
+import { PulseAuthService } from '../../services/pulse-auth.service';
 
 /**
  * New landing page, built from scratch - there is no live Pulse landing
@@ -88,9 +89,21 @@ export class LandingComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   ];
 
+  readonly faqs = [
+    { question: 'Can I build a Pulse before I pay?', answer: 'Yes. You can create and preview pulses for free, then upgrade when you are ready to publish and collect responses.' },
+    { question: 'How are responses summarized?', answer: 'Pulse keeps response counts, completion coverage, option tallies, and open-text feedback together in a live results dashboard.' },
+    { question: 'Do respondents need an account?', answer: 'No. A published pulse can be shared by link, and people can respond without installing an app or signing in.' },
+    { question: 'Who is Pulse for?', answer: 'Pulse is for teams that need to ask a clear question, collect real feedback, and turn the answers into a direction quickly.' }
+  ];
+
   constructor (
-    private readonly landingContext: LandingEngagementService
-  ) { }
+    private readonly landingContext: LandingEngagementService,
+    private readonly authService: PulseAuthService,
+  ) {
+    this.isLoggedIn$ = this.authService.isLoggedIn();
+  }
+
+  readonly isLoggedIn$: ReturnType<PulseAuthService['isLoggedIn']>;
 
   ngOnInit (): void {
     this.landingContext.start( {

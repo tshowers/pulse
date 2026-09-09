@@ -7,6 +7,12 @@ export const routes: Routes = [
       import( './features/landing/landing.component' ).then( ( m ) => m.LandingComponent ),
   },
   {
+    // Dedicated product showcase for the future Pulse iOS app.
+    path: 'ios',
+    loadComponent: () =>
+      import( './features/app-showcase/app-showcase.component' ).then( ( m ) => m.AppShowcaseComponent ),
+  },
+  {
     path: 'take/:id',
     loadComponent: () =>
       import( './features/take-survey/take-survey.component' ).then( ( m ) => m.TakeSurveyComponent ),

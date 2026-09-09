@@ -13,6 +13,7 @@ import { PulseNotificationService } from '../../services/pulse-notification.serv
 import { PulseAssistantSignalService } from '../../services/pulse-assistant-signal.service';
 import { PulsePageActionsService } from '../../services/pulse-page-actions.service';
 import { PageAction } from '../../models/page-actions.models';
+import { PrimaryNavComponent } from '../../shared/primary-nav/primary-nav.component';
 
 interface SurveyResponse {
   id: string;
@@ -71,7 +72,7 @@ interface SurveyQuestionCard {
 @Component( {
   selector: 'app-survey-dashboard',
   standalone: true,
-  imports: [CommonModule, BackToTopComponent, TruncatePipe, SectionJumpComponent],
+  imports: [CommonModule, BackToTopComponent, TruncatePipe, SectionJumpComponent, PrimaryNavComponent],
   templateUrl: './survey-dashboard.component.html',
   styleUrl: './survey-dashboard.component.css'
 } )

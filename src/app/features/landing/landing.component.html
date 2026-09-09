@@ -1,4 +1,8 @@
 <div class="fl-page">
+  <nav class="fl-utility-nav" aria-label="Product links">
+    <a *ngIf="!(isLoggedIn$ | async)" routerLink="/login">Sign in</a>
+    <a routerLink="/ios">See Pulse for iOS</a>
+  </nav>
   <section class="fl-hero">
     <div class="fl-hero__inner">
       <div class="fl-hero__copy">
@@ -8,7 +12,6 @@
         <p class="fl-hero__lead">Pulse is a survey and feedback tool: build a pulse for free, publish it to collect real responses, and watch a results dashboard tally the answers as they arrive - instead of a spreadsheet nobody opens again.</p>
         <div class="fl-hero__actions">
           <a class="fl-btn fl-btn--primary" routerLink="/app" (click)="onPrimaryCtaClick()">Open Pulse</a>
-          <a class="fl-btn fl-btn--ghost" routerLink="/pricing" (click)="onPricingCtaClick()">See Pricing</a>
         </div>
       </div>
       <div class="fl-hero__visual">
@@ -71,9 +74,12 @@
           </div>
         </div>
       </div>
-      <div class="fl-how__cta">
-        <a class="fl-link" routerLink="/pricing" (click)="onPricingCtaClick()">See what is included in Pulse →</a>
-      </div>
+    </div>
+  </section>
+  <section class="fl-faq">
+    <div class="fl-section__inner">
+      <div class="fl-section__heading"><div class="fl-eyebrow">Questions worth asking</div><h2>Pulse turns feedback into a signal you can use.</h2></div>
+      <div class="fl-faq__list"><details class="fl-faq__item" *ngFor="let faq of faqs"><summary>{{ faq.question }}</summary><p>{{ faq.answer }}</p></details></div>
     </div>
   </section>
   <section class="fl-cta">
@@ -86,6 +92,7 @@
         </div>
         <div class="fl-cta__actions">
           <a class="fl-btn fl-btn--primary fl-btn--lg" routerLink="/app" (click)="onPrimaryCtaClick()">Open Pulse</a>
+          <a *ngIf="!(isLoggedIn$ | async)" class="fl-btn fl-btn--outline fl-btn--lg" routerLink="/login">Sign in</a>
           <a class="fl-btn fl-btn--outline fl-btn--lg" routerLink="/pricing" (click)="onPricingCtaClick()">See Pricing</a>
         </div>
       </div>

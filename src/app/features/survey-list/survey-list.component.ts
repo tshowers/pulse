@@ -19,6 +19,7 @@ import { PageAction } from '../../models/page-actions.models';
 import { ToddStatusTone, mapToddStatusTone } from '../../utils/todd-status-indicator.util';
 import { ClickSoundDirective } from '../../shared/directives/click-sound.directive';
 import { CockpitBrowseModeBannerComponent } from '../../shared/cockpit-browse-mode-banner/cockpit-browse-mode-banner.component';
+import { PrimaryNavComponent } from '../../shared/primary-nav/primary-nav.component';
 
 /**
  * Trimmed, near-verbatim port of the monorepo's
@@ -34,7 +35,7 @@ import { CockpitBrowseModeBannerComponent } from '../../shared/cockpit-browse-mo
 @Component( {
   selector: 'app-survey-list',
   standalone: true,
-  imports: [CommonModule, RouterModule, TruncatePipe, ToddTipComponent, PreloaderComponent, ClickSoundDirective, CockpitBrowseModeBannerComponent],
+  imports: [CommonModule, RouterModule, TruncatePipe, ToddTipComponent, PreloaderComponent, ClickSoundDirective, CockpitBrowseModeBannerComponent, PrimaryNavComponent],
   templateUrl: './survey-list.component.html',
   styleUrl: './survey-list.component.css'
 } )

@@ -1,5 +1,6 @@
 <app-preloader [isLoading]="isLoading"></app-preloader>
 <div class="container-fluid mt-3">
+    <app-primary-nav *ngIf="internal"></app-primary-nav>
     <div *ngIf="surveyCompleted" class="thank-you">
         <h2>Thank you for completing the <strong>"{{ survey?.title }}"</strong> pulse!</h2>
         <p>We appreciate your time and feedback.</p>

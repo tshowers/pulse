@@ -100,11 +100,11 @@
 
 .pv-title {
   margin: 0;
-  font-size: clamp(2.2rem, 4vw, 3.1rem);
-  line-height: 1.02;
-  letter-spacing: -0.04em;
+  font-size: 1.75rem;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
   color: #0f172a;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .pv-subtitle {

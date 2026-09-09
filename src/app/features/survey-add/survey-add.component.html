@@ -1,4 +1,5 @@
 <div class="container-fluid tal-app" data-demo="survey-create-shell">
+    <app-primary-nav></app-primary-nav>
     <div class="row no-print m-2">
         <div class="col-12 col-xl-8">
             <h1 class="pv-title" data-demo="survey-create-title">Create a Pulse</h1>
@@ -12,17 +13,13 @@
             </div>
         </div>
     </div>
-    <div class="row" *ngIf="!uid && hasUnsavedPulseInput()">
-        <div class="col-12">
-            <div class="pulse-warning-banner guest-warning">
-                <div class="pulse-warning-copy">
-                    <div class="pulse-warning-title">You are building as a guest</div>
-                    <div class="pulse-warning-text">Your changes will stay on this screen, but they cannot be saved until you sign in.</div>
-                </div>
-                <button type="button" class="btn-todd pulse-warning-btn" (click)="goToLoginForPulse()">Sign In to Save</button>
-            </div>
-        </div>
-    </div>
+    <app-cockpit-browse-mode-banner
+        *ngIf="!uid"
+        surfaceLabel="the Pulse builder"
+        customTitle="You can try this out, but you won't be able to save"
+        customCopy="You are not signed in, so feel free to explore this form and see the live preview. Sign in before you submit — guest sessions can't save new Pulses."
+        signInLabel="Sign in to save"
+    ></app-cockpit-browse-mode-banner>
     <div class="row">
         <div class="col-md-6">
             <div class="">

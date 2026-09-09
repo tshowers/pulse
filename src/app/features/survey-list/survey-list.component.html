@@ -1,5 +1,6 @@
 <app-preloader [isLoading]="isLoading"></app-preloader>
 <div class="container-fluid tal-app" [class.pulse-list-page--embedded]="isEmbedded" data-cy="pulse-list-page">
+  <app-primary-nav *ngIf="!isEmbedded"></app-primary-nav>
   <div class="row no-print m-2" *ngIf="!isEmbedded">
     <div class="col-12 col-xl-8">
       <h1 class="pv-title" data-cy="pulse-list-heading" data-demo="survey-page-title">Current Pulse</h1>
