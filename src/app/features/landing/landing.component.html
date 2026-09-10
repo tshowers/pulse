@@ -1,8 +1,4 @@
 <div class="fl-page">
-  <nav class="fl-utility-nav" aria-label="Product links">
-    <a *ngIf="!(isLoggedIn$ | async)" routerLink="/login">Sign in</a>
-    <a routerLink="/ios">See Pulse for iOS</a>
-  </nav>
   <section class="fl-hero">
     <div class="fl-hero__inner">
       <div class="fl-hero__copy">
@@ -78,8 +74,16 @@
   </section>
   <section class="fl-faq">
     <div class="fl-section__inner">
-      <div class="fl-section__heading"><div class="fl-eyebrow">Questions worth asking</div><h2>Pulse turns feedback into a signal you can use.</h2></div>
-      <div class="fl-faq__list"><details class="fl-faq__item" *ngFor="let faq of faqs"><summary>{{ faq.question }}</summary><p>{{ faq.answer }}</p></details></div>
+      <div class="fl-section__heading">
+        <div class="fl-eyebrow">Questions worth asking</div>
+        <h2>Pulse turns feedback into a signal you can use.</h2>
+      </div>
+      <div class="fl-faq__list">
+        <details class="fl-faq__item" *ngFor="let faq of faqs">
+          <summary>{{ faq.question }}</summary>
+          <p>{{ faq.answer }}</p>
+        </details>
+      </div>
     </div>
   </section>
   <section class="fl-cta">

@@ -52,11 +52,13 @@
     --todd-card-bg: #1a2535;
   }
 
-  body {
+body {
     background-color: var(--todd-bg);
     color: var(--todd-text);
   }
 }
+
+app-root > router-outlet + *:not(app-landing) { padding-top:4.5rem; box-sizing:border-box; }
 
 /* ─── TODD Global Field Styles ───────────────────────────────────────────────
  * Ported from frontend/src/styles.css - canonical input/select/textarea
