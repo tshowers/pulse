@@ -25,7 +25,7 @@ export const COMMAND_PALETTE_ENTRIES: CommandPaletteEntry[] = [
   { id: 'pulse-ios', label: 'Pulse in your pocket', group: 'Pulse', path: '/ios', keywords: ['ios', 'app store', 'mobile app', 'iphone'] },
 
   // --- Other Apps -----------------------------------------------------------
-  { id: 'app-maya', label: 'Maya', group: 'Other Apps', path: 'https://maya.taliferro.tech', icon: 'assets/find/entities/maya/logo-bw-icon.png', external: true, keywords: ['maya', 'marketing director'] },
+  { id: 'app-maya', label: 'Maya', group: 'Other Apps', path: 'https://maya.taliferro.tech', icon: 'assets/find/entities/maya/logo-bw.png', external: true, keywords: ['maya', 'marketing director'] },
   { id: 'app-todd', label: 'Ask TODD', group: 'Other Apps', path: 'https://ask.taliferro.tech', icon: 'assets/find/entities/todd/logo-bw-icon.png', external: true, keywords: ['todd', 'ask todd', 'assistant', 'chat'] },
   { id: 'app-docs', label: 'Docs', group: 'Other Apps', path: 'https://docs.taliferro.tech', icon: 'assets/find/entities/docs/logo-bw-icon.png', external: true, keywords: ['docs', 'documents', 'proposals', 'contracts'] },
   { id: 'app-signature', label: 'Email Signature Builder', group: 'Other Apps', path: 'https://signature.taliferro.tech', icon: 'assets/find/entities/email-signature-builder/logo-bw-icon.png', external: true, keywords: ['email signature', 'signature builder'] },

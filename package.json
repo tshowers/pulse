@@ -1,13 +1,22 @@
 {
   "name": "pulse",
-  "version": "0.0.1",
+  "version": "2026.9.18-build.1",
   "scripts": {
     "ng": "ng",
+    "generate-version": "node scripts/generate-version.js",
     "start": "ng serve",
+    "prebuild": "npm run generate-version",
     "build": "ng build",
     "deploy:hosting": "./deploy.sh",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "test:ci": "ng test --watch=false --browsers=ChromeHeadless",
+    "cy:open": "cypress open",
+    "cy:run": "cypress run",
+    "typecheck:cypress": "tsc -p tsconfig.cypress.json --noEmit --pretty false",
+    "emulators:start": "firebase emulators:start --project taliferrotech --only auth,firestore",
+    "e2e:app": "start-server-and-test start http://localhost:4200 cy:run",
+    "e2e": "firebase emulators:exec --project taliferrotech --only auth,firestore \"npm run e2e:app\""
   },
   "private": true,
   "dependencies": {
@@ -19,6 +28,7 @@
     "@angular/platform-browser": "^19.0.0",
     "@angular/platform-browser-dynamic": "^19.0.0",
     "@angular/router": "^19.0.0",
+    "@angular/service-worker": "^19.2.25",
     "@fortawesome/fontawesome-free": "^7.3.1",
     "@taliferro/ui": "file:../../taliferro-ui",
     "bootstrap": "^5.3.8",
@@ -38,6 +48,19 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
-    "typescript": "~5.6.2"
+    "typescript": "~5.6.2",
+    "cypress": "^13.17.0",
+    "start-server-and-test": "^2.1.5"
+  },
+  "allowScripts": {
+    "esbuild@0.25.12": true,
+    "esbuild@0.28.0": true,
+    "@firebase/util@1.15.3": true,
+    "@parcel/watcher@2.6.0": true,
+    "cypress@13.17.0": true,
+    "fsevents@2.3.3": true,
+    "lmdb@3.2.6": true,
+    "msgpackr-extract@3.0.4": true,
+    "protobufjs@7.6.6": true
   }
 }

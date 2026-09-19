@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, of } from 'rxjs';
 
 export type ToddSignalState = 'idle' | 'listening' | 'thinking' | 'ready';
 
@@ -10,36 +10,98 @@ export interface ToddEngagementActionRequest {
   source: 'primary' | 'secondary';
 }
 
+export interface PulseAssistantPageContext {
+  feature: string;
+  page: string;
+  route?: string;
+  mode?: 'view' | 'create' | 'edit' | 'list' | 'search' | 'dashboard';
+  title?: string;
+  description?: string;
+  allowedActions?: string[];
+  selectedEntityType?: string;
+  selectedEntityId?: string;
+  summary?: Record<string, any>;
+  dataPreview?: Record<string, any>;
+}
+
+export interface PulseAssistantActivityEvent {
+  feature: string;
+  page: string;
+  action: string;
+  route?: string;
+  mode?: string;
+  summary?: Record<string, any>;
+  meta?: Record<string, any>;
+}
+
+export interface PulseAssistantTranscriptMessage {
+  role: 'user' | 'assistant';
+  content: string;
+}
+
 /**
- * No-op stand-in for the page-context/activity-reporting slice of
- * ToddAssistantBusService, copied from web-products/network's
- * NetworkAssistantSignalService. This app deliberately doesn't carry
- * TODD's full assistant bus (a separate, much bigger project than this
- * extraction), so ported components' calls to report page context,
- * transcript nudges, and activity events have nowhere to go. Kept as a
- * same-shaped no-op rather than deleted from each call site, both to
- * minimize the diff against the original component and because a real
- * Pulse-scoped assistant (if/when built) would plug in here.
- *
- * Widened beyond Network's version: SurveyHomeComponent, SurveyViewComponent,
- * SurveyAddComponent, PulsePricingComponent, and PulsePaidSuccessComponent
- * all subscribe to `signalState$` (to drive a status indicator) and
- * SurveyAddComponent/SurveyViewComponent also subscribe to
- * `engagementActionRequest$` - both need to exist as real observables here,
- * not just method stubs, or those subscriptions would fail to compile.
+ * Real implementation of the bus every ported Pulse page already calls into
+ * - unlike Network's original stub, this one was already widened before
+ * today (SurveyHomeComponent/SurveyViewComponent/SurveyAddComponent/
+ * PulsePricingComponent/PulsePaidSuccessComponent all subscribe to
+ * `signalState$`, and SurveyAddComponent/SurveyViewComponent also subscribe
+ * to `engagementActionRequest$`). Those two stay exactly as they were in the
+ * no-op stub - always idle, never emits - since neither is rendered
+ * anywhere in the ported templates and wiring them to something real would
+ * mean pulling in the suite-wide engagement-decision engine this scoping
+ * decision keeps out. Everything else (pageContext$/transcriptIn$/unread$)
+ * is the same real bus pattern as web-products/network's
+ * NetworkAssistantSignalService.
  */
 @Injectable( { providedIn: 'root' } )
 export class PulseAssistantSignalService {
-  /** Always idle - no real assistant bus behind this app. */
+  /** Always idle - matches the stub this replaces; nothing renders it. */
   readonly signalState$: Observable<ToddSignalState> = of( 'idle' );
 
-  /** Never emits - nothing ever requests an engagement action here. */
+  /** Never emits - matches the stub this replaces; no engagement-decision engine here. */
   readonly engagementActionRequest$: Observable<ToddEngagementActionRequest> = new Observable();
 
-  emitAssistantActivity ( _event: Record<string, unknown> ): void { }
-  setPageContext ( _context: Record<string, unknown> | null ): void { }
-  clearPageContext (): void { }
-  pushTranscript ( _message: { role: string; content: string } ): void { }
-  markAssistantUnread (): void { }
-  setSignalReady (): void { }
+  private readonly pageContextSubject = new BehaviorSubject<PulseAssistantPageContext | null>( null );
+  private readonly transcriptInSubject = new Subject<PulseAssistantTranscriptMessage>();
+  private readonly activitySubject = new Subject<PulseAssistantActivityEvent>();
+  private readonly unreadSubject = new BehaviorSubject<boolean>( false );
+  private readonly readySubject = new BehaviorSubject<boolean>( false );
+
+  readonly pageContext$ = this.pageContextSubject.asObservable();
+  readonly transcriptIn$ = this.transcriptInSubject.asObservable();
+  readonly activity$ = this.activitySubject.asObservable();
+  readonly unread$ = this.unreadSubject.asObservable();
+  readonly ready$ = this.readySubject.asObservable();
+
+  get currentPageContext (): PulseAssistantPageContext | null {
+    return this.pageContextSubject.value;
+  }
+
+  emitAssistantActivity ( event: PulseAssistantActivityEvent ): void {
+    this.activitySubject.next( event );
+  }
+
+  setPageContext ( context: PulseAssistantPageContext ): void {
+    this.pageContextSubject.next( context );
+  }
+
+  clearPageContext (): void {
+    this.pageContextSubject.next( null );
+  }
+
+  pushTranscript ( message: PulseAssistantTranscriptMessage ): void {
+    this.transcriptInSubject.next( message );
+  }
+
+  markAssistantUnread (): void {
+    this.unreadSubject.next( true );
+  }
+
+  clearAssistantUnread (): void {
+    this.unreadSubject.next( false );
+  }
+
+  setSignalReady (): void {
+    this.readySubject.next( true );
+  }
 }

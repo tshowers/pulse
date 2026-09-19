@@ -1,5 +1,7 @@
-<div class="app-global-actions"><app-platform-menu [isAdmin]="(isAdmin$ | async) ?? false" /></div>
+<div class="app-global-actions" *ngIf="!isEmbedded"><app-platform-menu [isAdmin]="(isAdmin$ | async) ?? false" [isLoggedIn]="(isLoggedIn$ | async) ?? false" (signOut)="signOut()" /></div>
+<div *ngIf="updateNotice" class="pulse-update-notice" role="status" aria-live="polite"><span>{{ updateNotice }}</span><button *ngIf="chunkRecoveryNeedsManualRefresh" type="button" (click)="refreshAfterChunkError()">Refresh</button><button *ngIf="!chunkRecoveryNeedsManualRefresh" type="button" aria-label="Dismiss update notification" (click)="dismissUpdateNotice()">×</button></div>
 <app-command-palette />
 <router-outlet></router-outlet>
+<app-pulse-assistant-launcher *ngIf="!isEmbedded"></app-pulse-assistant-launcher>
 <app-toast></app-toast>
 <app-site-footer></app-site-footer>

@@ -1,4 +1,4 @@
-<div class="container-fluid tal-app" data-demo="survey-create-shell">
+<div class="container-fluid tal-app" data-demo="survey-create-shell" data-cy="pulse-create-shell">
     <app-primary-nav></app-primary-nav>
     <div class="row no-print m-2">
         <div class="col-12 col-xl-8">
@@ -78,7 +78,7 @@
                                 </div>
                                 <div class="col text-end">
                                     <div class="form-group">
-                                        <button type="submit" class="btn-todd" [disabled]="!surveyForm.get('title')?.valid || !surveyForm.get('description')?.valid || isLoading">
+                                        <button type="submit" data-cy="pulse-save-submit" class="btn-todd" [disabled]="!surveyForm.get('title')?.valid || !surveyForm.get('description')?.valid || isLoading">
                                             <span *ngIf="(editSurvey && editSurvey.id)">Update </span>
                                             <span *ngIf="!(editSurvey && editSurvey.id)">Create</span> Pulse</button>
                                     </div>

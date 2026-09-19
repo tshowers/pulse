@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { PulseAuthService } from '../../services/pulse-auth.service';
+import { firstValueFrom } from 'rxjs';
 
 /**
  * Sign-in for Pulse - redirects to TODD's hosted login
@@ -25,11 +26,16 @@ export class SignInComponent implements OnInit {
 
   constructor (
     private route: ActivatedRoute,
+    private router: Router,
     private authService: PulseAuthService,
   ) { }
 
-  ngOnInit (): void {
+  async ngOnInit (): Promise<void> {
     this.returnUrl = this.route.snapshot.queryParamMap.get( 'returnUrl' ) || '/app';
+    if ( await firstValueFrom( this.authService.getUser() ) ) {
+      await this.router.navigateByUrl( this.returnUrl );
+      return;
+    }
     // /login is a compatibility handoff route. Send visitors directly to
     // TODD's shared hosted login instead of making them click twice.
     this.signIn();
