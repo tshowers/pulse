@@ -8,10 +8,26 @@
         <p class="fl-hero__lead">Pulse is a survey and feedback tool: build a pulse for free, publish it to collect real responses, and watch a results dashboard tally the answers as they arrive - instead of a spreadsheet nobody opens again.</p>
         <div class="fl-hero__actions">
           <a class="fl-btn fl-btn--primary" routerLink="/app" (click)="onPrimaryCtaClick()">Open Pulse</a>
+          <button class="fl-app-store" type="button" disabled aria-label="Download Pulse on the App Store — coming soon">
+            <span class="fl-app-store__apple" aria-hidden="true">&#63743;</span>
+            <span class="fl-app-store__label"><small>Download on the</small><strong>App Store</strong></span>
+          </button>
         </div>
       </div>
       <div class="fl-hero__visual">
-        <img class="fl-hero__shot" src="assets/find/entities/pulse/logo.png" alt="Pulse">
+        <div class="fl-pulse-logo" role="img" aria-label="Pulse">
+          <svg class="fl-pulse-logo__svg" viewBox="0 0 304 298" aria-hidden="true" focusable="false">
+            <defs>
+              <linearGradient id="fl-pulse-logo-gradient" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#123d8b" />
+                <stop offset="1" stop-color="#061b4e" />
+              </linearGradient>
+            </defs>
+            <rect class="fl-pulse-logo__tile" x="5" y="5" width="294" height="278" rx="73" fill="url(#fl-pulse-logo-gradient)" />
+            <path class="fl-pulse-logo__wave fl-pulse-logo__wave--base" pathLength="1" d="M42 149 H80 L91 149 L101 121 L111 177 L124 97 L140 193 L153 64 L171 233 L188 101 L202 184 L214 122 L226 149 H262" />
+            <path class="fl-pulse-logo__wave fl-pulse-logo__wave--signal" pathLength="1" d="M42 149 H80 L91 149 L101 121 L111 177 L124 97 L140 193 L153 64 L171 233 L188 101 L202 184 L214 122 L226 149 H262" />
+          </svg>
+        </div>
       </div>
     </div>
   </section>

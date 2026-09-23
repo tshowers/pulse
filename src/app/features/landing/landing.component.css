@@ -173,10 +173,14 @@ h1 {
   background: var(--fl-dark);
   color: #fff;
   padding: 0 24px;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
   background-image: radial-gradient(ellipse 60% 55% at 70% 50%, rgba(0, 191, 255, 0.09) 0%, transparent 70%);
 }
 
 .fl-hero__inner {
+  width: 100%;
   max-width: 1140px;
   margin: 0 auto;
   padding: 80px 0 72px;
@@ -208,9 +212,31 @@ h1 {
 
 .fl-hero__actions {
   display: flex;
-  gap: 12px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 18px;
   flex-wrap: wrap;
 }
+
+.fl-app-store {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  gap: 9px;
+  padding: 8px 15px 8px 12px;
+  border: 1px solid rgba(255, 255, 255, .22);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, .04);
+  color: rgba(255, 255, 255, .5);
+  opacity: .58;
+  cursor: not-allowed;
+  text-align: left;
+}
+
+.fl-app-store__apple { font-family: Arial, sans-serif; font-size: 1.65rem; line-height: 1; }
+.fl-app-store__label { display: flex; flex-direction: column; line-height: 1.05; }
+.fl-app-store__label small { font-size: .58rem; font-weight: 600; }
+.fl-app-store__label strong { font-size: 1rem; font-weight: 700; }
 
 .fl-hero__visual {
   display: flex;
@@ -218,12 +244,31 @@ h1 {
   justify-content: center;
 }
 
-.fl-hero__shot {
+.fl-pulse-logo {
   display: block;
   width: 100%;
   max-width: 340px;
-  height: auto;
+  aspect-ratio: 304 / 298;
+  border-radius: 24%;
+  overflow: hidden;
   filter: drop-shadow(0 32px 72px rgba(0, 0, 0, 0.5)) drop-shadow(0 0 40px rgba(0, 191, 255, 0.10));
+}
+
+.fl-pulse-logo__svg { display: block; width: 100%; height: 100%; }
+.fl-pulse-logo__tile { stroke: #020b22; stroke-width: 4; }
+.fl-pulse-logo__wave { fill: none; stroke: #a7e5ff; stroke-width: 8; stroke-linecap: round; stroke-linejoin: round; }
+.fl-pulse-logo__wave--base { opacity: .2; }
+.fl-pulse-logo__wave--signal { opacity: 0; stroke-dasharray: 1; stroke-dashoffset: 1; animation: fl-pulse-wave-run 3.6s ease-in-out infinite; filter: drop-shadow(0 0 5px rgba(167, 229, 255, .7)); }
+@keyframes fl-pulse-wave-run {
+  0%, 8% { opacity: 0; stroke-dashoffset: 1; }
+  16% { opacity: 1; }
+  62%, 78% { opacity: 1; stroke-dashoffset: 0; }
+  100% { opacity: 0; stroke-dashoffset: -1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fl-pulse-logo__wave--base { opacity: 1; }
+  .fl-pulse-logo__wave--signal { opacity: 1; stroke-dashoffset: 0; animation: none; filter: none; }
 }
 
 /* Pain */
