@@ -76,7 +76,6 @@ export class PulseHomeComponent implements OnInit, OnDestroy, AfterViewInit {
     { label: 'Home', icon: 'house', routerLink: '/' },
     { label: 'Create Pulse', icon: 'square-poll-vertical', routerLink: '/survey-edit' },
     { label: 'Pulse List', icon: 'list-check', routerLink: '/survey-list' },
-    { label: 'Pricing', icon: 'tag', routerLink: '/pricing' },
   ];
 
   readonly entitlements$ = inject( PulseEntitlementService ).getEntitlements();
@@ -184,15 +183,6 @@ export class PulseHomeComponent implements OnInit, OnDestroy, AfterViewInit {
         kind: 'route',
         route: '/survey-list',
         order: 20,
-        group: 'context'
-      },
-      {
-        id: 'survey-cockpit-pricing',
-        label: 'Pricing',
-        icon: 'fa-solid fa-tags',
-        kind: 'route',
-        route: '/pricing',
-        order: 30,
         group: 'context'
       },
     ];

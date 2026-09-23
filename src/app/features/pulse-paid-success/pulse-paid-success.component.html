@@ -10,7 +10,6 @@
         <p> You can now publish surveys and start collecting responses inside Pulse. </p>
         <div class="pulse-success-actions">
             <button type="button" class="btn btn-dark" (click)="goToPulse()">Go to Pulse</button>
-            <a class="btn btn-outline-dark" routerLink="/pricing">View pricing</a>
         </div>
     </section>
     <section class="pulse-success-card card shadow-sm border-0 pulse-success-error-card" *ngIf="!isConfirming && !isSuccess">
@@ -18,7 +17,6 @@
         <h1>We could not confirm your subscription</h1>
         <p>{{ errorMessage }}</p>
         <div class="pulse-success-actions">
-            <a class="btn btn-primary" routerLink="/pricing">Back to Pulse pricing</a>
             <button type="button" class="btn btn-outline-primary" (click)="goToPulse()">Go to Pulse</button>
         </div>
     </section>

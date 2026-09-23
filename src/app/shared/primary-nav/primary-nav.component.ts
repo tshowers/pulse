@@ -26,6 +26,5 @@ export class PrimaryNavComponent {
     { id: 'home', label: 'Home', icon: 'house', routerLink: '/app' },
     { id: 'create', label: 'Create Pulse', icon: 'square-poll-vertical', routerLink: '/survey-edit' },
     { id: 'list', label: 'Pulse List', icon: 'list-check', routerLink: '/survey-list' },
-    { id: 'pricing', label: 'Pricing', icon: 'tag', routerLink: '/pricing' },
   ];
 }

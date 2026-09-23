@@ -41,7 +41,6 @@ export class PlatformMenuComponent implements OnChanges {
     { label: 'Pulse Home', route: '/app' },
     { label: 'Current Pulse', route: '/survey-list' },
     { label: 'Create a Pulse', route: '/survey-edit' },
-    { label: 'Pricing', route: '/pricing' },
     { label: 'iOS App', route: '/ios' },
   ];
 
@@ -58,7 +57,7 @@ export class PlatformMenuComponent implements OnChanges {
 
   private recompute (): void {
     this.appRoutes = [...this.baseAppRoutes, this.isLoggedIn ? { label: 'Sign Out', route: '/', signOut: true } : { label: 'Sign In', route: '/login' }];
-    this.accountItems = getPlatformMenuItems().filter( ( item ) => !item.adminOnly || this.isAdmin );
+    this.accountItems = getPlatformMenuItems().filter( ( item ) => item.label !== 'Billing' && ( !item.adminOnly || this.isAdmin ) );
   }
 
   trackByLabel ( _index: number, item: { label: string } ): string {

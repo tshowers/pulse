@@ -112,8 +112,6 @@
         </div>
         <div class="fl-cta__actions">
           <a class="fl-btn fl-btn--primary fl-btn--lg" routerLink="/app" (click)="onPrimaryCtaClick()">Open Pulse</a>
-          <a *ngIf="!(isLoggedIn$ | async)" class="fl-btn fl-btn--outline fl-btn--lg" routerLink="/login">Sign in</a>
-          <a class="fl-btn fl-btn--outline fl-btn--lg" routerLink="/pricing" (click)="onPricingCtaClick()">See Pricing</a>
         </div>
       </div>
     </div>
