@@ -73,7 +73,13 @@ describe( 'Pulse lifecycle - Create, Read, Update, Publish, Delete', () => {
     cy.get( 'input[placeholder="Enter your question"]' ).type( 'Would you recommend us to a friend?' );
     cy.get( '[data-cy="pulse-save-submit"]' ).should( 'not.be.disabled' ).click();
 
-    cy.wait( '@createSurvey' ).its( 'request.body' ).then( ( body ) => {
+    // Generous timeout: PulseTenantInterceptor now resolves
+    // PulseAuthService.getTenantId() (a users/{uid} Firestore read) before
+    // this request goes out at all, and on a freshly-started emulator
+    // that first connection can take longer than Cypress's 5s default -
+    // this is the first Firestore call of the session now, not the Read
+    // step below.
+    cy.wait( '@createSurvey', { timeout: 20000 } ).its( 'request.body' ).then( ( body ) => {
       expect( body.title ).to.eq( 'Customer Satisfaction Q3' );
       expect( body.description ).to.eq( 'How are we doing this quarter?' );
       expect( body.questions ).to.have.length( 1 );
