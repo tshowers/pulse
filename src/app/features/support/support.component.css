@@ -1,0 +1,31 @@
+:host { display:block; --dark:#141a1e; --mid:#1c2228; --blue:#00bfff; --text:#0d1820; --sub:#536878; }
+.support-page { min-height:100%; background:#f2f7fb; color:var(--text); }
+.support-hero { padding:0 24px; color:#fff; background:var(--dark); background-image:radial-gradient(ellipse 60% 55% at 70% 50%,rgba(0,191,255,.09),transparent 70%); }
+.support-hero__inner,.support-section__inner { max-width:1140px; margin:0 auto; }
+.support-hero__inner { padding:80px 0 72px; }
+.support-eyebrow { display:inline-block; margin-bottom:14px; color:var(--blue); text-transform:uppercase; letter-spacing:.14em; font-size:.75rem; font-weight:800; }
+.support-eyebrow a { color:inherit; }
+h1,h2,h3 { font-weight:900; letter-spacing:-.025em; }
+h1 { margin:0 0 24px; color:#fff; font-size:clamp(2.4rem,5vw,3.8rem); line-height:1.04; }
+h2 { margin:0 0 16px; font-size:clamp(1.8rem,3vw,2.4rem); line-height:1.1; }
+.support-hero__lead { max-width:54ch; margin:0; color:rgba(255,255,255,.68); font-size:1.1rem; line-height:1.75; }
+.support-contact { background:#fff; }
+.support-contact__card { display:flex; flex-direction:column; align-items:flex-start; gap:14px; padding:40px; border:1px solid rgba(13,24,32,.08); border-radius:20px; background:#f8fbfd; }
+.support-contact__email { font-size:1.6rem; font-weight:800; color:var(--text); text-decoration:none; }
+.support-contact__email:hover { color:var(--blue); }
+.support-contact__details { display:flex; flex-wrap:wrap; gap:8px 24px; color:var(--sub); font-size:.95rem; }
+.support-faq { background:#f2f7fb; }
+.support-section__inner { padding:56px 24px; }
+.support-section__heading { max-width:680px; margin-bottom:36px; }
+.support-faq__list { display:grid; gap:28px; }
+.support-faq__list h3 { margin:0 0 8px; font-size:1.15rem; line-height:1.3; }
+.support-faq__list p { margin:0; color:var(--sub); font-size:1rem; line-height:1.7; }
+.support-cta { color:#fff; background:var(--mid); }
+.support-cta__shell { display:flex; align-items:center; justify-content:space-between; gap:40px; }
+.support-cta h2 { color:#fff; }
+.support-cta p { max-width:62ch; margin:0; color:rgba(255,255,255,.62); line-height:1.7; }
+.support-cta__actions { display:flex; flex-wrap:wrap; gap:12px; }
+.support-btn { display:inline-flex; padding:14px 28px; border-radius:999px; font-weight:700; text-decoration:none; white-space:nowrap; }
+.support-btn--primary { color:#06101a; background:var(--blue); }
+.support-btn--ghost { color:rgba(255,255,255,.68); }
+@media (max-width:760px) { .support-cta__shell { display:block; } .support-cta__actions { margin-top:24px; } }

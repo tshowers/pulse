@@ -1,0 +1,43 @@
+<div class="support-page">
+  <section class="support-hero">
+    <div class="support-hero__inner">
+      <div class="support-eyebrow"><a href="https://todd.taliferro.tech">Home</a> &middot; <a routerLink="/">Pulse</a> &middot; Support</div>
+      <h1>We're here to help</h1>
+      <p class="support-hero__lead">Questions about your surveys, your account, or the Pulse app? Reach out and we'll get back to you.</p>
+    </div>
+  </section>
+
+  <section class="support-contact">
+    <div class="support-section__inner">
+      <div class="support-contact__card">
+        <span class="support-eyebrow">Contact Pulse Support</span>
+        <a class="support-contact__email" href="mailto:support@taliferro.tech">support&#64;taliferro.tech</a>
+        <div class="support-contact__details">
+          <span><b>Phone:</b> 401.646.2662</span>
+          <span><b>Office:</b> 1424 11th Ave STE 400, Seattle, WA 98122</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="support-faq">
+    <div class="support-section__inner">
+      <div class="support-section__heading">
+        <div class="support-eyebrow">Common questions</div>
+        <h2>Frequently asked</h2>
+      </div>
+      <div class="support-faq__list">
+        <article *ngFor="let f of faqs"><h3>{{ f.question }}</h3><p>{{ f.answer }}</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="support-cta">
+    <div class="support-section__inner">
+      <div class="support-cta__shell">
+        <div><h2>Still need help?</h2><p>Email us and we'll get back to you as soon as we can.</p></div>
+        <div class="support-cta__actions"><a class="support-btn support-btn--primary" href="mailto:support@taliferro.tech">Email Support</a><a class="support-btn support-btn--ghost" routerLink="/">Back to Pulse</a></div>
+      </div>
+    </div>
+  </section>
+</div>

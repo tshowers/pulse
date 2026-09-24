@@ -1,0 +1,149 @@
+<main class="pulse-help" data-cy="help-shell">
+  <header class="help-hero">
+    <div class="help-hero__eyebrow">Pulse Help</div>
+    <div class="help-hero__content">
+      <div>
+        <p class="help-hero__context">Questions · Responses · Signal · Action</p>
+        <h1>Every response is a signal.</h1>
+        <p class="help-hero__lead">Pulse is a quick way to ask the people you serve a few focused questions and turn their answers into your next decision. Build a short survey, share one link, read the results, and repeat. Over time, Pulse Home shows whether you are really listening.</p>
+        <p class="help-hero__note"><i class="fa-solid fa-tag" aria-hidden="true"></i> Building Pulses is free. Publishing and collecting responses requires a <a routerLink="/pricing">Pulse plan</a>.</p>
+      </div>
+      <img src="assets/seo/pulse-icon.png" alt="Pulse" class="help-hero__logo" />
+    </div>
+    <nav class="help-quick-links" aria-label="Pulse help topics">
+      <button type="button" (click)="jumpTo('help-who-title')">Who it’s for</button>
+      <button type="button" (click)="jumpTo('help-start-title')">Walkthrough</button>
+      <button type="button" (click)="jumpTo('help-home-title')">Pulse Home explained</button>
+      <button type="button" (click)="jumpTo('help-tips-title')">Getting the most out of it</button>
+      <button type="button" (click)="jumpTo('help-faq-title')">FAQ</button>
+    </nav>
+  </header>
+
+  <section class="help-section" aria-labelledby="help-who-title">
+    <div class="help-section__heading">
+      <p class="help-section-kicker">Who Pulse is for</p>
+      <h2 id="help-who-title">Anyone who makes decisions about people they serve</h2>
+      <p>If you have customers, users, or a team and you usually decide by guessing, Pulse replaces the guess with a quick answer from the people it affects.</p>
+    </div>
+    <div class="help-card-grid">
+      <article class="help-card" *ngFor="let audience of audiences">
+        <h3>{{ audience.title }}</h3>
+        <p>{{ audience.copy }}</p>
+      </article>
+    </div>
+
+    <div class="help-example" aria-label="Example of Pulse in use">
+      <p class="help-section-kicker">What that looks like</p>
+      <div class="help-example__grid">
+        <div><strong>Before</strong><p>A bakery owner thinks lunch sales are slow because of prices and plans a discount.</p></div>
+        <div><strong>The Pulse</strong><p>Three questions on the receipt link: “What brings you in?”, “What would make you come at lunch?”, and one open comment.</p></div>
+        <div><strong>After</strong><p>Most answers say lunch is too slow for a work break, not too pricey. They add a grab-and-go shelf instead of cutting prices.</p></div>
+      </div>
+      <p class="help-example__caption">An illustrative example. The point: one short Pulse can change which problem you solve.</p>
+    </div>
+  </section>
+
+  <section class="help-todd-callout" aria-labelledby="help-todd-title">
+    <div class="help-todd-callout__icon"><i class="fa-solid fa-message" aria-hidden="true"></i></div>
+    <div>
+      <p class="help-section-kicker">Meet TODD</p>
+      <h2 id="help-todd-title">TODD is your assistant inside Pulse.</h2>
+      <p><strong>On Pulse Home</strong>, TODD reads your Pulses and responses, flags where your feedback loop is stuck, and shows what it is tracking for you.</p>
+      <p><strong>On any page</strong>, move your mouse to the bottom-right corner and click <strong>Talk to TODD</strong>. Ask about the Pulse you are building, the page you are on, or what to do next. TODD can see which page you are on, so you don’t have to explain.</p>
+      <p class="help-todd-callout__tip"><i class="fa-solid fa-lightbulb" aria-hidden="true"></i> On a phone or tablet, tap the bottom-right area to show the button.</p>
+    </div>
+  </section>
+
+  <section class="help-section" aria-labelledby="help-start-title">
+    <div class="help-section__heading">
+      <p class="help-section-kicker">A practical walkthrough</p>
+      <h2 id="help-start-title">From a question to a decision</h2>
+      <p>Follow these steps the first time. After that, it’s a loop: create, share, read, change, repeat.</p>
+    </div>
+
+    <div class="help-steps">
+      <article class="help-step" *ngFor="let step of steps">
+        <div class="help-step__number">{{ step.number }}</div>
+        <div class="help-step__body">
+          <h3>{{ step.title }}</h3>
+          <p class="help-step__copy">{{ step.copy }}</p>
+          <ul>
+            <li *ngFor="let detail of step.details">{{ detail }}</li>
+          </ul>
+          <a *ngIf="step.route" class="help-try-link" [routerLink]="step.route">{{ step.action }} <span aria-hidden="true">→</span></a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="help-section" aria-labelledby="help-home-title">
+    <div class="help-section__heading">
+      <p class="help-section-kicker">Reading the dashboard</p>
+      <h2 id="help-home-title">How Pulse Home works</h2>
+      <p>Pulse Home doesn’t score your customers. It scores how well you are listening to them. The <strong>Customer Health</strong> percentage is the average of four meters.</p>
+    </div>
+    <div class="help-card-grid help-card-grid--four">
+      <article class="help-card" *ngFor="let meter of meters">
+        <h3>{{ meter.title }}</h3>
+        <p>{{ meter.copy }}</p>
+      </article>
+    </div>
+    <p class="help-section__lead">Below the meters, the <strong>Care Cycle</strong> board lists each problem with your feedback loop in four columns:</p>
+    <div class="help-card-grid help-card-grid--four">
+      <article class="help-card" *ngFor="let column of careCycle">
+        <h3>{{ column.title }}</h3>
+        <p>{{ column.copy }}</p>
+      </article>
+    </div>
+    <p class="help-section__lead"><strong>To raise your score:</strong> publish the drafts you mean to use, delete the rest, share each live Pulse until it gets responses, and keep at least one Pulse collecting feedback at all times.</p>
+  </section>
+
+  <section class="help-section" aria-labelledby="help-tips-title">
+    <div class="help-section__heading">
+      <p class="help-section-kicker">Getting the most out of Pulse</p>
+      <h2 id="help-tips-title">Run it as a habit, not a one-off</h2>
+      <p>The people who get the most from Pulse ask small questions often. Each Pulse answers one decision, and the next Pulse checks whether the change worked.</p>
+    </div>
+    <ol class="help-loop" aria-label="The Pulse loop">
+      <li><strong>Decide</strong><span>Pick one decision you are unsure about.</span></li>
+      <li><strong>Ask</strong><span>Write a 3–5 question Pulse and publish it.</span></li>
+      <li><strong>Share</strong><span>Send the link to one specific group.</span></li>
+      <li><strong>Read</strong><span>Review results within a few days.</span></li>
+      <li><strong>Act</strong><span>Make one change and tell people you did.</span></li>
+    </ol>
+    <div class="help-card-grid">
+      <article class="help-card" *ngFor="let tip of tips">
+        <h3>{{ tip.title }}</h3>
+        <p>{{ tip.copy }}</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="help-section" aria-labelledby="help-faq-title">
+    <div class="help-section__heading">
+      <p class="help-section-kicker">Common questions</p>
+      <h2 id="help-faq-title">Before you publish</h2>
+    </div>
+    <div class="help-faq">
+      <article *ngFor="let faq of faqs">
+        <h3>{{ faq.question }}</h3>
+        <p>{{ faq.answer }}</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="help-section help-section--compact" aria-labelledby="help-account-title">
+    <div class="help-section__heading">
+      <p class="help-section-kicker">Other places to go</p>
+      <h2 id="help-account-title">Explore Pulse at your own pace</h2>
+    </div>
+    <div class="help-destination-grid">
+      <a class="help-destination" routerLink="/login"><span><strong>Sign in</strong><small>Save your Pulses and see real responses.</small></span><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+      <a class="help-destination" routerLink="/pricing"><span><strong>Pricing</strong><small>See the plan for publishing and collecting responses.</small></span><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+      <a class="help-destination" routerLink="/ios"><span><strong>Pulse for iOS</strong><small>Check your Pulses from your phone.</small></span><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+      <a class="help-destination" routerLink="/support"><span><strong>Support</strong><small>Email or call us about your account or surveys.</small></span><i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+    </div>
+  </section>
+
+  <footer class="help-footer"><a routerLink="/">← Back to Pulse</a><span>Need help right now? Move to the bottom-right corner and Talk to TODD.</span></footer>
+</main>

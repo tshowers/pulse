@@ -16,6 +16,11 @@ export const routes: Routes = [
       import( './features/app-showcase/app-showcase.component' ).then( ( m ) => m.AppShowcaseComponent ),
   },
   {
+    path: 'help',
+    loadComponent: () =>
+      import( './features/help/help.component' ).then( ( m ) => m.HelpComponent ),
+  },
+  {
     path: 'take/:id',
     loadComponent: () =>
       import( './features/take-survey/take-survey.component' ).then( ( m ) => m.TakeSurveyComponent ),
@@ -64,6 +69,11 @@ export const routes: Routes = [
     path: 'auth/callback',
     loadComponent: () =>
       import( './features/auth-callback/auth-callback.component' ).then( ( m ) => m.AuthCallbackComponent ),
+  },
+  {
+    path: 'support',
+    loadComponent: () =>
+      import( './features/support/support.component' ).then( ( m ) => m.SupportComponent ),
   },
   {
     path: 'mobile-handoff',

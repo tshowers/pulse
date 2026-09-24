@@ -42,6 +42,8 @@ export class PlatformMenuComponent implements OnChanges {
     { label: 'Current Pulse', route: '/survey-list' },
     { label: 'Create a Pulse', route: '/survey-edit' },
     { label: 'iOS App', route: '/ios' },
+    { label: 'Support', route: '/support' },
+    { label: 'Help', route: '/help' },
   ];
 
   appRoutes: AppRouteLink[] = [];
@@ -57,7 +59,11 @@ export class PlatformMenuComponent implements OnChanges {
 
   private recompute (): void {
     this.appRoutes = [...this.baseAppRoutes, this.isLoggedIn ? { label: 'Sign Out', route: '/', signOut: true } : { label: 'Sign In', route: '/login' }];
-    this.accountItems = getPlatformMenuItems().filter( ( item ) => item.label !== 'Billing' && ( !item.adminOnly || this.isAdmin ) );
+    // Pulse owns its own in-product help page. Hide the shared TODD-level
+    // Help item so Pulse users stay on pulse.taliferro.tech/help.
+    this.accountItems = getPlatformMenuItems().filter( ( item ) =>
+      item.label !== 'Billing' && item.label !== 'Help' && ( !item.adminOnly || this.isAdmin )
+    );
   }
 
   trackByLabel ( _index: number, item: { label: string } ): string {
@@ -76,6 +82,7 @@ export class PlatformMenuComponent implements OnChanges {
     { label: 'SayIt', url: 'https://sayit.taliferro.tech', icon: 'assets/find/entities/sayit/logo-bw-icon.png', description: 'Make your message worth sharing.' },
     { label: 'Find', url: 'https://find.taliferro.tech', icon: 'assets/find/entities/find/logo-bw-icon.png', description: 'Get to the answer faster.' },
     { label: 'Email Signature', url: 'https://signature.taliferro.tech', icon: 'assets/find/entities/email-signature-builder/logo-bw-icon.png', description: 'Make every email carry your brand.' },
+    { label: 'Image Creator', url: 'https://images.taliferro.tech', icon: 'assets/find/entities/image-creator/logo-bw-icon.svg', description: 'Turn an idea into an image.' },
     { label: 'Music', url: 'https://music.taliferro.com', icon: 'assets/find/entities/music/logo-bw-icon.png', description: 'Let the soundtrack keep moving.' },
   ];
 
