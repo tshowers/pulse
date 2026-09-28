@@ -393,3 +393,5 @@ form>.container {
   }
 
 }
+
+.pulse-save-hint { margin: 0 0 10px; color: var(--todd-subtext); font-size: .9rem; font-weight: 600; }

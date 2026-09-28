@@ -73,12 +73,16 @@
                         </div>
                         <div class="container">
                             <div class="row">
+                                <p class="pulse-save-hint col-12" *ngIf="saveBlockers.length" role="status" data-cy="pulse-save-hint">
+                                    To save, add {{ saveBlockers.join(', ') }}.</p>
+                                <p class="pulse-save-hint col-12" *ngIf="!saveBlockers.length && editSurvey?.id && !surveyForm.dirty" role="status">
+                                    No changes to save.</p>
                                 <div class="col">
                                     <button type="button" data-cy="pulse-add-question" (click)="addQuestion()" class="btn-todd" [disabled]="isLoading">Add Question</button>
                                 </div>
                                 <div class="col text-end">
                                     <div class="form-group">
-                                        <button type="submit" data-cy="pulse-save-submit" class="btn-todd" [disabled]="!surveyForm.get('title')?.valid || !surveyForm.get('description')?.valid || isLoading">
+                                        <button type="submit" data-cy="pulse-save-submit" class="btn-todd" [disabled]="!canSave">
                                             <span *ngIf="(editSurvey && editSurvey.id)">Update </span>
                                             <span *ngIf="!(editSurvey && editSurvey.id)">Create</span> Pulse</button>
                                     </div>

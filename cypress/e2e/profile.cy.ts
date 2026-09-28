@@ -1,0 +1,132 @@
+/**
+ * In-app profile page (/profile) - replaces the menu's old link out to
+ * TODD's /update-profile. The profile API (GET/PATCH /api/profile,
+ * DELETE /api/account) is stubbed; sign-in uses the Firebase emulators.
+ */
+describe( 'Profile page', () => {
+  const profile = {
+    email: 'april@example.com',
+    firstName: 'April',
+    lastName: 'Showers',
+    profession: 'Owner',
+    companyName: 'Showers Co',
+    companyDescription: '',
+    jobDescriptionForTODD: 'Help me follow up faster.',
+    valueProp: '',
+    companyGoal: '',
+    timezone: 'America/Los_Angeles',
+    phone: '',
+  };
+
+  const signIn = ( path: string ) => cy.visitWithFirebaseEmulators( path, {
+    email: `pulse-profile-${Date.now()}@example.com`,
+    password: 'CypressTest123!',
+  } );
+
+  beforeEach( () => {
+    cy.intercept( 'GET', '**/account/summary*', { statusCode: 200, body: { success: true, data: { tenant: { surveyPaidAccess: true } } } } );
+    cy.intercept( 'GET', '**/api/surveys*', { statusCode: 200, body: { surveys: [] } } );
+    cy.intercept( 'GET', '**/api/profile', { statusCode: 200, body: { success: true, profile } } ).as( 'loadProfile' );
+  } );
+
+  it( 'loads the profile and saves edits made with one-tap choices', () => {
+    cy.intercept( 'PATCH', '**/api/profile', ( req ) => {
+      req.reply( { statusCode: 200, body: { success: true, profile: { ...profile, ...req.body.profile } } } );
+    } ).as( 'saveProfile' );
+
+    signIn( '/profile' );
+    // First emulator sign-in on a cold server can be slow.
+    cy.wait( '@loadProfile', { timeout: 20000 } ).its( 'request.headers.authorization' ).should( 'match', /^Bearer / );
+
+    // Read mode first: labeled values, no inputs or chips.
+    cy.get( '[data-cy="profile-read"]' ).should( 'contain.text', 'April Showers' ).and( 'contain.text', 'Owner' );
+    cy.get( '[data-cy="profile-form"]' ).should( 'not.exist' );
+    cy.get( '[data-cy="profile-role"]' ).should( 'not.exist' );
+
+    cy.get( '[data-cy="profile-edit"]' ).click();
+    cy.get( '[data-cy="profile-first-name"]' ).should( 'have.value', 'April' );
+    cy.contains( '[data-cy="profile-role"]', 'Owner' ).should( 'have.class', 'is-selected' );
+    cy.get( '[data-cy="profile-save"]' ).should( 'be.disabled' );
+
+    cy.contains( '[data-cy="profile-role"]', 'Sales' ).click();
+    cy.contains( '[data-cy="profile-choice-valueProp"]', 'Personal service' ).click();
+    cy.get( '[data-cy="profile-text-valueProp"]' ).should( 'have.value', 'Every client gets responsive, personal service from people who know their business.' );
+    cy.contains( '[data-cy="profile-choice-companyDescription"]', 'Software' ).click();
+    cy.get( '[data-cy="profile-text-companyDescription"]' ).should( 'have.value', 'Showers Co builds software that helps businesses work faster and get more done.' );
+
+    cy.get( '[data-cy="profile-save"]' ).should( 'not.be.disabled' ).click();
+    cy.wait( '@saveProfile' ).then( ( { request } ) => {
+      expect( request.body.profile ).to.include( {
+        profession: 'Sales',
+        valueProp: 'Every client gets responsive, personal service from people who know their business.',
+        firstName: 'April',
+      } );
+      expect( request.body.profile ).not.to.have.property( 'email' );
+    } );
+    // Saving returns to read mode showing the new values.
+    cy.get( '[data-cy="profile-form"]' ).should( 'not.exist' );
+    cy.get( '[data-cy="profile-read"]' ).should( 'contain.text', 'Sales' );
+    cy.contains( '[data-cy="profile-edit"]', 'Saved' );
+  } );
+
+  it( 'lets a custom role be typed under Other, and Cancel discards edits', () => {
+    signIn( '/profile' );
+    cy.wait( '@loadProfile' );
+    cy.get( '[data-cy="profile-edit"]' ).click();
+    cy.get( '[data-cy="profile-role-other"]' ).click();
+    cy.get( 'input[name="profession"]' ).should( 'have.value', '' ).type( 'Broker' );
+    cy.get( '[data-cy="profile-save"]' ).should( 'not.be.disabled' );
+
+    cy.get( '[data-cy="profile-cancel"]' ).click();
+    cy.get( '[data-cy="profile-read"]' ).should( 'contain.text', 'Owner' ).and( 'not.contain.text', 'Broker' );
+  } );
+
+  it( 'deletes the account only after confirming, then signs out', () => {
+    cy.intercept( 'DELETE', '**/api/account', { statusCode: 200, body: { success: true, deletedWorkspace: true } } ).as( 'deleteAccount' );
+
+    signIn( '/profile' );
+    cy.wait( '@loadProfile' );
+    cy.get( '[data-cy="profile-delete"]' ).click();
+    cy.get( '[data-cy="profile-delete-confirm"]' ).should( 'be.visible' );
+    cy.contains( 'button', 'Cancel' ).click();
+    cy.get( '[data-cy="profile-delete-confirm"]' ).should( 'not.exist' );
+
+    cy.get( '[data-cy="profile-delete"]' ).click();
+    cy.get( '[data-cy="profile-delete-yes"]' ).click();
+    cy.wait( '@deleteAccount' );
+    cy.location( 'pathname' ).should( 'eq', '/' );
+  } );
+
+  it( 'shows Getting Started progress on the Help page', () => {
+    cy.intercept( 'GET', '**/api/getting-started/pulse', {
+      statusCode: 200,
+      body: { success: true, data: {
+        completedSteps: 1, totalSteps: 4, allDone: false,
+        steps: [
+          { id: 'profile', title: 'Complete your profile', detail: '75% complete', done: false },
+          { id: 'createSurvey', title: 'Create a survey', detail: '1 survey created.', done: true },
+          { id: 'shareSurvey', title: 'Publish and share it', detail: 'Publish a survey to get a link you can send.', done: false },
+          { id: 'firstResponse', title: 'Get your first response', detail: 'Send your link.', done: false },
+        ],
+      } },
+    } );
+    signIn( '/help' );
+    cy.get( '[data-cy="help-progress"]', { timeout: 10000 } ).should( 'contain.text', '1 of 4 done' );
+    cy.get( '[data-cy="help-progress-step"]' ).should( 'have.length', 4 );
+    cy.contains( '[data-cy="help-progress-step"]', 'Create a survey' ).should( 'have.class', 'is-done' );
+  } );
+
+  it( 'links Profile in the menu to the in-app page, not TODD', () => {
+    signIn( '/app' );
+    cy.get( '.platform-menu-trigger, [aria-label*="menu" i]' ).first().click( { force: true } );
+    cy.get( '[data-cy="platform-menu-profile"]' ).should( 'have.attr', 'href', '/profile' );
+    cy.get( 'a[href*="todd.taliferro.tech/update-profile"]' ).should( 'not.exist' );
+  } );
+
+  it( 'asks signed-out visitors to sign in', () => {
+    cy.visit( '/profile' );
+    cy.get( '[data-cy="profile-signed-out"]' ).should( 'be.visible' );
+    cy.get( '[data-cy="profile-sign-in"]' ).click();
+    cy.location( 'href', { timeout: 10000 } ).should( 'include', 'todd.taliferro.tech/login' );
+  } );
+} );

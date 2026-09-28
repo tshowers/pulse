@@ -61,6 +61,21 @@ export const routes: Routes = [
       import( './features/pulse-home/pulse-home.component' ).then( ( m ) => m.PulseHomeComponent ),
   },
   {
+    // Pre-sign-in wizard: build a first survey, then name + company, then
+    // sign in (web twin of pulse-ios's PreAuthSurveyBuilderView). /login
+    // stays a direct handoff for returning users and deep links.
+    path: 'get-started',
+    loadComponent: () =>
+      import( './features/get-started/get-started.component' ).then( ( m ) => m.GetStartedComponent ),
+  },
+  {
+    // In-app profile (shared fields/API with the iOS apps' TODDProfileKit),
+    // replacing the menu's link out to TODD's /update-profile.
+    path: 'profile',
+    loadComponent: () =>
+      import( './features/profile/profile.component' ).then( ( m ) => m.ProfileComponent ),
+  },
+  {
     path: 'login',
     loadComponent: () =>
       import( './features/sign-in/sign-in.component' ).then( ( m ) => m.SignInComponent ),

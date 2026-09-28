@@ -564,6 +564,27 @@ export class SurveyAddComponent implements OnInit, OnDestroy {
   }
 
   // Getter to make it easier to access the questions FormArray in the template
+  /** What the backend requires before a save (surveys.validator.js):
+   * title, description, at least one question, each with text. Listed so
+   * the form says what's missing instead of silently failing. */
+  get saveBlockers (): string[] {
+    const missing: string[] = [];
+    if ( !String( this.surveyForm?.get( 'title' )?.value || '' ).trim() ) missing.push( 'a title' );
+    if ( !String( this.surveyForm?.get( 'description' )?.value || '' ).trim() ) missing.push( 'a description' );
+    if ( this.questions.length === 0 ) {
+      missing.push( 'at least one question' );
+    } else if ( this.questions.controls.some( ( q ) => !String( q.get( 'questionText' )?.value || '' ).trim() ) ) {
+      missing.push( 'text for every question' );
+    }
+    return missing;
+  }
+
+  /** New Pulses save once complete; existing ones only after a change. */
+  get canSave (): boolean {
+    const isExisting = !!this.editSurvey?.id;
+    return this.saveBlockers.length === 0 && ( !isExisting || this.surveyForm.dirty ) && !this.isLoading;
+  }
+
   get questions () {
     return this.surveyForm.get( 'questions' ) as FormArray;
   }

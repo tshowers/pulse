@@ -2,6 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PulseAuthService } from '../../services/pulse-auth.service';
+import { PulseSignupDraftService } from '../../services/pulse-signup-draft.service';
+import { GettingStartedService } from '../../services/getting-started.service';
 
 /**
  * Lands here after TODD's hosted login (todd.taliferro.tech/login) hands
@@ -24,6 +26,8 @@ export class AuthCallbackComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private authService: PulseAuthService,
+    private signupDraft: PulseSignupDraftService,
+    private gettingStarted: GettingStartedService,
   ) { }
 
   async ngOnInit (): Promise<void> {
@@ -38,7 +42,24 @@ export class AuthCallbackComponent implements OnInit {
 
     try {
       await this.authService.signInWithCustomToken( token );
-      await this.router.navigateByUrl( pending.returnUrl || '/app' );
+
+      // Came through /get-started: save name/company to the profile and
+      // create the survey they built, then open it - carrying the "already
+      // built it" momentum through the sign-in wall.
+      const createdSurveyId = await this.signupDraft.submitIfPending();
+      if ( createdSurveyId ) {
+        await this.router.navigate( ['/survey', createdSurveyId] );
+        return;
+      }
+
+      const returnUrl = pending.returnUrl || '/app';
+      // Heading to the default landing (not a deep link) and steps remain:
+      // show the Getting Started checklist first, once per session.
+      if ( ( returnUrl === '/app' || returnUrl === '/' ) && await this.gettingStarted.shouldShowAfterSignIn() ) {
+        await this.router.navigate( ['/help'], { fragment: 'your-progress' } );
+        return;
+      }
+      await this.router.navigateByUrl( returnUrl );
     } catch ( error: any ) {
       this.errorMessage = error?.message || 'Sign-in failed. Please try again.';
     }

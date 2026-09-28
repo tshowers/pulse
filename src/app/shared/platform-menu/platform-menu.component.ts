@@ -58,11 +58,13 @@ export class PlatformMenuComponent implements OnChanges {
   }
 
   private recompute (): void {
-    this.appRoutes = [...this.baseAppRoutes, this.isLoggedIn ? { label: 'Sign Out', route: '/', signOut: true } : { label: 'Sign In', route: '/login' }];
+    this.appRoutes = [...this.baseAppRoutes, this.isLoggedIn ? { label: 'Sign Out', route: '/', signOut: true } : { label: 'Sign In', route: '/get-started' }];
     // Pulse owns its own in-product help page. Hide the shared TODD-level
     // Help item so Pulse users stay on pulse.taliferro.tech/help.
+    // Profile is in-app (/profile), shown as its own routerLink in the
+    // template - not TODD's page.
     this.accountItems = getPlatformMenuItems().filter( ( item ) =>
-      item.label !== 'Billing' && item.label !== 'Help' && ( !item.adminOnly || this.isAdmin )
+      item.id !== 'platform-profile' && item.label !== 'Billing' && item.label !== 'Help' && ( !item.adminOnly || this.isAdmin )
     );
   }
 
