@@ -1,6 +1,6 @@
 {
   "name": "pulse",
-  "version": "2026.9.28-build.2",
+  "version": "2026.9.29-build.2",
   "scripts": {
     "ng": "ng",
     "generate-version": "node scripts/generate-version.js",
@@ -15,7 +15,7 @@
     "cy:run": "cypress run",
     "typecheck:cypress": "tsc -p tsconfig.cypress.json --noEmit --pretty false",
     "emulators:start": "firebase emulators:start --project taliferrotech --only auth,firestore",
-    "e2e:app": "start-server-and-test start http://localhost:4200 cy:run",
+    "e2e:app": "start-server-and-test \"npm run start -- --port 4300\" http://localhost:4300 \"npm run cy:run -- --config baseUrl=http://localhost:4300\"",
     "e2e": "firebase emulators:exec --project taliferrotech --only auth,firestore \"npm run e2e:app\""
   },
   "private": true,
