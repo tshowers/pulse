@@ -46,9 +46,13 @@ export const routes: Routes = [
       import( './features/survey-view/survey-view.component' ).then( ( m ) => m.SurveyViewComponent ),
   },
   {
+    // "Browse free, create with the app" (Ty, 2026-09-28) - shared wording
+    // in @taliferro/ui/platform/get-the-app.model.ts; replaces the old
+    // Stripe plan page.
     path: 'pricing',
+    data: { product: 'pulse' },
     loadComponent: () =>
-      import( './features/pulse-pricing/pulse-pricing.component' ).then( ( m ) => m.PulsePricingComponent ),
+      import( './features/get-the-app/get-the-app.component' ).then( ( m ) => m.GetTheAppComponent ),
   },
   {
     path: 'survey-edit',

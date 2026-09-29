@@ -15,7 +15,7 @@ import { PulsePaidSuccessComponent } from './features/pulse-paid-success/pulse-p
 import { SurveyListComponent } from './features/survey-list/survey-list.component';
 import { SurveyDashboardComponent } from './features/survey-dashboard/survey-dashboard.component';
 import { SurveyViewComponent } from './features/survey-view/survey-view.component';
-import { PulsePricingComponent } from './features/pulse-pricing/pulse-pricing.component';
+import { GetTheAppComponent } from './features/get-the-app/get-the-app.component';
 import { SurveyAddComponent } from './features/survey-add/survey-add.component';
 import { PulseHomeComponent } from './features/pulse-home/pulse-home.component';
 import { SignInComponent } from './features/sign-in/sign-in.component';
@@ -93,9 +93,13 @@ describe( 'app.routes', () => {
     expect( harness.routeDebugElement?.componentInstance ).toBeInstanceOf( SurveyViewComponent );
   } );
 
-  it( 'routes /pricing to PulsePricingComponent', async () => {
-    const harness = await RouterTestingHarness.create( '/pricing' );
-    expect( harness.routeDebugElement?.componentInstance ).toBeInstanceOf( PulsePricingComponent );
+  it( 'routes /pricing to GetTheAppComponent ("browse free, create with the app")', async () => {
+    // Checks the route without rendering it: Karma's webpack build doesn't
+    // load the symlinked @taliferro/ui model the page reads (the real
+    // build does - Cypress covers the rendered page).
+    const route = routes.find( ( candidate ) => candidate.path === 'pricing' );
+    expect( await route?.loadComponent?.() ).toBe( GetTheAppComponent );
+    expect( route?.data?.['product'] ).toBe( 'pulse' );
   } );
 
   it( 'routes /survey-edit to SurveyAddComponent (create/edit a Pulse)', async () => {
