@@ -9,6 +9,7 @@ import { connectFirestoreEmulator, getFirestore } from 'firebase/firestore';
 import { routes } from './app.routes';
 import { environment } from '../environments/environment';
 import { pulseTenantInterceptor } from './services/pulse-tenant.interceptor';
+import { idTokenInterceptor } from './core/interceptors/id-token.interceptor';
 
 initializeApp( environment.firebaseConfig );
 
@@ -51,7 +52,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-    provideHttpClient( withInterceptors( [pulseTenantInterceptor] ) ),
+    provideHttpClient( withInterceptors( [idTokenInterceptor, pulseTenantInterceptor] ) ),
     provideServiceWorker('ngsw-worker.js', {
       enabled: environment.production,
       registrationStrategy: 'registerWhenStable:30000',
