@@ -9,14 +9,13 @@ import { environment } from '../environments/environment';
 import { PulseAuthService } from './services/pulse-auth.service';
 import { ToastComponent } from './shared/toast/toast.component';
 import { SiteFooterComponent } from './shared/site-footer/site-footer.component';
-import { CommandPaletteComponent } from './shared/page/command-palette/command-palette.component';
 import { PlatformMenuComponent } from './shared/platform-menu/platform-menu.component';
 import { PulseAssistantLauncherComponent } from './shared/page/assistant-box/pulse-assistant-launcher.component';
 import packageJson from '../../package.json';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, ToastComponent, SiteFooterComponent, CommandPaletteComponent, PlatformMenuComponent, PulseAssistantLauncherComponent, AsyncPipe, NgIf],
+  imports: [RouterOutlet, ToastComponent, SiteFooterComponent, PlatformMenuComponent, PulseAssistantLauncherComponent, AsyncPipe, NgIf],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
@@ -33,6 +32,8 @@ export class AppComponent implements OnInit {
   chunkRecoveryNeedsManualRefresh = false;
   readonly isAdmin$ = this.authService.getUser().pipe( map( user => user?.uid === environment.taliferroTenantId ) );
   readonly isLoggedIn$ = this.authService.isLoggedIn();
+  readonly userName$ = this.authService.getUser().pipe( map( user => user?.displayName || '' ) );
+  readonly userEmail$ = this.authService.getUser().pipe( map( user => user?.email || '' ) );
   readonly isEmbedded = typeof window !== 'undefined'
     && new URLSearchParams( window.location.search ).get( 'embedded' ) === 'true';
 
