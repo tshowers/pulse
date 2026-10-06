@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+Disallow: /app
+Disallow: /survey-list
+Disallow: /survey-dashboard/
+Disallow: /survey-edit
+Disallow: /survey/
+Disallow: /take/
+Disallow: /success
+Disallow: /profile
+Disallow: /get-started
+Disallow: /login
+Disallow: /auth/
+
+Sitemap: https://pulse.taliferro.tech/sitemap.xml
