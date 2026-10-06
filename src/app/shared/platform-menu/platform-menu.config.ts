@@ -4,7 +4,6 @@ import { MenuAppConfig } from '@taliferro/ui/platform/universal-menu.model';
 export const PLATFORM_MENU_CONFIG: MenuAppConfig = {
   app: 'pulse',
   name: 'Pulse',
-  logo: 'assets/find/entities/pulse/logo.png',
   items: [
     { label: 'Home', icon: 'home', route: '/' },
     { label: 'Pulse Home', icon: 'grid', route: '/app' },

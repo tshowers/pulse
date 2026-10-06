@@ -23,6 +23,8 @@ import { ToddStatusTone, mapToddStatusTone } from '../../utils/todd-status-indic
 import { PulseEntitlementService } from '../../services/pulse-entitlement.service';
 import { PulseAssistantSignalService } from '../../services/pulse-assistant-signal.service';
 import { PrimaryNavComponent } from '../../shared/primary-nav/primary-nav.component';
+import { WriteActionDirective } from '../../shared/write-access/write-action.directive';
+import { BrowseNoticeComponent } from '../../shared/write-access/browse-notice.component';
 
 /**
  * Trimmed port of the monorepo's
@@ -44,7 +46,7 @@ import { PrimaryNavComponent } from '../../shared/primary-nav/primary-nav.compon
 @Component( {
   selector: 'app-survey-view',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, BackToTopComponent, PreloaderComponent, SectionJumpComponent, PrimaryNavComponent],
+  imports: [BrowseNoticeComponent, WriteActionDirective, CommonModule, ReactiveFormsModule, BackToTopComponent, PreloaderComponent, SectionJumpComponent, PrimaryNavComponent],
   templateUrl: './survey-view.component.html',
   styleUrl: './survey-view.component.css'
 } )

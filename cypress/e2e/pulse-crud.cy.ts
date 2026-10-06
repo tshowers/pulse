@@ -21,7 +21,9 @@ describe( 'Pulse lifecycle - Create, Read, Update, Publish, Delete', () => {
   const stubBackend = () => {
     cy.intercept( 'GET', '**/account/summary*', {
       statusCode: 200,
-      body: { success: true, data: { tenant: { surveyPaidAccess: true } } },
+      // writeAccess.pulse: WriteActionDirective (appWriteAction) blocks
+      // Publish / Move to Draft clicks without it.
+      body: { success: true, data: { tenant: { surveyPaidAccess: true }, writeAccess: { pulse: true } } },
     } ).as( 'accountSummary' );
 
     cy.intercept( 'POST', '**/api/surveys', ( req ) => {

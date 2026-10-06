@@ -1,6 +1,7 @@
 <app-preloader [isLoading]="isLoading"></app-preloader>
 <div class="container-fluid mt-3">
     <app-primary-nav *ngIf="internal"></app-primary-nav>
+    <app-browse-notice *ngIf="internal && survey" what="this survey"></app-browse-notice>
     <div *ngIf="surveyCompleted" class="thank-you">
         <h2>Thank you for completing the <strong>"{{ survey?.title }}"</strong> pulse!</h2>
         <p>We appreciate your time and feedback.</p>
@@ -28,12 +29,12 @@
                 </div>
                 <div class="pulse-command-actions" data-cy="pulse-command-actions">
                     <button type="button" class="btn-todd" data-cy="pulse-back-to-edit" (click)="backToEdit()">Back to Edit</button>
-                    <button type="button" class="btn-todd" data-cy="pulse-publish" (click)="publishSurvey()" [disabled]="survey.status === 'published'">{{ hasPaidSurveyAccess() ? 'Publish Pulse' : 'Pay to Publish Pulse' }}</button>
+                    <button type="button" class="btn-todd" data-cy="pulse-publish" appWriteAction="publish this survey" (click)="publishSurvey()" [disabled]="survey.status === 'published'">{{ hasPaidSurveyAccess() ? 'Publish Pulse' : 'Pay to Publish Pulse' }}</button>
                     <button type="button" class="btn-todd" data-cy="pulse-copy-share-link" (click)="copyToClipboard(getSurveyLink())">Copy Share Link</button>
                     <button type="button" class="btn-todd" data-cy="pulse-preview" (click)="previewPublicSurvey()">Preview Pulse</button>
                     <button *ngIf="survey.status === 'published'" type="button" class="btn-todd" data-cy="pulse-open-live" (click)="openLiveSurvey()">Open Live Survey</button>
                     <button type="button" class="btn-todd" data-cy="pulse-open-results" (click)="openResults()">Open Results Dashboard</button>
-                    <button *ngIf="survey.status === 'published'" type="button" class="btn-todd" data-cy="pulse-move-to-draft" (click)="unpublishSurvey()">Move Back to Draft</button>
+                    <button *ngIf="survey.status === 'published'" type="button" class="btn-todd" data-cy="pulse-move-to-draft" appWriteAction="change this survey" (click)="unpublishSurvey()">Move Back to Draft</button>
                 </div>
                 <p class="pulse-results-hint" *ngIf="internal && survey && !hasPaidSurveyAccess()">Pay to publish your survey. Creating and editing Pulse is free, but publishing requires a paid plan.</p>
             </section>
