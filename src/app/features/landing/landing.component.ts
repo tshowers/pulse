@@ -3,6 +3,7 @@ import { AfterViewInit, Component, HostListener, OnDestroy, OnInit } from '@angu
 import { RouterModule } from '@angular/router';
 import { LandingEngagementService } from '../../services/landing-engagement.service';
 import { PulseAuthService } from '../../services/pulse-auth.service';
+import { SiteFooterComponent } from '../../shared/site-footer/site-footer.component';
 
 /**
  * New landing page, built from scratch - there is no live Pulse landing
@@ -25,8 +26,9 @@ import { PulseAuthService } from '../../services/pulse-auth.service';
  */
 @Component( {
   selector: 'app-landing',
+  host: { class: 'tt-page' },
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [SiteFooterComponent, CommonModule, RouterModule],
   templateUrl: './landing.component.html',
   styleUrl: './landing.component.css'
 } )

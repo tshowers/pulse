@@ -8,7 +8,6 @@ import { SwUpdate, VersionReadyEvent } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { PulseAuthService } from './services/pulse-auth.service';
 import { ToastComponent } from './shared/toast/toast.component';
-import { SiteFooterComponent } from './shared/site-footer/site-footer.component';
 import { PlatformMenuComponent } from './shared/platform-menu/platform-menu.component';
 import { PulseAssistantLauncherComponent } from './shared/page/assistant-box/pulse-assistant-launcher.component';
 import packageJson from '../../package.json';
@@ -16,7 +15,7 @@ import { WriteAccessPromptComponent } from './shared/write-access/write-access-p
 
 @Component({
   selector: 'app-root',
-  imports: [WriteAccessPromptComponent, RouterOutlet, ToastComponent, SiteFooterComponent, PlatformMenuComponent, PulseAssistantLauncherComponent, AsyncPipe, NgIf],
+  imports: [WriteAccessPromptComponent, RouterOutlet, ToastComponent, PlatformMenuComponent, PulseAssistantLauncherComponent, AsyncPipe, NgIf],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

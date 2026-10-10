@@ -1,6 +1,6 @@
 /* ── Taliferro blue/charcoal palette + dark mode ────────────────────── */
 :host {
-  display: block;
+  
   --fl-dark: #141a1e;
   --fl-dark-mid: #1c2228;
   --fl-dark-soft: #242c34;
