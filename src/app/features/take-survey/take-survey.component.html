@@ -4,155 +4,65 @@
     <span class="ts-sender">
       <span class="ts-sender__name">{{ sender() }}</span>
       <span class="ts-sender__title">{{ survey()?.title }}@if (phase() === 'answer' && survey()) {<span class="ts-wide"> · {{ duration() }}</span>}</span>
-    </span>
-    @if (preview()) { <span class="ts-preview">Preview · answers aren't saved</span> }
-    @if (phase() === 'answer' || phase() === 'identity' || phase() === 'sending') {
-      <span class="ts-progress ts-progress--top ts-wide">
-        <span class="ts-progress__label">{{ step() }} of {{ total() }}</span>
-        <span class="ts-progress__track"><span [style.width.%]="progress()"></span></span>
-      </span>
-    }
+    </span> @if (preview()) { <span class="ts-preview">Preview · answers aren't saved</span> } @if (phase() === 'answer' || phase() === 'identity' || phase() === 'sending') { <span class="ts-progress ts-progress--top ts-wide">
+      <span class="ts-progress__label">{{ step() }} of {{ total() }}</span>
+      <span class="ts-progress__track"><span [style.width.%]="progress()"></span></span>
+    </span> }
   </header>
-
-  <main class="ts-stage">
-    @switch (phase()) {
-      @case ('loading') {
-        <span class="ts-spinner" aria-label="Loading"></span>
-      }
-
-      @case ('unavailable') {
-        <div class="ts-card ts-card--message">
-          <h1 class="ts-q">This link isn't working.</h1>
-          <p class="ts-lede">Ask the person who sent it for a fresh link.</p>
-        </div>
-      }
-
-      @case ('closed') {
-        <div class="ts-card ts-card--message">
-          <h1 class="ts-q">This pulse has closed.</h1>
-          <p class="ts-lede">{{ sender() }} isn't taking answers anymore. Thanks for stopping by.</p>
-        </div>
-      }
-
-      @case ('already') {
-        <div class="ts-done">
-          <div class="ts-card ts-card--done">
-            <span class="ts-check"><app-icon name="check" [size]="40" /></span>
-            <h1 class="ts-q">You've already answered this one.</h1>
-            <p class="ts-lede">Answers from this device are in. Thanks again.</p>
-          </div>
-        </div>
-      }
-
-      @case ('done') {
-        <div class="ts-done">
-          <div class="ts-card ts-card--done">
-            <span class="ts-check"><app-icon name="check" [size]="40" /></span>
-            <h1 class="ts-q">Thanks, that's everything.</h1>
-            <p class="ts-lede">
-              @if (preview()) { That's what people will see. Nothing was saved. }
-              @else { {{ sender() }} got your answers. You can close this page. }
-            </p>
-          </div>
-          @if (sent().length) {
-            <aside class="ts-card ts-sent ts-wide-block" aria-label="What you sent">
-              <span class="ts-sent__title">What you sent</span>
-              @for (item of sent(); track $index) {
-                <span class="ts-sent__q">{{ item.label }}</span>
-                <span class="ts-sent__a">{{ item.value }}</span>
-              }
-            </aside>
-          }
-        </div>
-        @if (!preview()) {
-          <div class="ts-own ts-phone-block">
-            <span class="ts-own__title">Want to run your own?</span>
-            <span class="ts-own__text">TODD Pulse writes the questions and tells you what the answers mean.</span>
-            <a class="p-btn p-btn--dark" routerLink="/">Try it free</a>
-          </div>
-        }
-      }
-
-      @default {
-        <!-- answer, identity, sending -->
-        <div class="ts-card ts-card--question">
-          <span class="ts-progress ts-phone-block">
-            <span class="ts-progress__track"><span [style.width.%]="progress()"></span></span>
-            <span class="ts-progress__label">{{ step() }} of {{ total() }}</span>
-          </span>
-
-          @if (phase() === 'identity' || (phase() === 'sending' && survey()?.collectIdentity)) {
-            <h1 class="ts-q" id="ts-q">Last thing: who's answering?</h1>
-            <p class="ts-lede">{{ sender() }} asked for your name and email so they can follow up.</p>
-            <div class="ts-answer ts-identity">
-              <label class="ts-field"><span>Name</span>
-                <input id="ts-name" class="ts-input" type="text" autocomplete="name" [value]="name()" (input)="name.set($any($event.target).value)" maxlength="120" />
-              </label>
-              <label class="ts-field"><span>Email</span>
-                <input class="ts-input" type="email" autocomplete="email" inputmode="email" [value]="email()" (input)="email.set($any($event.target).value)" maxlength="254" />
-              </label>
-            </div>
-          } @else if (question()) {
-            @let q = question()!;
-            <h1 class="ts-q" id="ts-q">{{ q.questionText }}</h1>
-            @if (q.helpText) { <p class="ts-lede">{{ q.helpText }}</p> }
-
-            <div class="ts-answer" role="group" aria-labelledby="ts-q">
-              @switch (kind()) {
-                @case ('rating') {
-                  <div class="ts-scale" role="radiogroup" aria-labelledby="ts-q">
-                    @for (n of scale; track n) {
-                      <button type="button" class="ts-score" role="radio" [class.is-on]="value() === n" [attr.aria-checked]="value() === n" (click)="set(n)">{{ n }}</button>
-                    }
-                  </div>
-                  <div class="ts-ends"><span>Not likely</span><span>Very likely</span></div>
-                }
-                @case ('short') {
-                  <input class="ts-input" [type]="inputType()" [value]="textValue()" (input)="set($any($event.target).value)"
-                    [attr.aria-labelledby]="'ts-q'" [placeholder]="q.placeholder || 'Type your answer'" maxlength="500" />
-                }
-                @case ('long') {
-                  <textarea class="ts-input ts-input--long" rows="4" [value]="textValue()" (input)="set($any($event.target).value)"
-                    [attr.aria-labelledby]="'ts-q'" [placeholder]="q.placeholder || 'Type your answer'" maxlength="4000"></textarea>
-                }
-                @default {
-                  <div class="ts-options" [attr.role]="kind() === 'checkbox' ? 'group' : 'radiogroup'" aria-labelledby="ts-q">
-                    @for (option of options(); track option; let i = $index) {
-                      <button type="button" class="ts-option" [class.is-on]="isChecked(option)" [attr.role]="kind() === 'checkbox' ? 'checkbox' : 'radio'"
-                        [attr.aria-checked]="isChecked(option)" (click)="pick(option)">
-                        <span class="ts-mark" [class.is-box]="kind() === 'checkbox'">@if (isChecked(option)) { @if (kind() === 'checkbox') { <app-icon name="check" [size]="14" /> } @else { <span class="ts-mark__dot"></span> } }</span>
-                        <span class="ts-option__label">{{ option }}</span>
-                      </button>
-                    }
-                  </div>
-                  @if (kind() === 'checkbox') { <span class="ts-hint">Pick as many as you like.</span> }
-                }
-              }
-            </div>
-          }
-
-          @if (error()) { <p class="ts-error" role="alert">{{ error() }}</p> }
-
-          <div class="ts-nav">
-            <button type="button" class="ts-back" (click)="back()" [disabled]="index() === 0 && phase() === 'answer'" aria-label="Back"><app-icon name="back" [size]="18" /></button>
-            <button type="button" class="p-btn p-btn--primary ts-next" (click)="next()"
-              [disabled]="phase() === 'sending' || (phase() === 'answer' && !canAdvance()) || (phase() === 'identity' && !identityValid())">
-              {{ phase() === 'sending' ? 'Sending…' : phase() === 'identity' || (isLast() && !survey()?.collectIdentity) ? 'Send' : 'Next' }}<app-icon name="right" [size]="18" />
-            </button>
-            <span class="ts-keys ts-wide">or press Enter.@if (kind() === 'rating' && phase() === 'answer') { Number keys pick a score.} @else if ((kind() === 'choice' || kind() === 'checkbox' || kind() === 'yes_no') && phase() === 'answer') { Number keys pick an option.}</span>
-          </div>
-        </div>
-      }
-    }
+  <main class="ts-stage"> @switch (phase()) { @case ('loading') { <span class="ts-spinner" aria-label="Loading"></span> } @case ('unavailable') { <div class="ts-card ts-card--message">
+      <h1 class="ts-q">This link isn't working</h1>
+      <p class="ts-lede">Ask the person who sent it for a fresh link.</p>
+    </div> } @case ('closed') { <div class="ts-card ts-card--message">
+      <h1 class="ts-q">This pulse has closed</h1>
+      <p class="ts-lede">{{ sender() }} isn't taking answers anymore. Thanks for stopping by.</p>
+    </div> } @case ('already') { <div class="ts-done">
+      <div class="ts-card ts-card--done">
+        <span class="ts-check"><app-icon name="check" [size]="40" /></span>
+        <h1 class="ts-q">You've already answered this one</h1>
+        <p class="ts-lede">Answers from this device are in. Thanks again.</p>
+      </div>
+    </div> } @case ('done') { <div class="ts-done">
+      <div class="ts-card ts-card--done">
+        <span class="ts-check"><app-icon name="check" [size]="40" /></span>
+        <h1 class="ts-q">Thanks, that's everything</h1>
+        <p class="ts-lede"> @if (preview()) { That's what people will see. Nothing was saved. } @else { {{ sender() }} got your answers. You can close this page. } </p>
+      </div> @if (sent().length) { <aside class="ts-card ts-sent ts-wide-block" aria-label="What you sent">
+        <span class="ts-sent__title">What you sent</span> @for (item of sent(); track $index) { <span class="ts-sent__q">{{ item.label }}</span>
+        <span class="ts-sent__a">{{ item.value }}</span> }
+      </aside> }
+    </div> @if (!preview()) { <div class="ts-own ts-phone-block">
+      <span class="ts-own__title">Want to run your own?</span>
+      <span class="ts-own__text">TODD Pulse writes the questions and tells you what the answers mean.</span>
+      <a class="p-btn p-btn--dark" routerLink="/">Try it free</a>
+    </div> } } @default { <!-- answer, identity, sending -->
+    <div class="ts-card ts-card--question">
+      <span class="ts-progress ts-phone-block">
+        <span class="ts-progress__track"><span [style.width.%]="progress()"></span></span>
+        <span class="ts-progress__label">{{ step() }} of {{ total() }}</span>
+      </span> @if (phase() === 'identity' || (phase() === 'sending' && survey()?.collectIdentity)) { <h1 class="ts-q" id="ts-q">Last thing: who's answering?</h1>
+      <p class="ts-lede">{{ sender() }} asked for your name and email so they can follow up.</p>
+      <div class="ts-answer ts-identity">
+        <label class="ts-field"><span>Name</span>
+          <input id="ts-name" class="ts-input" type="text" autocomplete="name" [value]="name()" (input)="name.set($any($event.target).value)" maxlength="120" />
+        </label>
+        <label class="ts-field"><span>Email</span>
+          <input class="ts-input" type="email" autocomplete="email" inputmode="email" [value]="email()" (input)="email.set($any($event.target).value)" maxlength="254" />
+        </label>
+      </div> } @else if (question()) { @let q = question()!; <h1 class="ts-q" id="ts-q">{{ q.questionText }}</h1> @if (q.helpText) { <p class="ts-lede">{{ q.helpText }}</p> } <div class="ts-answer" role="group" aria-labelledby="ts-q"> @switch (kind()) { @case ('rating') { <div class="ts-scale" role="radiogroup" aria-labelledby="ts-q"> @for (n of scale; track n) { <button type="button" class="ts-score" role="radio" [class.is-on]="value() === n" [attr.aria-checked]="value() === n" (click)="set(n)">{{ n }}</button> } </div>
+        <div class="ts-ends"><span>Not likely</span><span>Very likely</span></div> } @case ('short') { <input class="ts-input" [type]="inputType()" [value]="textValue()" (input)="set($any($event.target).value)" [attr.aria-labelledby]="'ts-q'" [placeholder]="q.placeholder || 'Type your answer'" maxlength="500" /> } @case ('long') { <textarea class="ts-input ts-input--long" rows="4" [value]="textValue()" (input)="set($any($event.target).value)" [attr.aria-labelledby]="'ts-q'" [placeholder]="q.placeholder || 'Type your answer'" maxlength="4000"></textarea> } @default { <div class="ts-options" [attr.role]="kind() === 'checkbox' ? 'group' : 'radiogroup'" aria-labelledby="ts-q"> @for (option of options(); track option; let i = $index) { <button type="button" class="ts-option" [class.is-on]="isChecked(option)" [attr.role]="kind() === 'checkbox' ? 'checkbox' : 'radio'" [attr.aria-checked]="isChecked(option)" (click)="pick(option)">
+            <span class="ts-mark" [class.is-box]="kind() === 'checkbox'">@if (isChecked(option)) { @if (kind() === 'checkbox') { <app-icon name="check" [size]="14" /> } @else { <span class="ts-mark__dot"></span> } }</span>
+            <span class="ts-option__label">{{ option }}</span>
+          </button> } </div> @if (kind() === 'checkbox') { <span class="ts-hint">Pick as many as you like.</span> } } }
+      </div> } @if (error()) { <p class="ts-error" role="alert">{{ error() }}</p> } <div class="ts-nav">
+        <button type="button" class="ts-back" (click)="back()" [disabled]="index() === 0 && phase() === 'answer'" aria-label="Back"><app-icon name="back" [size]="18" /></button>
+        <button type="button" class="p-btn p-btn--primary ts-next" (click)="next()" [disabled]="phase() === 'sending' || (phase() === 'answer' && !canAdvance()) || (phase() === 'identity' && !identityValid())">
+          {{ phase() === 'sending' ? 'Sending…' : phase() === 'identity' || (isLast() && !survey()?.collectIdentity) ? 'Send' : 'Next' }}<app-icon name="right" [size]="18" />
+        </button>
+        <span class="ts-keys ts-wide">or press Enter.@if (kind() === 'rating' && phase() === 'answer') { Number keys pick a score.} @else if ((kind() === 'choice' || kind() === 'checkbox' || kind() === 'yes_no') && phase() === 'answer') { Number keys pick an option.}</span>
+      </div>
+    </div> } }
   </main>
-
-  <footer class="ts-foot">
-    @if (phase() === 'done' || phase() === 'already') {
-      <span class="ts-wide">Want to ask your own questions? <a routerLink="/">Try TODD Pulse free</a></span>
-      <span class="ts-phone">Powered by TODD Pulse</span>
-    } @else {
-      <span>Your answers go to {{ sender() }}.@if (survey()?.collectIdentity && phase() === 'answer') {<span class="ts-wide"> They're asking for your name and email at the end.</span>}<span class="ts-phone"> Powered by TODD Pulse.</span></span>
-    }
-    <span class="ts-wide">Powered by TODD Pulse</span>
+  <footer class="ts-foot"> @if (phase() === 'done' || phase() === 'already') { <span class="ts-wide">Want to ask your own questions? <a routerLink="/">Try TODD Pulse free</a></span>
+    <span class="ts-phone">Powered by TODD Pulse</span> } @else { <span>Your answers go to {{ sender() }}.@if (survey()?.collectIdentity && phase() === 'answer') {<span class="ts-wide"> They're asking for your name and email at the end.</span>}<span class="ts-phone"> Powered by TODD Pulse.</span></span> } <span class="ts-wide">Powered by TODD Pulse</span>
   </footer>
 </div>

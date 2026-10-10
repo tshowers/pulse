@@ -4,33 +4,22 @@
       <h1>What do you want to find out?</h1>
       <p>Describe it in a sentence. TODD drafts 3 to 5 questions you can change before anyone sees them.</p>
     </div>
-
     <form class="p-todd np-prompt" (submit)="$event.preventDefault(); writeWithTodd()">
-      <img class="p-avatar" src="assets/avatar-todd-sm.png" alt="" width="36" height="36" />
+      <img class="p-avatar" src="assets/TODD-icon.png" alt="" width="36" height="36" />
       <label class="p-visually-hidden" for="np-prompt">What do you want to find out?</label>
-      <textarea id="np-prompt" class="np-prompt__input" rows="1" [value]="prompt()" (input)="prompt.set($any($event.target).value)"
-        (keydown)="onPromptKey($event)" maxlength="600" [disabled]="busy() === 'todd'"
-        placeholder="Whether our clients are happy and planning to renew next year"></textarea>
+      <textarea id="np-prompt" class="np-prompt__input" rows="1" [value]="prompt()" (input)="prompt.set($any($event.target).value)" (keydown)="onPromptKey($event)" maxlength="600" [disabled]="busy() === 'todd'" placeholder="Whether our clients are happy and planning to renew next year"></textarea>
       <button type="submit" class="p-btn p-btn--primary np-prompt__go" [disabled]="prompt().trim().length < 3 || busy() !== ''">
         <app-icon name="spark" [size]="18" />{{ busy() === 'todd' ? 'Writing…' : 'Write my questions' }}
       </button>
-    </form>
-    @if (error()) { <p class="np-error" role="alert">{{ error() }}</p> }
-
-    <div class="np-templates">
+    </form> @if (error()) { <p class="np-error" role="alert">{{ error() }}</p> } <div class="np-templates">
       <span class="np-label">Or start from a template</span>
-      <div class="np-grid">
-        @for (template of templates; track template.key) {
-          <button type="button" class="np-template p-tinted" [attr.data-tint]="template.tint" (click)="fromTemplate(template)" [disabled]="busy() !== ''">
-            <span class="np-template__icon"><app-icon [name]="template.icon" [size]="20" /></span>
-            <span class="np-template__name">{{ template.label }}</span>
-            <span class="np-template__blurb">{{ template.blurb }}</span>
-            <span class="np-template__n">{{ plural(template.questions.length, 'question') }}</span>
-          </button>
-        }
-      </div>
+      <div class="np-grid"> @for (template of templates; track template.key) { <button type="button" class="np-template p-tinted" [attr.data-tint]="template.tint" (click)="fromTemplate(template)" [disabled]="busy() !== ''">
+          <span class="np-template__icon"><app-icon [name]="template.icon" [size]="20" /></span>
+          <span class="np-template__name">{{ template.label }}</span>
+          <span class="np-template__blurb">{{ template.blurb }}</span>
+          <span class="np-template__n">{{ plural(template.questions.length, 'question') }}</span>
+        </button> } </div>
     </div>
-
     <button type="button" class="p-btn np-blank" (click)="blank()" [disabled]="busy() !== ''"><app-icon name="plus" />Start from blank</button>
   </div>
 </div>

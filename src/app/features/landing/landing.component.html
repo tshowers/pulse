@@ -2,8 +2,8 @@
   <section class="lp-hero">
     <div class="lp-hero__copy">
       <span class="p-tag lp-kicker" data-tint="blue">Surveys, read by TODD</span>
-      <h1 class="lp-h1">Every response is a signal.</h1>
-      <p class="lp-sub">TODD reads it so you do not have to.</p>
+      <h1 class="lp-h1">Every response is a signal</h1>
+      <p class="lp-sub">TODD reads it so you do not have to</p>
       <p class="lp-lead">Write a few questions, share one link, and watch answers arrive live. TODD reads every one, tells you what they mean, and suggests your next move.</p>
       <div class="lp-actions">
         <a class="p-btn p-btn--primary lp-btn" routerLink="/get-started" (click)="onPrimaryCtaClick()">Get started free</a>
@@ -11,10 +11,9 @@
       </div>
       <span class="lp-note">Free to write and try. Publishing is on the paid plan.</span>
     </div>
-
     <div class="lp-demo" aria-label="Example: what TODD gives you">
       <div class="p-todd lp-demo__todd">
-        <div class="lp-demo__source"><img class="p-avatar" src="assets/avatar-todd-sm.png" alt="" width="28" height="28" /><span>What TODD heard · 38 answers</span></div>
+        <div class="lp-demo__source"><img class="p-avatar" src="assets/TODD-icon.png" alt="" width="28" height="28" /><span>What TODD heard · 38 answers</span></div>
         <span class="lp-demo__headline">Clients like the work and most will renew. The ones who might leave are frustrated by slow replies.</span>
         <div class="lp-demo__move">
           <span class="p-eyebrow lp-demo__eyebrow">Your next move</span>
@@ -23,56 +22,40 @@
         </div>
       </div>
       <div class="lp-demo__q">
-        <span class="lp-demo__qtitle">Will you renew with us next year?</span>
-        @for (bar of sampleBars; track bar.label) {
-          <div class="lp-bar">
-            <div class="lp-bar__row"><span>{{ bar.label }}</span><b>{{ bar.value }}</b></div>
-            <span class="lp-bar__track"><span [style.width.%]="bar.pct" [style.background]="bar.color"></span></span>
-          </div>
-        }
+        <span class="lp-demo__qtitle">Will you renew with us next year?</span> @for (bar of sampleBars; track bar.label) { <div class="lp-bar">
+          <div class="lp-bar__row"><span>{{ bar.label }}</span><b>{{ bar.value }}</b></div>
+          <span class="lp-bar__track"><span [style.width.%]="bar.pct" [style.background]="bar.color"></span></span>
+        </div> }
       </div>
     </div>
   </section>
-
   <section class="lp-section">
     <h2 class="lp-h2">Three steps, every time</h2>
-    <div class="lp-steps">
-      @for (step of steps; track step.n) {
-        <div class="lp-step p-tinted" [attr.data-tint]="step.tint">
-          <span class="lp-step__n">{{ step.n }}</span>
-          <span class="lp-step__title">{{ step.title }}</span>
-          <span class="lp-step__copy">{{ step.copy }}</span>
-        </div>
-      }
-    </div>
+    <div class="lp-steps"> @for (step of steps; track step.n) { <div class="lp-step p-tinted" [attr.data-tint]="step.tint">
+        <span class="lp-step__n">{{ step.n }}</span>
+        <span class="lp-step__title">{{ step.title }}</span>
+        <span class="lp-step__copy">{{ step.copy }}</span>
+      </div> } </div>
   </section>
-
   <section class="lp-section">
     <div class="lp-section__head">
       <span class="p-eyebrow">The problem</span>
       <h2 class="lp-h2">You asked the question. Who is actually reading the answers?</h2>
     </div>
-    <div class="lp-pains">
-      @for (p of painPoints; track p.heading) {
-        <article class="p-card lp-pain"><h3>{{ p.heading }}</h3><p>{{ p.copy }}</p></article>
-      }
-    </div>
+    <div class="lp-pains"> @for (p of painPoints; track p.heading) { <article class="p-card lp-pain">
+        <h3>{{ p.heading }}</h3>
+        <p>{{ p.copy }}</p>
+      </article> } </div>
   </section>
-
   <section class="lp-section lp-faq">
     <h2 class="lp-h2">Questions worth asking</h2>
-    <div class="lp-faq__list">
-      @for (faq of faqs; track faq.question; let i = $index) {
-        <div class="lp-faq__item">
-          <button type="button" class="lp-faq__q" [attr.aria-expanded]="openFaq() === i" [attr.aria-controls]="'lp-faq-' + i" (click)="toggleFaq(i)">
-            <span>{{ faq.question }}</span><span class="lp-faq__sign" aria-hidden="true">{{ openFaq() === i ? '−' : '+' }}</span>
-          </button>
-          <p class="lp-faq__a" [id]="'lp-faq-' + i" [hidden]="openFaq() !== i">{{ faq.answer }}</p>
-        </div>
-      }
-    </div>
+    <div class="lp-faq__list"> @for (faq of faqs; track faq.question; let i = $index) { <div class="lp-faq__item">
+        <button type="button" class="lp-faq__q" [attr.aria-expanded]="openFaq() === i" [attr.aria-controls]="'lp-faq-' + i" (click)="toggleFaq(i)">
+          <span>{{ faq.question }}</span><span class="lp-faq__sign" aria-hidden="true">{{ openFaq() === i ? '−' : '+' }}</span>
+        </button>
+        <p class="lp-faq__a" [id]="'lp-faq-' + i" [hidden]="openFaq() !== i">{{ faq.answer }}</p>
+      </div> } </div>
   </section>
-
   <section class="lp-cta">
     <div class="lp-cta__copy">
       <h2>Ask your first question today.</h2>

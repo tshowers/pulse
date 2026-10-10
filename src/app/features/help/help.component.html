@@ -1,81 +1,46 @@
 <div class="hp">
   <nav class="hp-nav" aria-label="On this page">
-    <span class="p-eyebrow hp-nav__title">On this page</span>
-    @for (item of visibleNav(); track item.id) {
-      <a [href]="'#' + item.id" class="hp-nav__link" [class.is-on]="active() === item.id" (click)="$event.preventDefault(); jump(item.id)">{{ item.label }}</a>
-    }
+    <span class="p-eyebrow hp-nav__title">On this page</span> @for (item of visibleNav(); track item.id) { <a [href]="'#' + item.id" class="hp-nav__link" [class.is-on]="active() === item.id" (click)="$event.preventDefault(); jump(item.id)">{{ item.label }}</a> }
   </nav>
-
   <div class="hp-main">
     <div class="hp-head">
       <div class="hp-head__copy">
         <h1>Pulse help</h1>
         <p>Pulse asks the people you serve a few focused questions and turns their answers into your next decision. Writing pulses is free. Publishing and collecting answers is on the paid plan.</p>
       </div>
-      <button type="button" class="p-btn hp-ask" (click)="askTodd()"><img class="p-avatar" src="assets/avatar-todd-sm.png" alt="" width="26" height="26" />Ask TODD</button>
-    </div>
-
-    @if (signedIn()) {
-      <section id="your-progress" class="p-card hp-progress" aria-label="Getting started" data-cy="help-progress">
-        <div class="hp-progress__head">
-          <span class="hp-progress__title">Getting started</span>
-          @if (progress(); as p) { <span class="hp-progress__count">{{ p.completedSteps }} of {{ p.totalSteps }} done</span> }
+      <button type="button" class="p-btn hp-ask" (click)="askTodd()"><img class="p-avatar" src="assets/TODD-icon.png" alt="" width="26" height="26" />Ask TODD</button>
+    </div> @if (signedIn()) { <section id="your-progress" class="p-card hp-progress" aria-label="Getting started" data-cy="help-progress">
+      <div class="hp-progress__head">
+        <span class="hp-progress__title">Getting started</span> @if (progress(); as p) { <span class="hp-progress__count">{{ p.completedSteps }} of {{ p.totalSteps }} done</span> }
+      </div>
+      <span class="hp-progress__track"><span [style.width.%]="progressPct()"></span></span> @if (progress(); as p) { <div class="hp-progress__grid"> @for (step of p.steps; track step.id) { <div class="hp-progress__item" data-cy="help-progress-step" [class.is-done]="step.done">
+          <span class="p-check-dot" [class.is-off]="!step.done">@if (step.done) { <app-icon name="check" [size]="14" /> }</span>
+          <span class="hp-progress__text"><span [class.is-done]="step.done">{{ step.title }}</span><small>{{ step.detail }}</small></span> @if (gettingStarted.routeFor(step)) { <a class="hp-progress__link" [routerLink]="gettingStarted.routeFor(step)">{{ gettingStarted.actionFor(step) }}</a> }
+        </div> } </div>
+      <label class="hp-progress__pref"><input type="checkbox" [checked]="showAfterSignIn()" (change)="setShowAfterSignIn($any($event.target).checked)" /> Show this after I sign in until it's done</label> }
+    </section> } <section id="how-it-works" class="hp-section">
+      <h2>From a question to a decision</h2> @for (step of steps; track step.n) { <div class="hp-step">
+        <span class="hp-step__n p-tinted" [attr.data-tint]="step.tint">{{ step.n }}</span>
+        <div class="hp-step__body">
+          <h3>{{ step.title }}</h3>
+          <p class="hp-step__lead">{{ step.lead }}</p>
+          <ul>@for (d of step.details; track $index) { <li>{{ d }}</li> }</ul>
+          <a [routerLink]="signedIn() ? step.route : '/get-started'">{{ step.action }} →</a>
         </div>
-        <span class="hp-progress__track"><span [style.width.%]="progressPct()"></span></span>
-        @if (progress(); as p) {
-          <div class="hp-progress__grid">
-            @for (step of p.steps; track step.id) {
-              <div class="hp-progress__item" data-cy="help-progress-step" [class.is-done]="step.done">
-                <span class="p-check-dot" [class.is-off]="!step.done">@if (step.done) { <app-icon name="check" [size]="14" /> }</span>
-                <span class="hp-progress__text"><span [class.is-done]="step.done">{{ step.title }}</span><small>{{ step.detail }}</small></span>
-                @if (gettingStarted.routeFor(step)) { <a class="hp-progress__link" [routerLink]="gettingStarted.routeFor(step)">{{ gettingStarted.actionFor(step) }}</a> }
-              </div>
-            }
-          </div>
-          <label class="hp-progress__pref"><input type="checkbox" [checked]="showAfterSignIn()" (change)="setShowAfterSignIn($any($event.target).checked)" /> Show this after I sign in until it's done</label>
-        }
-      </section>
-    }
-
-    <section id="how-it-works" class="hp-section">
-      <h2>From a question to a decision</h2>
-      @for (step of steps; track step.n) {
-        <div class="hp-step">
-          <span class="hp-step__n p-tinted" [attr.data-tint]="step.tint">{{ step.n }}</span>
-          <div class="hp-step__body">
-            <h3>{{ step.title }}</h3>
-            <p class="hp-step__lead">{{ step.lead }}</p>
-            <ul>@for (d of step.details; track $index) { <li>{{ d }}</li> }</ul>
-            <a [routerLink]="signedIn() ? step.route : '/get-started'">{{ step.action }} →</a>
-          </div>
-        </div>
-      }
+      </div> }
     </section>
-
     <section id="tips" class="hp-section">
       <h2>Writing questions that get answers</h2>
-      <div class="hp-tips">
-        @for (tip of tips; track tip.title) {
-          <div class="hp-tip"><span class="hp-tip__title">{{ tip.title }}</span><span>{{ tip.copy }}</span></div>
-        }
-      </div>
+      <div class="hp-tips"> @for (tip of tips; track tip.title) { <div class="hp-tip"><span class="hp-tip__title">{{ tip.title }}</span><span>{{ tip.copy }}</span></div> } </div>
     </section>
-
     <section id="faq" class="hp-section">
       <h2>Common questions</h2>
-      <div class="hp-faq">
-        @for (faq of faqs; track faq.question; let i = $index) {
-          <div class="hp-faq__item">
-            <button type="button" class="hp-faq__q" [attr.aria-expanded]="openFaq() === i" [attr.aria-controls]="'hp-faq-' + i" (click)="toggleFaq(i)">
-              <span>{{ faq.question }}</span><span class="hp-faq__sign" aria-hidden="true">{{ openFaq() === i ? '−' : '+' }}</span>
-            </button>
-            <p class="hp-faq__a" [id]="'hp-faq-' + i" [hidden]="openFaq() !== i">{{ faq.answer }}</p>
-          </div>
-        }
-      </div>
+      <div class="hp-faq"> @for (faq of faqs; track faq.question; let i = $index) { <div class="hp-faq__item">
+          <button type="button" class="hp-faq__q" [attr.aria-expanded]="openFaq() === i" [attr.aria-controls]="'hp-faq-' + i" (click)="toggleFaq(i)">
+            <span>{{ faq.question }}</span><span class="hp-faq__sign" aria-hidden="true">{{ openFaq() === i ? '−' : '+' }}</span>
+          </button>
+          <p class="hp-faq__a" [id]="'hp-faq-' + i" [hidden]="openFaq() !== i">{{ faq.answer }}</p>
+        </div> } </div>
     </section>
   </div>
-</div>
-@if (!signedIn()) {
-  <app-site-footer><a routerLink="/">Home</a><a routerLink="/about">About</a><a routerLink="/pricing">Pricing</a></app-site-footer>
-}
+</div> @if (!signedIn()) { <app-site-footer><a routerLink="/">Home</a><a routerLink="/about">About</a><a routerLink="/pricing">Pricing</a></app-site-footer> }

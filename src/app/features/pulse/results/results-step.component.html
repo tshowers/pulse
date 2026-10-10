@@ -1,152 +1,58 @@
 <div class="p-page">
-  <app-pulse-bar [survey]="survey()" step="results" [subtitle]="subtitle()" [tone]="status() === 'live' ? 'live' : 'muted'" [dot]="status() === 'live'">
-    @if (status() === 'live') {
-      <button type="button" class="p-btn" (click)="copyLink()"><app-icon name="link" [size]="18" />Copy link</button>
-    }
-    <button type="button" class="p-btn" (click)="downloadCsv()" [disabled]="busy() === 'csv' || !(survey().responseCount)"><app-icon name="dl" />CSV</button>
-  </app-pulse-bar>
-
-  @if (loadFailed() && !results()) {
-    <div class="p-card r-failed">
-      <span>Results didn't load.</span>
-      <button type="button" class="p-btn p-btn--bg" (click)="retry()">Try again</button>
-    </div>
-  }
-
-  @if (results(); as results) {
-    <!-- TODD's summary -->
-    @if (hasSummary()) {
-      <section class="p-todd r-summary" aria-label="TODD's summary">
-        <div class="r-summary__main">
-          <div class="r-source">
-            <img class="p-avatar" src="assets/avatar-todd-sm.png" alt="" width="32" height="32" />
-            <span>{{ sourceLine() }}</span>
-            @if ((survey().responseCount || 0) > (insights()?.answerCount || 0) && insights()?.state !== 'pending') {
-              <button type="button" class="r-update" (click)="refreshSummary()" [disabled]="busy() === 'refresh'">{{ busy() === 'refresh' ? 'Updating…' : 'Update now' }}</button>
-            } @else if (insights()?.state === 'pending') {
-              <span class="r-updating">Updating…</span>
-            }
-          </div>
-          <p class="r-headline">{{ insights()?.summary }}</p>
-          <div class="r-findings">
-            @for (finding of insights()?.findings || []; track $index) {
-              <div class="r-finding"><span class="r-finding__n">{{ finding.n }}</span><span>{{ finding.text }}</span></div>
-            }
-          </div>
-        </div>
-
-        @if (insights()?.nextMove; as move) {
-          <div class="r-move">
-            <span class="p-eyebrow r-move__eyebrow">Your next move</span>
-            <span class="r-move__text">{{ move.text }}</span>
-            <span class="r-move__why">{{ move.why }}@if (can('draft_email')) { I can draft the email from their answers. You review it before anything is sent.}</span>
-            <div class="r-move__actions">
-              @if (can('draft_email')) {
-                <button type="button" class="p-btn p-btn--primary p-btn--block r-move__primary" (click)="draftEmail()" [disabled]="busy() !== ''">
-                  <app-icon name="mail" />{{ busy() === 'email' ? 'Drafting…' : 'Draft the email' }}
-                </button>
-              }
-              <div class="r-move__row">
-                @if (can('add_task')) {
-                  <button type="button" class="p-btn" (click)="addTask()" [disabled]="busy() !== '' || taskAdded() || !!move.taskId">
-                    {{ taskAdded() || move.taskId ? 'In your tasks' : busy() === 'task' ? 'Adding…' : 'Add to my tasks' }}
-                  </button>
-                }
-                <button type="button" class="p-btn" [class.p-btn--primary]="!can('draft_email')" (click)="anotherIdea()" [disabled]="busy() !== ''">
-                  {{ busy() === 'idea' ? 'Thinking…' : 'Another idea' }}
-                </button>
-              </div>
-            </div>
-          </div>
-        }
-      </section>
-    } @else {
-      <section class="p-todd r-waiting">
-        <img class="p-avatar" src="assets/avatar-todd-sm.png" alt="" width="40" height="40" />
-        @if ((survey().responseCount || 0) < (insights()?.minAnswers || 5)) {
-          <span>TODD will write a summary after {{ insights()?.minAnswers || 5 }} answers. {{ survey().responseCount || 0 }} so far.</span>
-        } @else if (insights()?.state === 'error') {
-          <span>TODD couldn't write the summary yet. It'll try again with the next answer.</span>
-          <button type="button" class="p-btn p-btn--bg p-btn--sm" (click)="refreshSummary()" [disabled]="busy() === 'refresh'">Try now</button>
-        } @else {
-          <span>TODD is reading the answers. The summary will appear here in a minute.</span>
-        }
-      </section>
-    }
-
-    <!-- Questions -->
-    <div class="r-grid">
-      @for (question of results.questions; track question.questionId) {
-        <section class="p-card r-q">
-          <div class="r-q__head">
-            <span class="r-q__title">{{ numberOf(question) }} · {{ question.questionText || 'Untitled question' }}</span>
-            <span class="r-q__meta">{{ metaFor(question) }}</span>
-          </div>
-
-          @switch (question.kind) {
-            @case ('rating') {
-              <div class="r-rating">
-                <span class="r-rating__avg"><span class="r-rating__n">{{ question.average === null || question.average === undefined ? '–' : question.average.toFixed(1) }}</span><span class="r-rating__label">average out of 10</span></span>
-                <div class="r-hist" role="img" [attr.aria-label]="'Scores from 0 to 10, averaging ' + (question.average ?? 'none')">
-                  @for (bar of histogram(question); track bar.n) {
-                    <span class="r-hist__col"><span class="r-hist__bar" [style.height.px]="bar.height" [style.background]="bar.color" [class.is-empty]="bar.empty"></span><span class="r-hist__n">{{ bar.n }}</span></span>
-                  }
-                </div>
-              </div>
-            }
-            @case ('choice') {
-              @for (bar of bars(question); track bar.label) {
-                <div class="r-bar">
-                  <div class="r-bar__row"><span class="r-bar__label">{{ bar.label }}</span><span class="r-bar__value">{{ bar.count }} · {{ bar.pct }}%</span></div>
-                  <span class="r-bar__track"><span [style.width.%]="bar.pct" [style.background]="bar.color"></span></span>
-                </div>
-              }
-            }
-            @case ('number') {
-              <span class="r-rating__avg"><span class="r-rating__n">{{ question.average ?? '–' }}</span><span class="r-rating__label">average</span></span>
-              <div class="r-tally">@for (row of tallyRows(question); track row.label) { <span>{{ row.label }} · {{ row.count }}</span> }</div>
-            }
-            @default {
-              @if (themes(question).length) {
-                <div class="r-themes">
-                  <span class="r-themes__label">TODD grouped them</span>
-                  @for (theme of themes(question); track theme.label) {
-                    <button type="button" class="p-tag r-theme" [attr.data-tint]="theme.tint" [class.is-on]="themeFilter()[question.questionId] === theme.label"
-                      [attr.aria-pressed]="themeFilter()[question.questionId] === theme.label" (click)="toggleTheme(question, theme.label)">{{ theme.label }} · {{ theme.count }}</button>
-                  }
-                </div>
-              }
-              @for (quote of quotes(question); track quote.responseId) {
-                <blockquote class="r-quote"><span>“{{ quote.text }}”</span><span class="r-quote__meta">{{ shortDate(quote.submittedAt) }}</span></blockquote>
-              } @empty {
-                <p class="r-none">No written answers yet.</p>
-              }
-              @if ((question.quotes?.length || 0) > 3 && !themeFilter()[question.questionId]) {
-                <button type="button" class="r-all" (click)="showAll(question)">{{ expanded()[question.questionId] ? 'Show fewer' : 'See all ' + question.responseCount + ' answers' }}</button>
-              }
-            }
-          }
-        </section>
-      }
-    </div>
-  } @else if (!loadFailed()) {
-    <div class="r-loading" aria-busy="true"><span class="r-spinner"></span></div>
-  }
-</div>
-
-@if (emailDraft(); as draft) {
-  <div class="r-modal" role="dialog" aria-modal="true" aria-labelledby="email-title" (click)="emailDraft.set(null)">
-    <div class="r-modal__card" (click)="$event.stopPropagation()">
-      <span class="p-eyebrow">Draft from TODD · to {{ draft.recipientCount }} {{ draft.recipientCount === 1 ? 'person' : 'people' }} in BCC</span>
-      <h2 id="email-title">{{ draft.subject }}</h2>
-      <pre class="r-modal__body">{{ draft.body }}</pre>
-      @if (draft.truncated) { <span class="r-modal__note">Only the first {{ draft.recipients.length }} addresses fit in one email.</span> }
-      <span class="r-modal__note">Nothing is sent until you send it from your email app.</span>
-      <div class="r-modal__actions">
-        <a class="p-btn p-btn--primary" [href]="draft.mailto"><app-icon name="mail" />Open in my email</a>
-        <button type="button" class="p-btn" (click)="copyEmail()"><app-icon name="copy" />Copy text</button>
-        <button type="button" class="p-btn p-btn--ghost" (click)="emailDraft.set(null)">Close</button>
+  <app-pulse-bar [survey]="survey()" step="results" [subtitle]="subtitle()" [tone]="status() === 'live' ? 'live' : 'muted'" [dot]="status() === 'live'"> @if (status() === 'live') { <button type="button" class="p-btn" (click)="copyLink()"><app-icon name="link" [size]="18" />Copy link</button> } <button type="button" class="p-btn" (click)="downloadCsv()" [disabled]="busy() === 'csv' || !(survey().responseCount)"><app-icon name="dl" />CSV</button>
+  </app-pulse-bar> @if (loadFailed() && !results()) { <div class="p-card r-failed">
+    <span>Results didn't load.</span>
+    <button type="button" class="p-btn p-btn--bg" (click)="retry()">Try again</button>
+  </div> } @if (results(); as results) { <!-- TODD's summary --> @if (hasSummary()) { <section class="p-todd r-summary" aria-label="TODD's summary">
+    <div class="r-summary__main">
+      <div class="r-source">
+        <img class="p-avatar" src="assets/TODD-icon.png" alt="" width="32" height="32" />
+        <span>{{ sourceLine() }}</span> @if ((survey().responseCount || 0) > (insights()?.answerCount || 0) && insights()?.state !== 'pending') { <button type="button" class="r-update" (click)="refreshSummary()" [disabled]="busy() === 'refresh'">{{ busy() === 'refresh' ? 'Updating…' : 'Update now' }}</button> } @else if (insights()?.state === 'pending') { <span class="r-updating">Updating…</span> }
       </div>
+      <p class="r-headline">{{ insights()?.summary }}</p>
+      <div class="r-findings"> @for (finding of insights()?.findings || []; track $index) { <div class="r-finding"><span class="r-finding__n">{{ finding.n }}</span><span>{{ finding.text }}</span></div> } </div>
+    </div> @if (insights()?.nextMove; as move) { <div class="r-move">
+      <span class="p-eyebrow r-move__eyebrow">Your next move</span>
+      <span class="r-move__text">{{ move.text }}</span>
+      <span class="r-move__why">{{ move.why }}@if (can('draft_email')) { I can draft the email from their answers. You review it before anything is sent.}</span>
+      <div class="r-move__actions"> @if (can('draft_email')) { <button type="button" class="p-btn p-btn--primary p-btn--block r-move__primary" (click)="draftEmail()" [disabled]="busy() !== ''">
+          <app-icon name="mail" />{{ busy() === 'email' ? 'Drafting…' : 'Draft the email' }}
+        </button> } <div class="r-move__row"> @if (can('add_task')) { <button type="button" class="p-btn" (click)="addTask()" [disabled]="busy() !== '' || taskAdded() || !!move.taskId">
+            {{ taskAdded() || move.taskId ? 'In your tasks' : busy() === 'task' ? 'Adding…' : 'Add to my tasks' }}
+          </button> } <button type="button" class="p-btn" [class.p-btn--primary]="!can('draft_email')" (click)="anotherIdea()" [disabled]="busy() !== ''">
+            {{ busy() === 'idea' ? 'Thinking…' : 'Another idea' }}
+          </button>
+        </div>
+      </div>
+    </div> }
+  </section> } @else { <section class="p-todd r-waiting">
+    <img class="p-avatar" src="assets/TODD-icon.png" alt="" width="40" height="40" /> @if ((survey().responseCount || 0) < (insights()?.minAnswers || 5)) { <span>TODD will write a summary after {{ insights()?.minAnswers || 5 }} answers. {{ survey().responseCount || 0 }} so far.</span> } @else if (insights()?.state === 'error') { <span>TODD couldn't write the summary yet. It'll try again with the next answer.</span>
+      <button type="button" class="p-btn p-btn--bg p-btn--sm" (click)="refreshSummary()" [disabled]="busy() === 'refresh'">Try now</button> } @else { <span>TODD is reading the answers. The summary will appear here in a minute.</span> }
+  </section> } <!-- Questions -->
+  <div class="r-grid"> @for (question of results.questions; track question.questionId) { <section class="p-card r-q">
+      <div class="r-q__head">
+        <span class="r-q__title">{{ numberOf(question) }} · {{ question.questionText || 'Untitled question' }}</span>
+        <span class="r-q__meta">{{ metaFor(question) }}</span>
+      </div> @switch (question.kind) { @case ('rating') { <div class="r-rating">
+        <span class="r-rating__avg"><span class="r-rating__n">{{ question.average === null || question.average === undefined ? '–' : question.average.toFixed(1) }}</span><span class="r-rating__label">average out of 10</span></span>
+        <div class="r-hist" role="img" [attr.aria-label]="'Scores from 0 to 10, averaging ' + (question.average ?? 'none')"> @for (bar of histogram(question); track bar.n) { <span class="r-hist__col"><span class="r-hist__bar" [style.height.px]="bar.height" [style.background]="bar.color" [class.is-empty]="bar.empty"></span><span class="r-hist__n">{{ bar.n }}</span></span> } </div>
+      </div> } @case ('choice') { @for (bar of bars(question); track bar.label) { <div class="r-bar">
+        <div class="r-bar__row"><span class="r-bar__label">{{ bar.label }}</span><span class="r-bar__value">{{ bar.count }} · {{ bar.pct }}%</span></div>
+        <span class="r-bar__track"><span [style.width.%]="bar.pct" [style.background]="bar.color"></span></span>
+      </div> } } @case ('number') { <span class="r-rating__avg"><span class="r-rating__n">{{ question.average ?? '–' }}</span><span class="r-rating__label">average</span></span>
+      <div class="r-tally">@for (row of tallyRows(question); track row.label) { <span>{{ row.label }} · {{ row.count }}</span> }</div> } @default { @if (themes(question).length) { <div class="r-themes">
+        <span class="r-themes__label">TODD grouped them</span> @for (theme of themes(question); track theme.label) { <button type="button" class="p-tag r-theme" [attr.data-tint]="theme.tint" [class.is-on]="themeFilter()[question.questionId] === theme.label" [attr.aria-pressed]="themeFilter()[question.questionId] === theme.label" (click)="toggleTheme(question, theme.label)">{{ theme.label }} · {{ theme.count }}</button> }
+      </div> } @for (quote of quotes(question); track quote.responseId) { <blockquote class="r-quote"><span>“{{ quote.text }}”</span><span class="r-quote__meta">{{ shortDate(quote.submittedAt) }}</span></blockquote> } @empty { <p class="r-none">No written answers yet.</p> } @if ((question.quotes?.length || 0) > 3 && !themeFilter()[question.questionId]) { <button type="button" class="r-all" (click)="showAll(question)">{{ expanded()[question.questionId] ? 'Show fewer' : 'See all ' + question.responseCount + ' answers' }}</button> } } }
+    </section> } </div> } @else if (!loadFailed()) { <div class="r-loading" aria-busy="true"><span class="r-spinner"></span></div> }
+</div> @if (emailDraft(); as draft) { <div class="r-modal" role="dialog" aria-modal="true" aria-labelledby="email-title" (click)="emailDraft.set(null)">
+  <div class="r-modal__card" (click)="$event.stopPropagation()">
+    <span class="p-eyebrow">Draft from TODD · to {{ draft.recipientCount }} {{ draft.recipientCount === 1 ? 'person' : 'people' }} in BCC</span>
+    <h2 id="email-title">{{ draft.subject }}</h2>
+    <pre class="r-modal__body">{{ draft.body }}</pre> @if (draft.truncated) { <span class="r-modal__note">Only the first {{ draft.recipients.length }} addresses fit in one email.</span> } <span class="r-modal__note">Nothing is sent until you send it from your email app.</span>
+    <div class="r-modal__actions">
+      <a class="p-btn p-btn--primary" [href]="draft.mailto"><app-icon name="mail" />Open in my email</a>
+      <button type="button" class="p-btn" (click)="copyEmail()"><app-icon name="copy" />Copy text</button>
+      <button type="button" class="p-btn p-btn--ghost" (click)="emailDraft.set(null)">Close</button>
     </div>
   </div>
-}
+</div> }

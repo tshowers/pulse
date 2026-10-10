@@ -1,146 +1,93 @@
-<div class="p-page">
-  @if (status() === 'live') {
-    <app-pulse-bar [survey]="survey()" step="share" subtitle="Live · taking answers" tone="live">
-      <a class="p-btn p-btn--dark" [routerLink]="['/survey', survey().id, 'results']">See results<app-icon name="right" /></a>
-    </app-pulse-bar>
-
-    <section class="s-live">
-      <h1 class="s-live__title">It's live. Send people this link.</h1>
-      <div class="s-link">
-        <span class="s-link__pill"><app-icon name="link" [size]="18" /><span class="s-link__text">{{ linkLabel() }}</span></span>
-        <button type="button" class="p-btn p-btn--primary s-link__copy" (click)="copyLink()"><app-icon name="copy" />Copy link</button>
-      </div>
-      <div class="s-ways">
-        <a class="p-btn p-btn--bg s-way" [href]="emailHref()"><app-icon name="mail" />Email</a>
-        <a class="p-btn p-btn--bg s-way" [href]="smsHref()"><app-icon name="msg" />Text message</a>
-        <button type="button" class="p-btn p-btn--bg s-way" (click)="showQr()"><app-icon name="qr" />QR code</button>
-        <button type="button" class="p-btn p-btn--bg s-way" (click)="tryIt()"><app-icon name="eye" />Try it yourself</button>
-      </div>
-    </section>
-
-    <div class="s-cards">
-      <div class="s-card">
-        <span class="s-card__label">Answers so far</span>
-        <span class="s-card__count">{{ count() }}</span>
-        <span class="s-card__note">Results update the moment someone answers.</span>
-      </div>
-      <div class="s-card s-card--todd">
-        <img class="p-avatar" src="assets/avatar-todd-sm.png" alt="" width="32" height="32" />
-        <span class="s-card__todd">
-          <span class="s-card__label s-card__label--todd">TODD</span>
-          @if (survey().insights?.summary) {
-            <span>{{ survey().insights?.summary }}</span>
-            <a [routerLink]="['/survey', survey().id, 'results']">Read the summary</a>
-          } @else if (count() >= 5) {
-            <span>I'm reading the answers now. Your summary and next move will be on Results in a minute.</span>
-          } @else {
-            <span>I'll write your summary and next move once 5 people have answered.</span>
-          }
-        </span>
-      </div>
-      <div class="s-card">
-        <span class="s-card__label">Settings</span>
-        <span class="s-card__setting">{{ settingsLine() }}</span>
-        <div class="s-card__actions">
-          <button type="button" class="p-btn p-btn--bg p-btn--sm" [disabled]="busy() !== ''" (click)="closeNow()">{{ busy() === 'close' ? 'Closing…' : 'Close now' }}</button>
-          <button type="button" class="p-btn p-btn--bg p-btn--sm" [disabled]="busy() !== ''" (click)="backToDraft()">{{ busy() === 'draft' ? 'Moving…' : 'Back to draft' }}</button>
-        </div>
+<div class="p-page"> @if (status() === 'live') { <app-pulse-bar [survey]="survey()" step="share" subtitle="Live · taking answers" tone="live">
+    <a class="p-btn p-btn--dark" [routerLink]="['/survey', survey().id, 'results']">See results<app-icon name="right" /></a>
+  </app-pulse-bar>
+  <section class="s-live">
+    <h1 class="s-live__title">It's live. Send people this link</h1>
+    <div class="s-link">
+      <span class="s-link__pill"><app-icon name="link" [size]="18" /><span class="s-link__text">{{ linkLabel() }}</span></span>
+      <button type="button" class="p-btn p-btn--primary s-link__copy" (click)="copyLink()"><app-icon name="copy" />Copy link</button>
+    </div>
+    <div class="s-ways">
+      <a class="p-btn p-btn--bg s-way" [href]="emailHref()"><app-icon name="mail" />Email</a>
+      <a class="p-btn p-btn--bg s-way" [href]="smsHref()"><app-icon name="msg" />Text message</a>
+      <button type="button" class="p-btn p-btn--bg s-way" (click)="showQr()"><app-icon name="qr" />QR code</button>
+      <button type="button" class="p-btn p-btn--bg s-way" (click)="tryIt()"><app-icon name="eye" />Try it yourself</button>
+    </div>
+  </section>
+  <div class="s-cards">
+    <div class="s-card">
+      <span class="s-card__label">Answers so far</span>
+      <span class="s-card__count">{{ count() }}</span>
+      <span class="s-card__note">Results update the moment someone answers.</span>
+    </div>
+    <div class="s-card s-card--todd">
+      <img class="p-avatar" src="assets/TODD-icon.png" alt="" width="32" height="32" />
+      <span class="s-card__todd">
+        <span class="s-card__label s-card__label--todd">TODD</span> @if (survey().insights?.summary) { <span>{{ survey().insights?.summary }}</span>
+        <a [routerLink]="['/survey', survey().id, 'results']">Read the summary</a> } @else if (count() >= 5) { <span>I'm reading the answers now. Your summary and next move will be on Results in a minute.</span> } @else { <span>I'll write your summary and next move once 5 people have answered.</span> } </span>
+    </div>
+    <div class="s-card">
+      <span class="s-card__label">Settings</span>
+      <span class="s-card__setting">{{ settingsLine() }}</span>
+      <div class="s-card__actions">
+        <button type="button" class="p-btn p-btn--bg p-btn--sm" [disabled]="busy() !== ''" (click)="closeNow()">{{ busy() === 'close' ? 'Closing…' : 'Close now' }}</button>
+        <button type="button" class="p-btn p-btn--bg p-btn--sm" [disabled]="busy() !== ''" (click)="backToDraft()">{{ busy() === 'draft' ? 'Moving…' : 'Back to draft' }}</button>
       </div>
     </div>
-  } @else {
-    <app-pulse-bar [survey]="survey()" step="share"
-      [subtitle]="status() === 'closed' ? 'Closed · ' + count() + (count() === 1 ? ' answer' : ' answers') : 'Draft · ' + survey().questions.length + (survey().questions.length === 1 ? ' question' : ' questions')">
-      @if (status() === 'closed') {
-        <a class="p-btn p-btn--dark" [routerLink]="['/survey', survey().id, 'results']">See results<app-icon name="right" /></a>
-      }
-    </app-pulse-bar>
-
-    <div class="s-grid">
-      <div class="s-main">
-        <div class="s-head">
-          <h1>{{ status() === 'closed' ? 'Reopen this pulse' : 'Ready to share' }}</h1>
-          <p>{{ status() === 'closed' ? 'Reopening uses the same link. Answers you already have are kept.' : 'Publishing gives you a link. Anyone who opens it can answer.' }}</p>
-        </div>
-
-        <div class="s-checks">
-          @for (check of checks(); track $index) {
-            <div class="s-check">
-              <span class="p-check-dot" [class.is-off]="!check.done">@if (check.done) { <app-icon name="check" [size]="14" /> }</span>
-              <span class="s-check__text">{{ check.text }}</span>
-              @if (check.route) {
-                <a class="s-check__link" [routerLink]="['/survey', survey().id, check.route]">{{ check.action }}</a>
-              } @else {
-                <button type="button" class="s-check__link" (click)="tryIt()">{{ check.action }}</button>
-              }
-            </div>
-          }
-        </div>
-
-        <div class="s-setting">
-          <span class="s-setting__label" id="close-label">Stop taking answers</span>
-          <div class="p-segmented" role="radiogroup" aria-labelledby="close-label">
-            <button type="button" role="radio" [class.is-on]="closeRule().type === 'manual'" [attr.aria-checked]="closeRule().type === 'manual'" (click)="setCloseType('manual')">When I close it</button>
-            <button type="button" role="radio" [class.is-on]="closeRule().type === 'date'" [attr.aria-checked]="closeRule().type === 'date'" (click)="setCloseType('date')"><app-icon name="cal" />On a date</button>
-            <button type="button" role="radio" [class.is-on]="closeRule().type === 'count'" [attr.aria-checked]="closeRule().type === 'count'" (click)="setCloseType('count')">After {{ closeRule().type === 'count' ? closeRule().value : 50 }} answers</button>
-          </div>
-          @if (closeRule().type === 'date') {
-            <label class="s-inline">Close at the end of
-              <input class="p-input s-inline__input" type="date" [min]="today" [value]="closeDateInput()" (change)="setCloseDate($any($event.target).value)" />
-            </label>
-          } @else if (closeRule().type === 'count') {
-            <label class="s-inline">Close after
-              <input class="p-input s-inline__input s-inline__input--n" type="number" min="1" max="100000" [value]="closeRule().value" (change)="setCloseCount($any($event.target).value)" />
-              answers
-            </label>
-          }
-        </div>
-
-        <div class="s-setting">
-          <span class="s-setting__label" id="names-label">Who sees the name of the person answering</span>
-          <div class="p-segmented" role="radiogroup" aria-labelledby="names-label">
-            <button type="button" role="radio" [class.is-on]="collectIdentity()" [attr.aria-checked]="collectIdentity()" (click)="setIdentity(true)">Ask for name and email</button>
-            <button type="button" role="radio" [class.is-on]="!collectIdentity()" [attr.aria-checked]="!collectIdentity()" (click)="setIdentity(false)">Anonymous</button>
-          </div>
-          <span class="s-setting__note">{{ collectIdentity() ? 'People add their name and email at the end, so TODD can help you follow up.' : "Answers come in without names. Pulse won't attach anyone's details." }}</span>
-        </div>
-
-        <div class="s-publish">
-          @if (access() === 'canWrite' || access() === 'loading') {
-            <button type="button" class="p-btn p-btn--primary p-btn--lg" [disabled]="blockers().length > 0 || publishing() || access() === 'loading'" (click)="publish()">
-              <app-icon name="send" />{{ publishing() ? 'Publishing…' : status() === 'closed' ? 'Reopen and keep my link' : 'Publish and get my link' }}
-            </button>
-          } @else {
-            <button type="button" class="p-btn p-btn--primary p-btn--lg" (click)="publish()">Choose a plan to publish</button>
-          }
-          <span class="s-publish__note">Publishing is part of your paid plan. Writing and editing pulses is always free.</span>
-        </div>
-        @if (publishError()) { <p class="s-error" role="alert">{{ publishError() }}</p> }
-        @if (blockers().length > 0) { <p class="s-error">Finish writing first: {{ blockers()[0] }}. <a [routerLink]="['/survey', survey().id, 'write']">Back to Write</a></p> }
+  </div> } @else { <app-pulse-bar [survey]="survey()" step="share" [subtitle]="status() === 'closed' ? 'Closed · ' + count() + (count() === 1 ? ' answer' : ' answers') : 'Draft · ' + survey().questions.length + (survey().questions.length === 1 ? ' question' : ' questions')"> @if (status() === 'closed') { <a class="p-btn p-btn--dark" [routerLink]="['/survey', survey().id, 'results']">See results<app-icon name="right" /></a> } </app-pulse-bar>
+  <div class="s-grid">
+    <div class="s-main">
+      <div class="s-head">
+        <h1>{{ status() === 'closed' ? 'Reopen this pulse' : 'Ready to share' }}</h1>
+        <p>{{ status() === 'closed' ? 'Reopening uses the same link. Answers you already have are kept.' : 'Publishing gives you a link. Anyone who opens it can answer.' }}</p>
       </div>
-
-      <aside class="p-card s-next">
-        <span class="s-next__title">What happens next</span>
-        <div class="s-step"><span class="s-step__dot" data-tint="green"><app-icon name="link" [size]="18" /></span>
-          <span><b>You get one link</b><span>Send it by email or text, or post it anywhere. It works on any phone.</span></span></div>
-        <div class="s-step"><span class="s-step__dot" data-tint="violet"><app-icon name="chart" [size]="18" /></span>
-          <span><b>Answers show up live</b><span>Every question fills in as people respond. No refreshing.</span></span></div>
-        <div class="s-step"><span class="s-step__dot" data-tint="blue"><app-icon name="spark" [size]="18" /></span>
-          <span><b>TODD tells you what it means</b><span>After 5 answers, TODD writes a summary and suggests your next move.</span></span></div>
-        <span class="s-next__foot">You can move it back to draft any time to change questions. Answers you already have are kept.</span>
-      </aside>
+      <div class="s-checks"> @for (check of checks(); track $index) { <div class="s-check">
+          <span class="p-check-dot" [class.is-off]="!check.done">@if (check.done) { <app-icon name="check" [size]="14" /> }</span>
+          <span class="s-check__text">{{ check.text }}</span> @if (check.route) { <a class="s-check__link" [routerLink]="['/survey', survey().id, check.route]">{{ check.action }}</a> } @else { <button type="button" class="s-check__link" (click)="tryIt()">{{ check.action }}</button> }
+        </div> } </div>
+      <div class="s-setting">
+        <span class="s-setting__label" id="close-label">Stop taking answers</span>
+        <div class="p-segmented" role="radiogroup" aria-labelledby="close-label">
+          <button type="button" role="radio" [class.is-on]="closeRule().type === 'manual'" [attr.aria-checked]="closeRule().type === 'manual'" (click)="setCloseType('manual')">When I close it</button>
+          <button type="button" role="radio" [class.is-on]="closeRule().type === 'date'" [attr.aria-checked]="closeRule().type === 'date'" (click)="setCloseType('date')"><app-icon name="cal" />On a date</button>
+          <button type="button" role="radio" [class.is-on]="closeRule().type === 'count'" [attr.aria-checked]="closeRule().type === 'count'" (click)="setCloseType('count')">After {{ closeRule().type === 'count' ? closeRule().value : 50 }} answers</button>
+        </div> @if (closeRule().type === 'date') { <label class="s-inline">Close at the end of <input class="p-input s-inline__input" type="date" [min]="today" [value]="closeDateInput()" (change)="setCloseDate($any($event.target).value)" />
+        </label> } @else if (closeRule().type === 'count') { <label class="s-inline">Close after <input class="p-input s-inline__input s-inline__input--n" type="number" min="1" max="100000" [value]="closeRule().value" (change)="setCloseCount($any($event.target).value)" /> answers </label> }
+      </div>
+      <div class="s-setting">
+        <span class="s-setting__label" id="names-label">Who sees the name of the person answering</span>
+        <div class="p-segmented" role="radiogroup" aria-labelledby="names-label">
+          <button type="button" role="radio" [class.is-on]="collectIdentity()" [attr.aria-checked]="collectIdentity()" (click)="setIdentity(true)">Ask for name and email</button>
+          <button type="button" role="radio" [class.is-on]="!collectIdentity()" [attr.aria-checked]="!collectIdentity()" (click)="setIdentity(false)">Anonymous</button>
+        </div>
+        <span class="s-setting__note">{{ collectIdentity() ? 'People add their name and email at the end, so TODD can help you follow up.' : "Answers come in without names. Pulse won't attach anyone's details." }}</span>
+      </div>
+      <div class="s-publish"> @if (access() === 'canWrite' || access() === 'loading') { <button type="button" class="p-btn p-btn--primary p-btn--lg" [disabled]="blockers().length > 0 || publishing() || access() === 'loading'" (click)="publish()">
+          <app-icon name="send" />{{ publishing() ? 'Publishing…' : status() === 'closed' ? 'Reopen and keep my link' : 'Publish and get my link' }}
+        </button> } @else { <button type="button" class="p-btn p-btn--primary p-btn--lg" (click)="publish()">Choose a plan to publish</button> } <span class="s-publish__note">Publishing is part of your paid plan. Writing and editing pulses is always free.</span>
+      </div> @if (publishError()) { <p class="s-error" role="alert">{{ publishError() }}</p> } @if (blockers().length > 0) { <p class="s-error">Finish writing first: {{ blockers()[0] }}. <a [routerLink]="['/survey', survey().id, 'write']">Back to Write</a></p> }
     </div>
-  }
-</div>
-
-@if (qr()) {
-  <div class="s-modal" role="dialog" aria-modal="true" aria-label="QR code" (click)="qr.set('')">
-    <div class="s-modal__card" (click)="$event.stopPropagation()">
-      <img [src]="qr()" alt="QR code for {{ linkLabel() }}" width="320" height="320" />
-      <span class="s-modal__link">{{ linkLabel() }}</span>
-      <div class="s-modal__actions">
-        <a class="p-btn p-btn--primary" [href]="qr()" [attr.download]="(survey().title || 'pulse') + '-qr.png'"><app-icon name="dl" />Download</a>
-        <button type="button" class="p-btn" (click)="qr.set('')">Done</button>
+    <aside class="p-card s-next">
+      <span class="s-next__title">What happens next</span>
+      <div class="s-step"><span class="s-step__dot" data-tint="green"><app-icon name="link" [size]="18" /></span>
+        <span><b>You get one link</b><span>Send it by email or text, or post it anywhere. It works on any phone.</span></span>
       </div>
+      <div class="s-step"><span class="s-step__dot" data-tint="violet"><app-icon name="chart" [size]="18" /></span>
+        <span><b>Answers show up live</b><span>Every question fills in as people respond. No refreshing.</span></span>
+      </div>
+      <div class="s-step"><span class="s-step__dot" data-tint="blue"><app-icon name="spark" [size]="18" /></span>
+        <span><b>TODD tells you what it means</b><span>After 5 answers, TODD writes a summary and suggests your next move.</span></span>
+      </div>
+      <span class="s-next__foot">You can move it back to draft any time to change questions. Answers you already have are kept.</span>
+    </aside>
+  </div> }
+</div> @if (qr()) { <div class="s-modal" role="dialog" aria-modal="true" aria-label="QR code" (click)="qr.set('')">
+  <div class="s-modal__card" (click)="$event.stopPropagation()">
+    <img [src]="qr()" alt="QR code for {{ linkLabel() }}" width="320" height="320" />
+    <span class="s-modal__link">{{ linkLabel() }}</span>
+    <div class="s-modal__actions">
+      <a class="p-btn p-btn--primary" [href]="qr()" [attr.download]="(survey().title || 'pulse') + '-qr.png'"><app-icon name="dl" />Download</a>
+      <button type="button" class="p-btn" (click)="qr.set('')">Done</button>
     </div>
   </div>
-}
+</div> }

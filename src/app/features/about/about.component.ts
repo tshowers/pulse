@@ -2,19 +2,23 @@ import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 import { IconComponent } from '../../shared/icon/icon.component';
+import { PulseLogoComponent } from '../../shared/pulse-logo/pulse-logo.component';
 import { SiteFooterComponent } from '../../shared/site-footer/site-footer.component';
 
 /** About (design_handoff_todd_pulse 2b): what Pulse is, who it's for, how it fits into TODD, and what respondents can count on. */
 @Component( {
   selector: 'app-about',
   standalone: true,
-  imports: [RouterLink, IconComponent, SiteFooterComponent],
+  imports: [RouterLink, IconComponent, PulseLogoComponent, SiteFooterComponent],
   template: `
     <div class="ab">
       <section class="ab-intro">
-        <span class="p-eyebrow">About Pulse</span>
-        <h1>Pulse is how TODD listens.</h1>
-        <p>TODD is the assistant that helps small teams decide their next move. Pulse is the part that asks your customers, users and team a few focused questions, so each move is based on what people actually said instead of a guess.</p>
+        <div class="ab-intro__copy">
+          <span class="p-eyebrow">About Pulse</span>
+          <h1>Pulse is how TODD listens</h1>
+          <p>TODD is the assistant that helps small teams decide their next move. Pulse is the part that asks your customers, users and team a few focused questions, so each move is based on what people actually said instead of a guess.</p>
+        </div>
+        <app-pulse-logo class="ab-logo" />
       </section>
 
       <section class="ab-section">
@@ -48,7 +52,7 @@ import { SiteFooterComponent } from '../../shared/site-footer/site-footer.compon
       </section>
 
       <section class="p-todd ab-cta">
-        <img class="p-avatar" src="assets/avatar-todd-sm.png" alt="" width="64" height="64" />
+        <img class="p-avatar" src="assets/TODD-icon.png" alt="" width="64" height="64" />
         <div class="ab-cta__copy">
           <span class="ab-cta__title">Have a decision you're unsure about?</span>
           <span class="ab-cta__sub">Tell TODD and she'll write the questions to settle it.</span>
@@ -61,7 +65,9 @@ import { SiteFooterComponent } from '../../shared/site-footer/site-footer.compon
   styles: [`
     :host { display: flex; flex-direction: column; min-height: calc(100dvh - 82px); }
     .ab { flex: 1 0 auto; width: 100%; max-width: 1280px; margin: 0 auto; box-sizing: border-box; padding: 48px 40px 40px; font-family: var(--font); color: var(--text); display: flex; flex-direction: column; gap: 64px; }
-    .ab-intro { display: flex; flex-direction: column; gap: 18px; max-width: 860px; }
+    .ab-intro { display: grid; grid-template-columns: minmax(0, 860px) 280px; justify-content: space-between; align-items: center; gap: 48px; }
+    .ab-intro__copy { display: flex; flex-direction: column; gap: 18px; }
+    .ab-logo { width: 280px; }
     .ab-intro h1 { margin: 0; font-size: 60px; font-weight: 700; letter-spacing: -0.04em; line-height: 1.02; }
     .ab-intro p { margin: 0; font-size: 19px; line-height: 1.6; text-wrap: pretty; }
     .ab-section { display: flex; flex-direction: column; gap: 20px; }
@@ -85,6 +91,8 @@ import { SiteFooterComponent } from '../../shared/site-footer/site-footer.compon
     .ab-cta__btn { height: 54px; padding: 0 28px; font-size: 16px; }
     @media (max-width: 900px) {
       .ab-grid, .ab-pair { grid-template-columns: minmax(0, 1fr); }
+      .ab-intro { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+      .ab-logo { width: 160px; order: -1; }
     }
     @media (max-width: 760px) {
       .ab { padding: 24px 16px 32px; gap: 48px; }
