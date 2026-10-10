@@ -52,14 +52,14 @@ describe( 'Answering a pulse', () => {
       expect( body.answers ).to.deep.equal( { q_rate: 9, q_renew: 'Not sure', q_svc: ['Hosting', 'Web app'], q_better: 'Reply faster to support tickets.' } );
       expect( body.respondent ).to.deep.equal( { name: 'Ann Lee', email: 'ann@example.com' } );
     } );
-    cy.contains( 'h1', "Thanks, that's everything." ).should( 'be.visible' );
+    cy.contains( 'h1', "Thanks, that's everything" ).should( 'be.visible' );
     cy.contains( 'What you sent' ).should( 'be.visible' );
     cy.contains( '9 out of 10' ).should( 'be.visible' );
     cy.screenshot( '2e-done-desktop', { overwrite: true } );
 
     // One answer per device.
     cy.reload();
-    cy.contains( 'h1', "You've already answered this one.", { timeout: 20000 } ).should( 'be.visible' );
+    cy.contains( 'h1', "You've already answered this one", { timeout: 20000 } ).should( 'be.visible' );
   } );
 
   it( 'answers on a phone with big targets', () => {
@@ -75,6 +75,6 @@ describe( 'Answering a pulse', () => {
   it( 'says a closed pulse is closed', () => {
     cy.intercept( 'GET', `**/api/public/surveys/${pulse.id}`, { statusCode: 200, body: { ...pulse, status: 'archived', questions: [] } } );
     cy.visit( `/take/${pulse.id}` );
-    cy.contains( 'h1', 'This pulse has closed.', { timeout: 20000 } ).should( 'be.visible' );
+    cy.contains( 'h1', 'This pulse has closed', { timeout: 20000 } ).should( 'be.visible' );
   } );
 } );

@@ -133,7 +133,7 @@ describe( 'Pulse flow - New, Write, Share, Results', () => {
     cy.wait( '@publishSurvey' ).its( 'request.body' ).should( 'deep.equal', { closeRule: { type: 'count', value: 50 }, collectIdentity: true } );
 
     // ── Share, live (1e) ──
-    cy.contains( 'h1', "It's live. Send people this link." ).should( 'be.visible' );
+    cy.contains( 'h1', "It's live. Send people this link" ).should( 'be.visible' );
     cy.contains( `/take/${surveyId}` ).should( 'be.visible' );
     cy.contains( 'Taking answers until 50 answers · asks for name and email' ).should( 'be.visible' );
     snap( '1e-live' );
