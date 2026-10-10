@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingHarness } from '@angular/router/testing';
-import { provideRouter } from '@angular/router';
+import { Router, provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { of } from 'rxjs';
@@ -9,31 +9,29 @@ import { routes } from './app.routes';
 import { PulseAuthService } from './services/pulse-auth.service';
 
 import { LandingComponent } from './features/landing/landing.component';
+import { AboutComponent } from './features/about/about.component';
 import { AppShowcaseComponent } from './features/app-showcase/app-showcase.component';
 import { TakeSurveyComponent } from './features/take-survey/take-survey.component';
 import { PulsePaidSuccessComponent } from './features/pulse-paid-success/pulse-paid-success.component';
-import { SurveyListComponent } from './features/survey-list/survey-list.component';
-import { SurveyDashboardComponent } from './features/survey-dashboard/survey-dashboard.component';
-import { SurveyViewComponent } from './features/survey-view/survey-view.component';
 import { GetTheAppComponent } from './features/get-the-app/get-the-app.component';
-import { SurveyAddComponent } from './features/survey-add/survey-add.component';
-import { PulseHomeComponent } from './features/pulse-home/pulse-home.component';
+import { PulsesHomeComponent } from './features/pulse/home/pulses-home.component';
+import { NewPulseComponent } from './features/pulse/new/new-pulse.component';
+import { PulseShellComponent, PulseStepRedirectComponent } from './features/pulse/shell/pulse-shell.component';
+import { WriteStepComponent } from './features/pulse/write/write-step.component';
+import { ShareStepComponent } from './features/pulse/share/share-step.component';
+import { ResultsStepComponent } from './features/pulse/results/results-step.component';
 import { SignInComponent } from './features/sign-in/sign-in.component';
 import { AuthCallbackComponent } from './features/auth-callback/auth-callback.component';
 import { NotFoundComponent } from './features/not-found/not-found.component';
 
 /**
  * Route-table coverage for app.routes.ts: every path resolves the
- * component it claims to (catches typo'd loadComponent paths and
- * accidental route-order shadowing that a plain config-object assertion
- * wouldn't). survey-view/survey-dashboard redirect signed-out users to
- * /login (see their own file comments), so this defaults PulseAuthService
- * to a signed-in user and only flips to signed-out for the two tests
- * (/login, and / without the guard's redirect) where that behavior is the
- * point.
+ * component it claims to, and the old URLs redirect into the new
+ * Write / Share / Results flow. Defaults PulseAuthService to a signed-in
+ * user and flips to signed-out where that's the point.
  */
 describe( 'app.routes', () => {
-  let currentUser: { uid: string; email: string } | null;
+  let currentUser: { uid: string; email: string; displayName?: string } | null;
   let isLoggedIn: boolean;
 
   beforeEach( () => {
@@ -63,14 +61,22 @@ describe( 'app.routes', () => {
     } );
   } );
 
+  const pulseChildren = () => routes.find( ( route ) => route.path === 'survey/:id' )?.children || [];
+
   it( 'routes /ios to AppShowcaseComponent', async () => {
     const harness = await RouterTestingHarness.create( '/ios' );
     expect( harness.routeDebugElement?.componentInstance ).toBeInstanceOf( AppShowcaseComponent );
   } );
 
-  it( 'routes /take/:id to TakeSurveyComponent', async () => {
+  it( 'routes /about to AboutComponent', async () => {
+    const harness = await RouterTestingHarness.create( '/about' );
+    expect( harness.routeDebugElement?.componentInstance ).toBeInstanceOf( AboutComponent );
+  } );
+
+  it( 'routes /take/:id to TakeSurveyComponent with no header', async () => {
     const harness = await RouterTestingHarness.create( '/take/survey-123' );
     expect( harness.routeDebugElement?.componentInstance ).toBeInstanceOf( TakeSurveyComponent );
+    expect( routes.find( ( route ) => route.path === 'take/:id' )?.data?.['chrome'] ).toBe( 'none' );
   } );
 
   it( 'routes /success to PulsePaidSuccessComponent', async () => {
@@ -78,38 +84,40 @@ describe( 'app.routes', () => {
     expect( harness.routeDebugElement?.componentInstance ).toBeInstanceOf( PulsePaidSuccessComponent );
   } );
 
-  it( 'routes /survey-list to SurveyListComponent', async () => {
-    const harness = await RouterTestingHarness.create( '/survey-list' );
-    expect( harness.routeDebugElement?.componentInstance ).toBeInstanceOf( SurveyListComponent );
+  it( 'routes /app to PulsesHomeComponent', async () => {
+    const harness = await RouterTestingHarness.create( '/app' );
+    expect( harness.routeDebugElement?.componentInstance ).toBeInstanceOf( PulsesHomeComponent );
   } );
 
-  it( 'routes /survey-dashboard/:surveyId to SurveyDashboardComponent when signed in', async () => {
-    const harness = await RouterTestingHarness.create( '/survey-dashboard/survey-123' );
-    expect( harness.routeDebugElement?.componentInstance ).toBeInstanceOf( SurveyDashboardComponent );
+  it( 'routes /survey-edit to NewPulseComponent', async () => {
+    const harness = await RouterTestingHarness.create( '/survey-edit' );
+    expect( harness.routeDebugElement?.componentInstance ).toBeInstanceOf( NewPulseComponent );
   } );
 
-  it( 'routes /survey/:id to SurveyViewComponent when signed in', async () => {
-    const harness = await RouterTestingHarness.create( '/survey/survey-123' );
-    expect( harness.routeDebugElement?.componentInstance ).toBeInstanceOf( SurveyViewComponent );
+  it( 'routes /survey/:id to the pulse shell, with one child per step', async () => {
+    const harness = await RouterTestingHarness.create( '/survey/survey-123/results' );
+    expect( harness.routeDebugElement?.componentInstance ).toBeInstanceOf( PulseShellComponent );
+    const load = ( path: string ) => pulseChildren().find( ( route ) => route.path === path )?.loadComponent?.();
+    expect( await load( '' ) ).toBe( PulseStepRedirectComponent );
+    expect( await load( 'write' ) ).toBe( WriteStepComponent );
+    expect( await load( 'share' ) ).toBe( ShareStepComponent );
+    expect( await load( 'results' ) ).toBe( ResultsStepComponent );
   } );
 
-  it( 'routes /pricing to GetTheAppComponent ("browse free, create with the app")', async () => {
+  it( 'redirects the old list and dashboard URLs into the new flow', async () => {
+    const router = TestBed.inject( Router );
+    await RouterTestingHarness.create( '/survey-list' );
+    expect( router.url ).toBe( '/app' );
+    await router.navigateByUrl( '/survey-dashboard/survey-123' );
+    expect( router.url ).toBe( '/survey/survey-123/results' );
+  } );
+
+  it( 'routes /pricing to GetTheAppComponent ("Choose a plan to publish" lands here)', async () => {
     // Checks the route without rendering it: Karma's webpack build doesn't
-    // load the symlinked @taliferro/ui model the page reads (the real
-    // build does - Cypress covers the rendered page).
+    // load the symlinked @taliferro/ui model the page reads.
     const route = routes.find( ( candidate ) => candidate.path === 'pricing' );
     expect( await route?.loadComponent?.() ).toBe( GetTheAppComponent );
     expect( route?.data?.['product'] ).toBe( 'pulse' );
-  } );
-
-  it( 'routes /survey-edit to SurveyAddComponent (create/edit a Pulse)', async () => {
-    const harness = await RouterTestingHarness.create( '/survey-edit' );
-    expect( harness.routeDebugElement?.componentInstance ).toBeInstanceOf( SurveyAddComponent );
-  } );
-
-  it( 'routes /app to PulseHomeComponent', async () => {
-    const harness = await RouterTestingHarness.create( '/app' );
-    expect( harness.routeDebugElement?.componentInstance ).toBeInstanceOf( PulseHomeComponent );
   } );
 
   it( 'routes /login to SignInComponent when signed out', async () => {
@@ -138,6 +146,6 @@ describe( 'app.routes', () => {
 
   it( 'redirects / to /app via landingRedirectGuard when already signed in', async () => {
     const harness = await RouterTestingHarness.create( '/' );
-    expect( harness.routeDebugElement?.componentInstance ).toBeInstanceOf( PulseHomeComponent );
+    expect( harness.routeDebugElement?.componentInstance ).toBeInstanceOf( PulsesHomeComponent );
   } );
 } );

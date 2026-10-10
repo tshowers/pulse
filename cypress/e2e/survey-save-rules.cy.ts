@@ -1,28 +1,40 @@
 /**
- * The builder only enables Save once the Pulse has what the backend
- * requires (title, description, at least one question with text) and says
- * what's missing; an existing Pulse needs a change before Save enables.
+ * Write's one rule (1c): Next: Share stays off, and says why, until the
+ * pulse has a title and every question is complete. Writing itself is never
+ * blocked - a blank pulse autosaves.
  */
-describe( 'Pulse builder - save rules', () => {
-  it( 'says what is missing and enables Save only when complete', () => {
-    cy.intercept( 'GET', '**/account/summary*', { statusCode: 200, body: { success: true, data: { tenant: { surveyPaidAccess: true } } } } );
-    cy.visitWithFirebaseEmulators( '/survey-edit', { email: `pulse-save-${Date.now()}@example.com`, password: 'CypressTest123!' } );
-
-    cy.get( '[data-cy="pulse-save-hint"]', { timeout: 15000 } ).should( 'contain.text', 'a title' ).and( 'contain.text', 'a description' );
-    cy.get( '[data-cy="pulse-save-submit"]' ).should( 'be.disabled' );
-
-    cy.get( '#surveyTitle, input[formControlName="title"]' ).first().type( 'Friday check-in' );
-    cy.get( '[data-cy="pulse-save-hint"]' ).should( 'not.contain.text', 'a title' ).and( 'contain.text', 'a description' );
-    cy.get( '[data-cy="pulse-save-submit"]' ).should( 'be.disabled' );
-
-    cy.get( '#surveyDescription' ).type( 'How the week went.' );
-    cy.get( 'body' ).then( ( body ) => {
-      if ( body.find( '[data-cy="pulse-save-hint"]' ).text().includes( 'question' ) ) {
-        cy.get( '[data-cy="pulse-add-question"]' ).click();
-        cy.get( 'input[formControlName="questionText"]' ).first().type( 'Anything blocking you?' );
-      }
+describe( 'Pulse Write - Next: Share rules', () => {
+  it( 'says what is missing and enables Next: Share only when complete', () => {
+    let survey: any = null;
+    cy.intercept( 'GET', '**/account/summary*', { statusCode: 200, body: { success: true, data: { writeAccess: { pulse: false } } } } );
+    cy.intercept( 'POST', '**/api/surveys', ( req ) => {
+      survey = { id: 'e2e-blank', ...req.body, status: 'draft', responseCount: 0, revision: 1 };
+      req.reply( { statusCode: 201, body: survey } );
     } );
-    cy.get( '[data-cy="pulse-save-hint"]' ).should( 'not.exist' );
-    cy.get( '[data-cy="pulse-save-submit"]' ).should( 'not.be.disabled' );
+    cy.intercept( 'GET', '**/api/surveys/e2e-blank', ( req ) => req.reply( { statusCode: 200, body: survey } ) );
+    cy.intercept( 'PUT', '**/api/surveys/e2e-blank', ( req ) => {
+      survey = { ...survey, ...req.body, revision: survey.revision + 1 };
+      req.reply( { statusCode: 200, body: survey } );
+    } ).as( 'save' );
+    cy.intercept( 'POST', '**/api/surveys/e2e-blank/todd/review', { statusCode: 200, body: { suggestions: [], hash: 'h' } } );
+
+    cy.visitWithFirebaseEmulators( '/survey-edit', { email: `pulse-rules-${Date.now()}@example.com`, password: 'CypressTest123!' } );
+    cy.contains( 'button', 'Start from blank', { timeout: 20000 } ).click();
+
+    cy.location( 'pathname', { timeout: 30000 } ).should( 'eq', '/survey/e2e-blank/write' );
+    cy.contains( 'button', 'Next: Share' ).should( 'be.disabled' );
+    cy.contains( 'To share it: Add a title.' ).should( 'be.visible' );
+
+    cy.get( 'input[aria-label="Title"]' ).type( 'Friday check-in' );
+    cy.contains( 'To share it: Finish question 1.' ).should( 'be.visible' );
+
+    cy.get( 'input[aria-label="Question"]' ).type( 'Anything blocking you?' );
+    cy.contains( 'To share it' ).should( 'not.exist' );
+    cy.contains( 'button', 'Next: Share' ).should( 'not.be.disabled' );
+    cy.wait( '@save' ).its( 'request.body.questions.0.questionText' ).should( 'eq', 'Anything blocking you?' );
+
+    // Without a plan, Share offers the plan instead of publishing.
+    cy.contains( 'button', 'Next: Share' ).click();
+    cy.contains( 'button', 'Choose a plan to publish' ).should( 'be.visible' );
   } );
 } );

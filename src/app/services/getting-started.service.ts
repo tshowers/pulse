@@ -5,7 +5,7 @@ import { firstValueFrom } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 export interface GettingStartedStep {
-  id: 'profile' | 'createSurvey' | 'shareSurvey' | 'firstResponse' | string;
+  id: 'createSurvey' | 'trySurvey' | 'shareSurvey' | 'toddSummary' | string;
   title: string;
   detail: string;
   done: boolean;
@@ -20,8 +20,8 @@ export interface GettingStarted {
 
 /**
  * Pulse's Getting Started checklist (`GET /api/getting-started/pulse`) -
- * profile, a survey created, published, first response - the same data
- * pulse-ios shows. On the Help page, and opened after sign-in while steps
+ * write a pulse, try it, publish it, read TODD's summary - the same data
+ * Pulsur shows. On the Help page, and opened after sign-in while steps
  * remain. Mirrors Network web's getting-started.service.ts.
  */
 @Injectable( { providedIn: 'root' } )
@@ -62,20 +62,24 @@ export class GettingStartedService {
     }
   }
 
+  /** Where a step's link goes, or '' when there's nothing to do yet. */
   routeFor ( step: GettingStartedStep ): string {
+    if ( step.done ) return '';
     switch ( step.id ) {
-      case 'profile': return '/profile';
       case 'createSurvey': return '/survey-edit';
-      default: return '/survey-list';
+      case 'trySurvey':
+      case 'shareSurvey': return '/app';
+      default: return '';
     }
   }
 
   actionFor ( step: GettingStartedStep ): string {
+    if ( step.done ) return '';
     switch ( step.id ) {
-      case 'profile': return step.done ? 'View profile' : 'Complete profile';
-      case 'createSurvey': return step.done ? 'Create another' : 'Create a survey';
-      case 'shareSurvey': return step.done ? 'View surveys' : 'Publish a survey';
-      default: return step.done ? 'See responses' : 'Share your link';
+      case 'createSurvey': return 'Start';
+      case 'trySurvey': return 'Try one';
+      case 'shareSurvey': return 'Share';
+      default: return '';
     }
   }
 }

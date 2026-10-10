@@ -1,0 +1,150 @@
+<div class="p-page">
+  <app-pulse-bar [survey]="survey()" step="write" [subtitle]="subtitle()" [tone]="readOnly() && survey().status === 'published' ? 'live' : 'muted'">
+    @if (!readOnly()) {
+      <button type="button" class="p-btn" (click)="tryIt()"><app-icon name="eye" />Try it</button>
+      <button type="button" class="p-btn p-btn--primary" [disabled]="blockers().length > 0" (click)="next()"
+        [attr.title]="blockers()[0] || null">Next: Share<app-icon name="right" /></button>
+    } @else if (survey().status === 'published') {
+      <button type="button" class="p-btn" (click)="backToDraft()">Back to draft</button>
+    }
+  </app-pulse-bar>
+
+  @if (!readOnly() && blockers().length > 0 && questions().length > 0) {
+    <p class="w-hint" role="status">To share it: {{ blockers()[0] }}.</p>
+  }
+
+  @if (store.saveState() === 'conflict') {
+    <div class="w-banner" role="alert">
+      <span>This pulse was changed on another device. Reload to get the latest version; your last edit here wasn't saved.</span>
+      <button type="button" class="p-btn p-btn--bg p-btn--sm" (click)="store.reload()">Reload</button>
+    </div>
+  } @else if (store.saveState() === 'error') {
+    <div class="w-banner" role="alert">
+      <span>Your last change didn't save.</span>
+      <button type="button" class="p-btn p-btn--bg p-btn--sm" (click)="store.retrySave()">Try again</button>
+    </div>
+  }
+
+  @if (readOnly()) {
+    <div class="w-banner w-banner--info">
+      @if (survey().status === 'published') {
+        <span>This pulse is live, so its questions are locked. Move it back to draft to change them. Answers you already have are kept.</span>
+      } @else {
+        <span>This pulse is closed. Reopen it from Share to collect more answers, or move it back to draft to change questions.</span>
+      }
+    </div>
+  }
+
+  <div class="w-grid">
+    <div class="w-main">
+      <div class="w-intro">
+        <input class="w-title" type="text" [value]="survey().title" (input)="setTitle($any($event.target).value)"
+          placeholder="Name your pulse" aria-label="Title" maxlength="200" [readOnly]="readOnly()" />
+        <textarea class="w-desc" rows="2" [value]="survey().description" (input)="setDescription($any($event.target).value)"
+          placeholder="One line for the people answering: why you're asking, and how long it takes." aria-label="Intro" [readOnly]="readOnly()"></textarea>
+      </div>
+
+      @for (question of questions(); track question.id; let i = $index) {
+        @if (question.id === selectedId() && !readOnly()) {
+          <section class="w-card is-open" [class.is-drop]="dropIndex() === i"
+            (dragover)="onDragOver($event, i)" (drop)="onDrop($event, i)" [attr.aria-label]="'Question ' + (i + 1)">
+            <div class="w-card__head">
+              <span class="p-dot-num w-num is-on" draggable="true" (dragstart)="onDragStart($event, i)" (dragend)="onDragEnd()" title="Drag to reorder">{{ i + 1 }}</span>
+              <input class="p-input w-q" type="text" [value]="question.questionText" (input)="setQuestionText(question.id, $any($event.target).value)"
+                [attr.data-question-input]="question.id" placeholder="Ask one thing" aria-label="Question" maxlength="300" />
+            </div>
+
+            <div class="w-indent w-types" role="radiogroup" aria-label="Answer type">
+              @for (t of chipsFor(question); track t.type) {
+                <button type="button" class="w-type" [class.is-on]="question.questionType === t.type" role="radio"
+                  [attr.aria-checked]="question.questionType === t.type" (click)="setType(question.id, t.type)"><app-icon [name]="t.icon" [size]="14" />{{ t.label }}</button>
+              }
+            </div>
+
+            @if (usesOptions(question.questionType)) {
+              <div class="w-indent w-options" [attr.data-options-for]="question.id">
+                @for (option of question.options; track $index; let o = $index) {
+                  <div class="w-option">
+                    <span class="w-mark" [class.is-box]="question.questionType === 'checkbox'"></span>
+                    <input class="p-input p-input--sm" type="text" [value]="option" (input)="setOption(question.id, o, $any($event.target).value)"
+                      [placeholder]="'Option ' + (o + 1)" [attr.aria-label]="'Option ' + (o + 1)" maxlength="120" />
+                    <button type="button" class="p-btn p-btn--ghost p-btn--round w-x" (click)="removeOption(question.id, o)" [attr.aria-label]="'Remove option ' + (o + 1)"><app-icon name="x" /></button>
+                  </div>
+                }
+                <button type="button" class="p-btn p-btn--link p-btn--sm w-add-option" (click)="addOption(question.id)"><app-icon name="plus" />Add option</button>
+              </div>
+            } @else if (question.questionType === 'rating') {
+              <p class="w-indent w-note">A 0 to 10 scale, from "Not likely" to "Very likely".</p>
+            }
+
+            <div class="w-indent w-foot">
+              <button type="button" class="w-switch" role="switch" [attr.aria-checked]="!!question.required" (click)="toggleRequired(question.id)">
+                <span class="w-switch__track" [class.is-on]="question.required"><span></span></span>Required
+              </button>
+              <span class="w-spacer"></span>
+              <button type="button" class="p-btn p-btn--ghost p-btn--round p-btn--sm" (click)="move(i, i - 1)" [disabled]="i === 0" aria-label="Move up"><app-icon name="up" /></button>
+              <button type="button" class="p-btn p-btn--ghost p-btn--round p-btn--sm" (click)="move(i, i + 1)" [disabled]="i === questions().length - 1" aria-label="Move down"><app-icon name="down" /></button>
+              <button type="button" class="p-btn p-btn--ghost p-btn--sm" (click)="duplicate(question.id)"><app-icon name="copy" />Duplicate</button>
+              <button type="button" class="p-btn p-btn--danger p-btn--sm" (click)="remove(question.id)"><app-icon name="trash" />Delete</button>
+            </div>
+          </section>
+        } @else {
+          <div class="w-row" [class.is-drop]="dropIndex() === i" [class.is-dragging]="dragIndex() === i"
+            (dragover)="onDragOver($event, i)" (drop)="onDrop($event, i)">
+            <span class="p-dot-num w-num" [attr.draggable]="!readOnly()" (dragstart)="onDragStart($event, i)" (dragend)="onDragEnd()"
+              [attr.title]="readOnly() ? null : 'Drag to reorder'">{{ i + 1 }}</span>
+            <button type="button" class="w-row__body" (click)="select(question.id)" [disabled]="readOnly()" [attr.aria-expanded]="false">
+              <span class="w-row__text" [class.is-empty]="!question.questionText.trim()">{{ question.questionText.trim() || 'Untitled question' }}</span>
+              <span class="p-tag" [attr.data-tint]="typeMeta(question.questionType).tint"><app-icon [name]="typeMeta(question.questionType).icon" [size]="14" />{{ typeMeta(question.questionType).label }}</span>
+              @if (!readOnly()) { <app-icon name="down" /> }
+            </button>
+          </div>
+        }
+      }
+
+      @if (!readOnly()) {
+        <button type="button" class="w-add" (click)="addQuestion()"><app-icon name="plus" />Add question</button>
+        <button type="button" class="p-btn p-btn--danger p-btn--sm w-delete" (click)="deletePulse()">Delete this pulse</button>
+      }
+    </div>
+
+    <aside class="w-side">
+      <div class="p-card w-preview">
+        <div class="w-side__head">
+          <span class="w-side__title">What people see</span>
+          @if (questions().length) { <span class="w-side__meta">Question {{ selectedIndex() + 1 }} of {{ questions().length }}</span> }
+        </div>
+        @if (previewQuestion()) {
+          <app-question-preview [question]="previewQuestion()!" [index]="selectedIndex()" [total]="questions().length" />
+        } @else {
+          <p class="w-empty">Add a question to see it here the way people will.</p>
+        }
+      </div>
+
+      @if (!readOnly() && reviewState() !== 'idle') {
+        <div class="p-todd w-review" aria-live="polite">
+          <div class="w-review__head">
+            <img class="p-avatar" src="assets/avatar-todd-sm.png" alt="" width="28" height="28" />
+            <span>TODD's review</span>
+          </div>
+          @if (reviewState() === 'loading' && visibleSuggestions().length === 0) {
+            <div class="w-review__item"><span class="w-muted">Reading your questions…</span></div>
+          } @else if (reviewState() === 'error') {
+            <div class="w-review__item"><span class="w-muted">TODD couldn't review this right now. It'll try again after your next change.</span></div>
+          } @else if (visibleSuggestions().length === 0) {
+            <div class="w-review__item"><span>These read well. TODD has no changes to suggest.</span></div>
+          }
+          @for (suggestion of visibleSuggestions(); track suggestion.id) {
+            <div class="w-review__item">
+              <span>{{ suggestion.message }}</span>
+              <div class="w-review__actions">
+                <button type="button" class="p-btn p-btn--primary p-btn--xs" (click)="apply(suggestion)">{{ suggestion.label }}</button>
+                <button type="button" class="p-btn p-btn--ghost p-btn--xs w-muted" (click)="dismiss(suggestion)">Dismiss</button>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </aside>
+  </div>
+</div>

@@ -1,0 +1,64 @@
+:host { display: block; }
+
+.ph {
+  max-width: 1280px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.ph .ah-name { font-size: 22px; }
+.ph .ah-logo { width: 34px; height: 34px; }
+
+/* Centred tabs without the segmented track: the active tab gets the
+ * --surface pill (design 1a). */
+.ph-nav {
+  background: transparent;
+  padding: 0;
+  gap: 6px;
+}
+
+.ph-nav a {
+  height: 34px;
+  padding: 0 14px;
+  font-size: 14px;
+  color: var(--text) !important;
+}
+
+.ph-nav a:hover { background: var(--surface); }
+
+.ph-nav a.is-active {
+  background: var(--surface);
+  box-shadow: none;
+}
+
+.ph .ah-actions { gap: 8px; }
+
+.ph-cta { height: 42px; }
+
+.ph .ah-pill { height: 42px; font-weight: 700; font-size: 14px; }
+
+/* The theme switch: a quiet icon circle beside the Menu pill. */
+.ph-theme {
+  width: 42px;
+  padding: 0 !important;
+  justify-content: center;
+}
+
+@media (max-width: 760px) {
+  .ph .ah-name { font-size: 18px; }
+  .ph-cta { height: 40px; padding: 0 14px; }
+  .ph-cta__label { display: none; }
+  .ph-theme { width: 40px; height: 40px; }
+}
+
+/* Phones get the tabs as their own row under the brand. */
+@media (max-width: 760px) {
+  .ph { flex-wrap: wrap; }
+  .ph-nav {
+    display: flex !important;
+    order: 3;
+    width: 100%;
+    margin: 4px 0 0;
+    justify-content: flex-start;
+  }
+}

@@ -1,0 +1,31 @@
+<header class="ah ph">
+  <a class="ah-brand" [routerLink]="isLoggedIn ? '/app' : '/'" aria-label="TODD Pulse home">
+    <img class="ah-logo" src="assets/todd-pulse-icon.png" alt="" width="34" height="34" />
+    <span class="ah-name">TODD <small>Pulse</small></span>
+  </a>
+
+  <nav class="ah-nav ph-nav" aria-label="Pulse">
+    @for (tab of tabs; track tab.route) {
+      <a [routerLink]="tab.route" [class.is-active]="isActive(tab)" [attr.aria-current]="isActive(tab) ? 'page' : null">{{ tab.label }}</a>
+    }
+  </nav>
+
+  <div class="ah-actions">
+    @if (isLoggedIn) {
+      @if (showNewPulse) {
+        <a class="p-btn p-btn--primary ph-cta" routerLink="/survey-edit"><app-icon name="plus" /><span class="ph-cta__label">New pulse</span></a>
+      }
+    } @else {
+      <a class="ah-pill ah-pill--wide" routerLink="/login" [queryParams]="{ returnUrl: '/app' }">Sign in</a>
+      <a class="p-btn p-btn--primary ph-cta" routerLink="/get-started">Get started</a>
+    }
+    <button type="button" class="ah-pill ah-theme ph-theme" (click)="toggleTheme()" [attr.aria-label]="theme() === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'">
+      @if (theme() === 'dark') {
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      } @else {
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+      }
+    </button>
+    <app-platform-menu [isAdmin]="isAdmin" [isLoggedIn]="isLoggedIn" [userName]="userName" [userEmail]="userEmail" (signOut)="signOut.emit()" />
+  </div>
+</header>

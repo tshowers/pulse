@@ -1,0 +1,76 @@
+:host { display: block; }
+
+.pb {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  padding: 0 0 20px;
+}
+
+.pb-back { width: 40px; height: 40px; }
+
+.pb-title { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+
+.pb-name {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pb-sub { font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+.pb-sub.is-live { color: var(--t-green-fg); font-weight: 700; }
+.pb-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--t-green-fg); }
+
+.pb-steps { display: flex; justify-content: center; gap: 6px; }
+
+.pb-step {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 16px 0 6px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.pb-step:hover { color: var(--text); }
+.pb-step:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+
+.pb-step__n {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.pb-step.is-on { background: var(--text); color: var(--bg); }
+.pb-step.is-on .pb-step__n { background: var(--bg); color: var(--text); }
+.pb-step.is-done { background: var(--surface); color: var(--text); }
+.pb-step.is-done .pb-step__n { background: var(--t-green); color: var(--t-green-fg); }
+.pb-step.is-locked { cursor: default; }
+
+.pb-actions { display: flex; justify-content: flex-end; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+@media (max-width: 1080px) {
+  .pb { grid-template-columns: auto minmax(0, 1fr) auto; }
+  .pb-steps { grid-column: 1 / -1; grid-row: 2; justify-content: flex-start; }
+}
+
+@media (max-width: 760px) {
+  .pb { grid-template-columns: auto minmax(0, 1fr); gap: 10px; }
+  .pb-actions { grid-column: 1 / -1; grid-row: 3; justify-content: flex-start; }
+  .pb-steps { gap: 4px; }
+  .pb-step { flex: 1; height: 38px; padding: 0 10px 0 5px; font-size: 13px; }
+}

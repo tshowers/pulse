@@ -153,20 +153,37 @@ describe( 'SurveyApiService', () => {
     expect( completed ).toBeTrue();
   } );
 
-  it( 'publishes a survey with a POST to /surveys/:id/publish', () => {
-    service.publishSurvey( 'survey-1' ).subscribe( ( result ) => {
-      expect( result ).toEqual( { id: 'survey-1', status: 'published', visibility: 'public' } );
+  it( 'publishes a survey with a POST to /surveys/:id/publish, sending the Share settings', () => {
+    service.publishSurvey( 'survey-1', { closeRule: { type: 'count', value: 50 }, collectIdentity: true } ).subscribe( ( result ) => {
+      expect( result ).toEqual( jasmine.objectContaining( { id: 'survey-1', status: 'published', visibility: 'link_only' } ) );
     } );
 
     const req = httpMock.expectOne( `${baseUrl}/survey-1/publish` );
     expect( req.request.method ).toBe( 'POST' );
-    expect( req.request.body ).toEqual( {} );
-    req.flush( { id: 'survey-1', status: 'published', visibility: 'public' } );
+    expect( req.request.body ).toEqual( { closeRule: { type: 'count', value: 50 }, collectIdentity: true } );
+    req.flush( { id: 'survey-1', status: 'published', visibility: 'link_only' } );
+  } );
+
+  it( 'asks TODD for a draft, a review, and next-move actions on their own endpoints', () => {
+    service.draftWithTodd( 'Are clients happy?' ).subscribe();
+    const draft = httpMock.expectOne( `${baseUrl}/todd/draft` );
+    expect( draft.request.body ).toEqual( { prompt: 'Are clients happy?' } );
+    draft.flush( { title: 'T', description: '', questions: [] } );
+
+    service.reviewWithTodd( 'survey-1', { title: 'T', description: '', questions: [] } ).subscribe();
+    httpMock.expectOne( `${baseUrl}/survey-1/todd/review` ).flush( { suggestions: [], hash: 'h' } );
+
+    service.anotherNextMove( 'survey-1' ).subscribe();
+    httpMock.expectOne( `${baseUrl}/survey-1/todd/next-move/alternative` ).flush( {} );
+    service.draftNextMoveEmail( 'survey-1' ).subscribe();
+    httpMock.expectOne( `${baseUrl}/survey-1/todd/next-move/email` ).flush( {} );
+    service.addNextMoveTask( 'survey-1' ).subscribe();
+    httpMock.expectOne( `${baseUrl}/survey-1/todd/next-move/task` ).flush( { taskId: 't', alreadyAdded: false } );
   } );
 
   it( 'unpublishes a survey with a POST to /surveys/:id/unpublish', () => {
     service.unpublishSurvey( 'survey-1' ).subscribe( ( result ) => {
-      expect( result ).toEqual( { id: 'survey-1', status: 'draft', visibility: 'private' } );
+      expect( result ).toEqual( jasmine.objectContaining( { id: 'survey-1', status: 'draft', visibility: 'private' } ) );
     } );
 
     const req = httpMock.expectOne( `${baseUrl}/survey-1/unpublish` );

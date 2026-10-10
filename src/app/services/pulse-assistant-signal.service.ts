@@ -66,12 +66,15 @@ export class PulseAssistantSignalService {
   private readonly activitySubject = new Subject<PulseAssistantActivityEvent>();
   private readonly unreadSubject = new BehaviorSubject<boolean>( false );
   private readonly readySubject = new BehaviorSubject<boolean>( false );
+  private readonly openSubject = new Subject<void>();
 
   readonly pageContext$ = this.pageContextSubject.asObservable();
   readonly transcriptIn$ = this.transcriptInSubject.asObservable();
   readonly activity$ = this.activitySubject.asObservable();
   readonly unread$ = this.unreadSubject.asObservable();
   readonly ready$ = this.readySubject.asObservable();
+  /** "Ask TODD" buttons (Help) ask the launcher to open the chat. */
+  readonly openRequests$ = this.openSubject.asObservable();
 
   get currentPageContext (): PulseAssistantPageContext | null {
     return this.pageContextSubject.value;
@@ -99,6 +102,10 @@ export class PulseAssistantSignalService {
 
   clearAssistantUnread (): void {
     this.unreadSubject.next( false );
+  }
+
+  openAssistant (): void {
+    this.openSubject.next();
   }
 
   setSignalReady (): void {

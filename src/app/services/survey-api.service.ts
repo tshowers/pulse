@@ -2,7 +2,19 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { Survey, SurveyListResult, SurveyStatus, SurveyVisibility } from '../models/survey.model';
+import {
+  PublicSurvey,
+  Survey,
+  SurveyCloseRule,
+  SurveyListResult,
+  SurveyResults,
+  SurveyStatus,
+  SurveyVisibility,
+  ToddDraft,
+  ToddEmailDraft,
+  ToddInsights,
+  ToddSuggestion,
+} from '../models/survey.model';
 import {
   SurveyNlpSearchRequest,
   SurveyNlpSearchResponse,
@@ -36,7 +48,12 @@ export interface SurveyResponseRecord {
   surveyId: string;
   submittedAt: string | Date;
   tenantId: string | null;
+  /** Legacy positional answers; prefer `answers`. */
   responses: any[];
+  /** Answers keyed by question id. */
+  answers?: Record<string, unknown>;
+  /** Only when the pulse asked for name and email. */
+  respondent?: { name: string; email: string; };
 }
 
 export interface PublishSurveyResult {
@@ -48,8 +65,17 @@ export interface PublishSurveyResult {
 
 export interface PublicSurveyResponsePayload {
   surveyId: string;
-  responses: any[];
+  /** Answers keyed by question id. */
+  answers?: Record<string, unknown>;
+  /** Legacy positional answers, for older callers. */
+  responses?: any[];
+  respondent?: { name: string; email: string; };
   submittedAt: Date;
+}
+
+export interface PublishSurveyOptions {
+  closeRule?: SurveyCloseRule;
+  collectIdentity?: boolean;
 }
 
 
@@ -90,16 +116,65 @@ export class SurveyApiService {
     return this.http.get<Survey | null>( `${this.baseUrl}/${id}` );
   }
 
-  getPublicSurveyById ( id: string ): Observable<Survey | null> {
-    return this.http.get<Survey | null>( `${environment.backendURL}/public/surveys/${id}` );
+  getPublicSurveyById ( id: string ): Observable<PublicSurvey | null> {
+    return this.http.get<PublicSurvey | null>( `${environment.backendURL}/public/surveys/${id}` );
   }
 
-  publishSurvey ( id: string ): Observable<PublishSurveyResult> {
-    return this.http.post<PublishSurveyResult>( `${this.baseUrl}/${id}/publish`, {} );
+  publishSurvey ( id: string, options: PublishSurveyOptions = {} ): Observable<Survey> {
+    return this.http.post<Survey>( `${this.baseUrl}/${id}/publish`, options );
   }
 
-  unpublishSurvey ( id: string ): Observable<PublishSurveyResult> {
-    return this.http.post<PublishSurveyResult>( `${this.baseUrl}/${id}/unpublish`, {} );
+  /** "Close now": stop taking answers. */
+  closeSurvey ( id: string ): Observable<Survey> {
+    return this.http.post<Survey>( `${this.baseUrl}/${id}/close`, {} );
+  }
+
+  /** Opening Results resets the "N new" badge. */
+  markViewed ( id: string ): Observable<Survey> {
+    return this.http.post<Survey>( `${this.baseUrl}/${id}/viewed`, {} );
+  }
+
+  /** The owner tried their pulse in preview (Share checklist, Getting started). */
+  markTried ( id: string ): Observable<Survey> {
+    return this.http.post<Survey>( `${this.baseUrl}/${id}/tried`, {} );
+  }
+
+  getResults ( id: string ): Observable<SurveyResults> {
+    return this.http.get<SurveyResults>( `${this.baseUrl}/${id}/results` );
+  }
+
+  getInsights ( id: string ): Observable<ToddInsights> {
+    return this.http.get<ToddInsights>( `${this.baseUrl}/${id}/insights` );
+  }
+
+  refreshInsights ( id: string ): Observable<ToddInsights> {
+    return this.http.post<ToddInsights>( `${this.baseUrl}/${id}/insights/refresh`, {} );
+  }
+
+  /** "Write my questions": TODD drafts a pulse from one sentence (not saved). */
+  draftWithTodd ( prompt: string ): Observable<ToddDraft> {
+    return this.http.post<ToddDraft>( `${this.baseUrl}/todd/draft`, { prompt } );
+  }
+
+  /** TODD's review of the draft as it is on screen. */
+  reviewWithTodd ( id: string, draft: Pick<Survey, 'title' | 'description' | 'questions'> ): Observable<{ suggestions: ToddSuggestion[]; hash: string; }> {
+    return this.http.post<{ suggestions: ToddSuggestion[]; hash: string; }>( `${this.baseUrl}/${id}/todd/review`, draft );
+  }
+
+  anotherNextMove ( id: string ): Observable<ToddInsights> {
+    return this.http.post<ToddInsights>( `${this.baseUrl}/${id}/todd/next-move/alternative`, {} );
+  }
+
+  draftNextMoveEmail ( id: string ): Observable<ToddEmailDraft> {
+    return this.http.post<ToddEmailDraft>( `${this.baseUrl}/${id}/todd/next-move/email`, {} );
+  }
+
+  addNextMoveTask ( id: string ): Observable<{ taskId: string; alreadyAdded: boolean; }> {
+    return this.http.post<{ taskId: string; alreadyAdded: boolean; }>( `${this.baseUrl}/${id}/todd/next-move/task`, {} );
+  }
+
+  unpublishSurvey ( id: string ): Observable<Survey> {
+    return this.http.post<Survey>( `${this.baseUrl}/${id}/unpublish`, {} );
   }
 
   submitSurveyResponse ( id: string, payload: SurveyResponsePayload ): Observable<SubmitSurveyResponseResult> {

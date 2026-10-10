@@ -101,6 +101,7 @@ export class PulseAssistantLauncherComponent implements OnInit, OnDestroy {
       this.authService.getTenantId().subscribe( ( id ) => ( this.tenantId = id || null ) ),
       this.assistantBus.pageContext$.subscribe( ( ctx ) => { this.pageContext = ctx; this.refreshGuidanceCard(); } ),
       this.assistantBus.unread$.subscribe( ( unread ) => ( this.hasUnread = unread ) ),
+      this.assistantBus.openRequests$.subscribe( () => { if ( !this.showAssistant ) this.toggleAssistant(); } ),
     );
 
     // Bound manually (rather than @HostListener) and outside Angular's zone:
@@ -189,224 +190,49 @@ export class PulseAssistantLauncherComponent implements OnInit, OnDestroy {
     };
   }
 
+  /** One short card per Pulse page (pages set `feature: 'pulse'` in their context). */
   private computeGuidanceCard ( ctx: PulseAssistantPageContext | null ): PulseGuidanceCard | null {
-    if ( !ctx || String( ctx.feature || '' ).toLowerCase() !== 'surveys' ) return null;
-
-    switch ( String( ctx.page || '' ).toLowerCase() ) {
-      case 'survey-home': return this.surveyHomeCard( ctx );
-      case 'survey-list': return this.surveyListCard( ctx );
-      case 'survey-add': return this.surveyAddCard( ctx );
-      case 'survey-view': return this.surveyViewCard( ctx );
-      case 'survey-dashboard': return this.surveyDashboardCard( ctx );
-      default: return null;
-    }
-  }
-
-  private surveyHomeCard ( ctx: PulseAssistantPageContext ): PulseGuidanceCard {
+    if ( !ctx || ctx.feature !== 'pulse' ) return null;
     const summary = ctx.summary || {};
-    const total = Number( summary['totalSurveyCount'] || 0 );
-    const draftCount = Number( summary['draftSurveyCount'] || 0 );
-    const dormantCount = Number( summary['dormantPublishedCount'] || 0 );
-    const totalResponses = Number( summary['totalResponses'] || 0 );
-    const healthScore = Number( summary['customerHealthScore'] || 0 );
 
-    if ( total === 0 ) {
-      return {
-        eyebrow: 'GETTING STARTED',
-        stageLabel: 'No pulses yet',
-        tone: 'attention',
-        icon: 'fa-solid fa-triangle-exclamation',
-        title: 'Create your first Pulse',
-        message: "TODD doesn't see any surveys yet. Build one to start collecting customer signal.",
-        whyItMatters: 'Pulse only has something to say once there are responses to read.',
-        bullets: ['Describe what you want to learn and TODD can draft the questions.'],
-      };
+    switch ( ctx.page ) {
+      case 'home': {
+        const total = Number( summary['all'] || 0 );
+        return {
+          eyebrow: 'PULSES',
+          stageLabel: total ? `${total} pulse${total === 1 ? '' : 's'}` : 'No pulses yet',
+          tone: total ? 'neutral' : 'attention',
+          icon: 'fa-solid fa-list',
+          title: total ? 'Every pulse shows the one thing it needs' : 'Ask your first question',
+          message: total ? 'Live pulses open their results, drafts open Write or Share. TODD’s latest next move sits on top.' : 'Describe what you want to find out and TODD drafts the questions.',
+          whyItMatters: 'A pulse only says something once people have answered it.',
+          bullets: ['Ask me which pulse needs attention, or what a summary means.'],
+        };
+      }
+      case 'write':
+        return {
+          eyebrow: 'STEP 1 · WRITE',
+          stageLabel: `${Number( summary['questions'] || 0 )} questions`,
+          tone: 'progress',
+          icon: 'fa-solid fa-pen',
+          title: 'Short, neutral questions get the most answers',
+          message: 'Everything saves as you type. TODD’s review on the right suggests fixes you can apply in one tap.',
+          whyItMatters: 'Three to five questions is the sweet spot: every extra one means fewer people finish.',
+          bullets: ['Use Try it to answer it yourself before you share it.'],
+        };
+      case 'results':
+        return {
+          eyebrow: 'STEP 3 · RESULTS',
+          stageLabel: `${Number( summary['answers'] || 0 )} answers`,
+          tone: summary['toddSummary'] ? 'ready' : 'progress',
+          icon: 'fa-solid fa-chart-simple',
+          title: summary['toddSummary'] ? 'Ask me about these results' : 'TODD writes a summary at 5 answers',
+          message: summary['toddSummary'] ? String( summary['toddSummary'] ) : 'Question cards fill in as people answer. The summary and a next move appear once 5 people have answered.',
+          whyItMatters: 'A result is only useful once it changes what you do next.',
+          bullets: summary['nextMove'] ? [`Next move: ${summary['nextMove']}`] : [],
+        };
+      default:
+        return null;
     }
-
-    if ( dormantCount > 0 ) {
-      return {
-        eyebrow: 'CUSTOMER HEALTH',
-        stageLabel: 'Needs attention',
-        tone: 'attention',
-        icon: 'fa-solid fa-triangle-exclamation',
-        title: dormantCount === 1 ? '1 published Pulse has no responses yet' : `${dormantCount} published Pulses have no responses yet`,
-        message: 'A published survey with zero responses isn’t generating signal. Share it again or check that it’s reaching the right people.',
-        whyItMatters: 'Response volume is what turns a Pulse into usable customer health data.',
-        bullets: [`${total.toLocaleString()} total Pulses, ${totalResponses.toLocaleString()} responses so far.`],
-      };
-    }
-
-    if ( draftCount > 0 ) {
-      return {
-        eyebrow: 'CUSTOMER HEALTH',
-        stageLabel: 'Drafts pending',
-        tone: 'progress',
-        icon: 'fa-solid fa-hourglass-half',
-        title: `${draftCount} draft Pulse${draftCount === 1 ? '' : 's'} waiting to publish`,
-        message: 'Finish and publish these to start collecting responses.',
-        whyItMatters: 'A draft collects nothing until it’s published.',
-        bullets: [],
-      };
-    }
-
-    return {
-      eyebrow: 'CUSTOMER HEALTH',
-      stageLabel: healthScore >= 70 ? 'Healthy' : healthScore >= 40 ? 'Mixed' : 'Watch',
-      tone: healthScore >= 70 ? 'ready' : healthScore >= 40 ? 'progress' : 'attention',
-      icon: healthScore >= 70 ? 'fa-solid fa-circle-check' : 'fa-solid fa-hourglass-half',
-      title: `Customer health score: ${healthScore}`,
-      message: `${total.toLocaleString()} Pulses, ${totalResponses.toLocaleString()} responses collected. Review the diagnosis and treatment log for where signal is missing or improving.`,
-      whyItMatters: 'The health score is only as good as the response volume behind it - keep Pulses active to keep it current.',
-      bullets: [],
-    };
-  }
-
-  private surveyListCard ( ctx: PulseAssistantPageContext ): PulseGuidanceCard {
-    const summary = ctx.summary || {};
-    const hasSurveys = summary['hasSurveys'] === true;
-    const surveyCount = Number( summary['surveyCount'] || 0 );
-
-    if ( !hasSurveys ) {
-      return {
-        eyebrow: 'PULSE LIST',
-        stageLabel: 'Empty',
-        tone: 'attention',
-        icon: 'fa-solid fa-triangle-exclamation',
-        title: 'No Pulses yet',
-        message: 'Create one to see it listed here.',
-        whyItMatters: 'This is where you browse, sort, and open every survey you’ve built.',
-        bullets: [],
-      };
-    }
-
-    return {
-      eyebrow: 'PULSE LIST',
-      stageLabel: 'Browsing',
-      tone: 'neutral',
-      icon: 'fa-solid fa-list',
-      title: `Browsing ${surveyCount.toLocaleString()} Pulses`,
-      message: 'Click any Pulse to open it, sort by clicking a column header, or open the dashboard for response detail.',
-      whyItMatters: 'Status (draft/published/archived) tells you which surveys are actually live.',
-      bullets: [],
-    };
-  }
-
-  private surveyAddCard ( ctx: PulseAssistantPageContext ): PulseGuidanceCard {
-    const summary = ctx.summary || {};
-    const isEditing = summary['isEditing'] === true;
-    const hasTitle = summary['hasTitle'] === true;
-    const questionCount = Number( summary['questionCount'] || 0 );
-
-    if ( !hasTitle ) {
-      return {
-        eyebrow: isEditing ? 'EDIT PULSE' : 'CREATE PULSE',
-        stageLabel: 'Getting started',
-        tone: 'attention',
-        icon: 'fa-solid fa-triangle-exclamation',
-        title: 'Give this Pulse a title',
-        message: 'A clear title helps respondents (and TODD) know what this survey is actually asking about.',
-        whyItMatters: 'Titles show up everywhere - the list, the dashboard, and the link you share.',
-        bullets: [],
-      };
-    }
-
-    if ( questionCount === 0 ) {
-      return {
-        eyebrow: isEditing ? 'EDIT PULSE' : 'CREATE PULSE',
-        stageLabel: 'No questions yet',
-        tone: 'progress',
-        icon: 'fa-solid fa-hourglass-half',
-        title: 'Add at least one question',
-        message: 'Describe what you want to learn - ask TODD to draft questions from that description, or add them one at a time.',
-        whyItMatters: 'A Pulse with no questions has nothing to publish.',
-        bullets: [],
-      };
-    }
-
-    return {
-      eyebrow: isEditing ? 'EDIT PULSE' : 'CREATE PULSE',
-      stageLabel: 'Ready',
-      tone: 'ready',
-      icon: 'fa-solid fa-circle-check',
-      title: `${questionCount} question${questionCount === 1 ? '' : 's'} ready`,
-      message: 'This Pulse has a title and questions. Save it, then publish when you’re ready to start collecting responses.',
-      whyItMatters: 'Nothing collects responses until it’s saved and published.',
-      bullets: [],
-    };
-  }
-
-  private surveyViewCard ( ctx: PulseAssistantPageContext ): PulseGuidanceCard {
-    const summary = ctx.summary || {};
-    const status = String( summary['surveyStatus'] || 'draft' );
-    const responseCount = Number( summary['responseCount'] || 0 );
-
-    if ( status !== 'published' ) {
-      return {
-        eyebrow: 'PULSE',
-        stageLabel: 'Draft',
-        tone: 'attention',
-        icon: 'fa-solid fa-triangle-exclamation',
-        title: 'This Pulse is still a draft',
-        message: 'Publish it to start collecting responses - or preview it first to see what respondents will see.',
-        whyItMatters: 'A draft is invisible to everyone but you.',
-        bullets: [],
-      };
-    }
-
-    if ( responseCount === 0 ) {
-      return {
-        eyebrow: 'PULSE',
-        stageLabel: 'Published, no responses',
-        tone: 'progress',
-        icon: 'fa-solid fa-hourglass-half',
-        title: 'Published, but no responses yet',
-        message: 'Copy the share link and get it in front of respondents.',
-        whyItMatters: 'A published Pulse with zero responses isn’t generating any signal yet.',
-        bullets: [],
-      };
-    }
-
-    return {
-      eyebrow: 'PULSE',
-      stageLabel: 'Collecting',
-      tone: 'ready',
-      icon: 'fa-solid fa-circle-check',
-      title: `${responseCount.toLocaleString()} response${responseCount === 1 ? '' : 's'} so far`,
-      message: 'Open the results dashboard to see the strongest response signals and question-level detail.',
-      whyItMatters: 'Response volume is what makes the dashboard’s signal detection meaningful.',
-      bullets: [],
-      nextStage: 'Results dashboard',
-    };
-  }
-
-  private surveyDashboardCard ( ctx: PulseAssistantPageContext ): PulseGuidanceCard {
-    const summary = ctx.summary || {};
-    const totalResponses = Number( summary['totalResponses'] || 0 );
-    const completionPercent = Number( summary['completionPercent'] || 0 );
-    const engagementPercent = Number( summary['engagementPercent'] || 0 );
-
-    if ( totalResponses === 0 ) {
-      return {
-        eyebrow: 'RESULTS',
-        stageLabel: 'No responses',
-        tone: 'attention',
-        icon: 'fa-solid fa-triangle-exclamation',
-        title: 'No responses yet',
-        message: 'There’s nothing to analyze until responses come in. Share the survey link to start collecting them.',
-        whyItMatters: 'This dashboard needs response data to have anything to show.',
-        bullets: [],
-      };
-    }
-
-    return {
-      eyebrow: 'RESULTS',
-      stageLabel: engagementPercent >= 60 ? 'Strong signal' : engagementPercent >= 30 ? 'Building' : 'Early',
-      tone: engagementPercent >= 60 ? 'ready' : engagementPercent >= 30 ? 'progress' : 'attention',
-      icon: engagementPercent >= 60 ? 'fa-solid fa-circle-check' : 'fa-solid fa-hourglass-half',
-      title: `${totalResponses.toLocaleString()} response${totalResponses === 1 ? '' : 's'} collected`,
-      message: `${completionPercent}% completion rate, ${engagementPercent}% engagement. Review the strongest response signals to see what’s worth acting on first.`,
-      whyItMatters: 'Completion and engagement together tell you whether the questions themselves are working, not just whether people started.',
-      bullets: [],
-    };
   }
 }

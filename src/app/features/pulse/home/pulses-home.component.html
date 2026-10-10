@@ -1,0 +1,61 @@
+<div class="p-page">
+  @if (surveys() === null && !loadFailed()) {
+    <div class="h-loading" aria-busy="true"><span class="h-spinner"></span></div>
+  } @else if (surveys() === null && loadFailed()) {
+    <div class="p-card h-failed"><span>Your pulses didn't load.</span><button type="button" class="p-btn p-btn--bg" (click)="load()">Try again</button></div>
+  } @else if (rows().length === 0) {
+    <app-new-pulse [embedded]="true" />
+  } @else {
+    <div class="h">
+      <div class="h-head">
+        <h1>{{ hello() }}</h1>
+        <p>Ask a few questions, share one link, and TODD tells you what the answers mean.</p>
+      </div>
+
+      @if (nextMove(); as move) {
+        <section class="p-todd h-move" aria-label="Your next move">
+          <img class="p-avatar" src="assets/avatar-todd-sm.png" alt="" width="48" height="48" />
+          <div class="h-move__body">
+            <span class="p-eyebrow h-move__eyebrow">Your next move · {{ move.survey.title }}</span>
+            <span class="h-move__text">{{ move.text }}</span>
+          </div>
+          <div class="h-move__actions">
+            <a class="p-btn p-btn--primary" [routerLink]="['/survey', move.survey.id, 'results']">Read TODD's summary</a>
+            <button type="button" class="p-btn p-btn--bg" (click)="putOff(move.moveId)">Later</button>
+          </div>
+        </section>
+      }
+
+      <div class="h-filters" role="tablist" aria-label="Show">
+        @for (f of filters; track f.key) {
+          <button type="button" class="p-chip" role="tab" [class.is-on]="filter() === f.key" [attr.aria-selected]="filter() === f.key" (click)="filter.set(f.key)">
+            {{ f.label }}<span class="p-chip__n">{{ counts()[f.key] }}</span>
+          </button>
+        }
+      </div>
+
+      <div class="h-rows">
+        @for (row of visibleRows(); track row.survey.id) {
+          <article class="h-row">
+            <span class="p-tag h-row__tag" [attr.data-tint]="row.tint">{{ row.label }}</span>
+            <div class="h-row__main">
+              <a class="h-row__title" [routerLink]="row.primary.route">{{ row.survey.title || 'Untitled pulse' }}
+                @if (row.newCount) { <span class="p-badge">{{ row.newCount }} new</span> }
+              </a>
+              <span class="h-row__meta">{{ row.meta }}</span>
+            </div>
+            <span class="h-row__hint">{{ row.hint }}</span>
+            <div class="h-row__actions">
+              @if (row.secondary) {
+                <button type="button" class="p-btn p-btn--bg h-row__btn" (click)="act(row, row.secondary)">{{ row.secondary.label }}</button>
+              }
+              <button type="button" class="p-btn p-btn--dark h-row__btn" (click)="act(row, row.primary)">{{ row.primary.label }}<app-icon name="right" /></button>
+            </div>
+          </article>
+        } @empty {
+          <p class="h-empty">Nothing here yet.</p>
+        }
+      </div>
+    </div>
+  }
+</div>

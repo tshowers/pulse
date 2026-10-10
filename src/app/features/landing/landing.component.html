@@ -1,121 +1,85 @@
-<div class="fl-page">
-  <section class="fl-hero">
-    <div class="fl-hero__inner">
-      <div class="fl-hero__copy">
-        <div class="fl-eyebrow"><a href="https://todd.taliferro.tech">Home</a> · Pulse · TODD</div>
-        <h1 class="fl-hero__headline">Every response is a signal</h1>
-        <p>TODD reads it so you do not have to.</p>
-        <p class="fl-hero__lead">Pulse is a survey and feedback tool: build a pulse for free, publish it to collect real responses, and watch a results dashboard tally the answers as they arrive - instead of a spreadsheet nobody opens again.</p>
-        <div class="fl-hero__actions">
-          <a class="fl-btn fl-btn--primary" routerLink="/get-started" (click)="onPrimaryCtaClick()">Get started</a>
-          <button class="fl-app-store" type="button" disabled aria-label="Download Pulse on the App Store — coming soon">
-            <span class="fl-app-store__apple" aria-hidden="true">&#63743;</span>
-            <span class="fl-app-store__label"><small>Download on the</small><strong>App Store</strong></span>
-          </button>
+<div class="lp">
+  <section class="lp-hero">
+    <div class="lp-hero__copy">
+      <span class="p-tag lp-kicker" data-tint="blue">Surveys, read by TODD</span>
+      <h1 class="lp-h1">Every response is a signal.</h1>
+      <p class="lp-sub">TODD reads it so you do not have to.</p>
+      <p class="lp-lead">Write a few questions, share one link, and watch answers arrive live. TODD reads every one, tells you what they mean, and suggests your next move.</p>
+      <div class="lp-actions">
+        <a class="p-btn p-btn--primary lp-btn" routerLink="/get-started" (click)="onPrimaryCtaClick()">Get started free</a>
+        <span class="lp-soon" aria-disabled="true">iPhone app coming soon</span>
+      </div>
+      <span class="lp-note">Free to write and try. Publishing is on the paid plan.</span>
+    </div>
+
+    <div class="lp-demo" aria-label="Example: what TODD gives you">
+      <div class="p-todd lp-demo__todd">
+        <div class="lp-demo__source"><img class="p-avatar" src="assets/avatar-todd-sm.png" alt="" width="28" height="28" /><span>What TODD heard · 38 answers</span></div>
+        <span class="lp-demo__headline">Clients like the work and most will renew. The ones who might leave are frustrated by slow replies.</span>
+        <div class="lp-demo__move">
+          <span class="p-eyebrow lp-demo__eyebrow">Your next move</span>
+          <span class="lp-demo__text">Email the 8 "Not sure" clients this week and promise a reply within one business day.</span>
+          <span class="p-btn p-btn--primary p-btn--sm lp-demo__btn" aria-hidden="true"><app-icon name="mail" />Draft the email</span>
         </div>
       </div>
-      <div class="fl-hero__visual">
-        <div class="fl-pulse-logo" role="img" aria-label="Pulse">
-          <svg class="fl-pulse-logo__svg" viewBox="0 0 304 298" aria-hidden="true" focusable="false">
-            <defs>
-              <linearGradient id="fl-pulse-logo-gradient" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0" stop-color="#123d8b" />
-                <stop offset="1" stop-color="#061b4e" />
-              </linearGradient>
-            </defs>
-            <rect class="fl-pulse-logo__tile" x="5" y="5" width="294" height="278" rx="73" fill="url(#fl-pulse-logo-gradient)" />
-            <path class="fl-pulse-logo__wave fl-pulse-logo__wave--base" pathLength="1" d="M42 149 H80 L91 149 L101 121 L111 177 L124 97 L140 193 L153 64 L171 233 L188 101 L202 184 L214 122 L226 149 H262" />
-            <path class="fl-pulse-logo__wave fl-pulse-logo__wave--signal" pathLength="1" d="M42 149 H80 L91 149 L101 121 L111 177 L124 97 L140 193 L153 64 L171 233 L188 101 L202 184 L214 122 L226 149 H262" />
-          </svg>
-        </div>
-      </div>
-    </div>
-  </section>
-  <section class="fl-pain">
-    <div class="fl-section__inner">
-      <div class="fl-section__heading">
-        <div class="fl-eyebrow fl-eyebrow--light">The problem</div>
-        <h2>You asked the question. Who is actually reading the answers?</h2>
-      </div>
-      <div class="fl-pain__grid">
-        <article class="fl-pain__card" *ngFor="let p of painPoints">
-          <div class="fl-pain__icon">✕</div>
-          <h3>{{ p.heading }}</h3>
-          <p>{{ p.copy }}</p>
-        </article>
-      </div>
-    </div>
-  </section>
-  <section class="fl-solution">
-    <div class="fl-section__inner">
-      <div class="fl-section__heading">
-        <div class="fl-eyebrow">What Pulse gives you</div>
-        <h2>What if the results dashboard did the reading for you?</h2>
-        <p class="fl-section__sub">Pulse is not a form builder you have to babysit - it is a survey loop that stays useful because the dashboard updates itself as responses come in.</p>
-      </div>
-      <div class="fl-outcomes__grid">
-        <article class="fl-outcome" *ngFor="let o of outcomes; let i = index" [class.fl-outcome--alt]="i % 2 !== 0">
-          <div class="fl-outcome__kicker">{{ o.kicker }}</div>
-          <h3 class="fl-outcome__heading">{{ o.heading }}</h3>
-          <p class="fl-outcome__copy">{{ o.copy }}</p>
-        </article>
-      </div>
-    </div>
-  </section>
-  <section class="fl-stats">
-    <div class="fl-stats__inner">
-      <div class="fl-stat" *ngFor="let s of stats">
-        <div class="fl-stat__value">{{ s.value }}</div>
-        <div class="fl-stat__label">{{ s.label }}</div>
-        <div class="fl-stat__copy">{{ s.copy }}</div>
-      </div>
-    </div>
-  </section>
-  <section class="fl-how">
-    <div class="fl-section__inner">
-      <div class="fl-section__heading">
-        <div class="fl-eyebrow">How Pulse works</div>
-        <h2>A response is not a signal until someone reads it.</h2>
-      </div>
-      <div class="fl-steps">
-        <div class="fl-step" *ngFor="let step of steps; let last = last">
-          <div class="fl-step__number">{{ step.number }}</div>
-          <div class="fl-step__content">
-            <h3>{{ step.title }}</h3>
-            <p>{{ step.copy }}</p>
+      <div class="lp-demo__q">
+        <span class="lp-demo__qtitle">Will you renew with us next year?</span>
+        @for (bar of sampleBars; track bar.label) {
+          <div class="lp-bar">
+            <div class="lp-bar__row"><span>{{ bar.label }}</span><b>{{ bar.value }}</b></div>
+            <span class="lp-bar__track"><span [style.width.%]="bar.pct" [style.background]="bar.color"></span></span>
           </div>
-        </div>
+        }
       </div>
     </div>
   </section>
-  <section class="fl-faq">
-    <div class="fl-section__inner">
-      <div class="fl-section__heading">
-        <div class="fl-eyebrow">Questions worth asking</div>
-        <h2>Pulse turns feedback into a signal you can use.</h2>
-      </div>
-      <div class="fl-faq__list">
-        <details class="fl-faq__item" *ngFor="let faq of faqs">
-          <summary>{{ faq.question }}</summary>
-          <p>{{ faq.answer }}</p>
-        </details>
-      </div>
+
+  <section class="lp-section">
+    <h2 class="lp-h2">Three steps, every time</h2>
+    <div class="lp-steps">
+      @for (step of steps; track step.n) {
+        <div class="lp-step p-tinted" [attr.data-tint]="step.tint">
+          <span class="lp-step__n">{{ step.n }}</span>
+          <span class="lp-step__title">{{ step.title }}</span>
+          <span class="lp-step__copy">{{ step.copy }}</span>
+        </div>
+      }
     </div>
   </section>
-  <section class="fl-cta">
-    <div class="fl-section__inner">
-      <div class="fl-cta__shell">
-        <div class="fl-cta__copy">
-          <div class="fl-eyebrow fl-eyebrow--light">Ask the next question</div>
-          <h2>The dashboard is ready before the first response comes in.</h2>
-          <p>Build the pulse, publish it, and share the link. TODD starts tallying the moment the first answer arrives - so the read on the room is ready whenever you go looking for it.</p>
-        </div>
-        <div class="fl-cta__actions">
-          <a class="fl-btn fl-btn--primary fl-btn--lg" routerLink="/get-started" (click)="onPrimaryCtaClick()">Get started</a>
-          <a class="fl-btn fl-btn--ghost fl-btn--lg" routerLink="/pricing" data-cy="landing-pricing">Pricing</a>
-        </div>
-      </div>
+
+  <section class="lp-section">
+    <div class="lp-section__head">
+      <span class="p-eyebrow">The problem</span>
+      <h2 class="lp-h2">You asked the question. Who is actually reading the answers?</h2>
     </div>
+    <div class="lp-pains">
+      @for (p of painPoints; track p.heading) {
+        <article class="p-card lp-pain"><h3>{{ p.heading }}</h3><p>{{ p.copy }}</p></article>
+      }
+    </div>
+  </section>
+
+  <section class="lp-section lp-faq">
+    <h2 class="lp-h2">Questions worth asking</h2>
+    <div class="lp-faq__list">
+      @for (faq of faqs; track faq.question; let i = $index) {
+        <div class="lp-faq__item">
+          <button type="button" class="lp-faq__q" [attr.aria-expanded]="openFaq() === i" [attr.aria-controls]="'lp-faq-' + i" (click)="toggleFaq(i)">
+            <span>{{ faq.question }}</span><span class="lp-faq__sign" aria-hidden="true">{{ openFaq() === i ? '−' : '+' }}</span>
+          </button>
+          <p class="lp-faq__a" [id]="'lp-faq-' + i" [hidden]="openFaq() !== i">{{ faq.answer }}</p>
+        </div>
+      }
+    </div>
+  </section>
+
+  <section class="lp-cta">
+    <div class="lp-cta__copy">
+      <h2>Ask your first question today.</h2>
+      <p>Tell TODD what you want to find out. She writes the questions in seconds.</p>
+    </div>
+    <a class="p-btn p-btn--primary lp-btn" routerLink="/get-started" (click)="onPrimaryCtaClick()">Get started free</a>
+    <a class="p-btn p-btn--bg lp-btn" routerLink="/pricing" data-cy="landing-pricing" (click)="onPricingCtaClick()">Pricing</a>
   </section>
 </div>
-<app-site-footer></app-site-footer>
+<app-site-footer><a routerLink="/about">About</a><a routerLink="/help">Help</a><a routerLink="/pricing">Pricing</a></app-site-footer>

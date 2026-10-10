@@ -1,6 +1,6 @@
 import { AsyncPipe, NgIf } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
-import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import { ActivatedRouteSnapshot, NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { map } from 'rxjs';
 import { filter } from 'rxjs';
 import { SwUpdate, VersionReadyEvent } from '@angular/service-worker';
@@ -8,14 +8,14 @@ import { SwUpdate, VersionReadyEvent } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { PulseAuthService } from './services/pulse-auth.service';
 import { ToastComponent } from './shared/toast/toast.component';
-import { PlatformMenuComponent } from './shared/platform-menu/platform-menu.component';
+import { PulseHeaderComponent } from './shared/pulse-header/pulse-header.component';
 import { PulseAssistantLauncherComponent } from './shared/page/assistant-box/pulse-assistant-launcher.component';
 import packageJson from '../../package.json';
 import { WriteAccessPromptComponent } from './shared/write-access/write-access-prompt.component';
 
 @Component({
   selector: 'app-root',
-  imports: [WriteAccessPromptComponent, RouterOutlet, ToastComponent, PlatformMenuComponent, PulseAssistantLauncherComponent, AsyncPipe, NgIf],
+  imports: [WriteAccessPromptComponent, RouterOutlet, ToastComponent, PulseHeaderComponent, PulseAssistantLauncherComponent, AsyncPipe, NgIf],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
@@ -39,12 +39,19 @@ export class AppComponent implements OnInit {
 
   title = 'pulse';
 
+  /** Routes with `data: { chrome: 'none' }` (the respondent's link, sign-in
+   * handoffs) draw no header, so the page is the whole window. */
+  showHeader = true;
+
   async signOut (): Promise<void> {
     await this.authService.signOut();
     await this.router.navigateByUrl( '/' );
   }
 
   ngOnInit (): void {
+    this.router.events.pipe( filter( event => event instanceof NavigationEnd ) ).subscribe( () => {
+      this.showHeader = this.deepestRoute( this.router.routerState.snapshot.root ).data['chrome'] !== 'none';
+    } );
     this.showUpdateNoticeAfterReload();
     if ( !environment.production ) return;
     window.addEventListener( 'error', this.handleWindowError, true );
@@ -142,8 +149,16 @@ export class AppComponent implements OnInit {
     void this.activateAndReload( version );
   }
 
+  private deepestRoute ( route: ActivatedRouteSnapshot ): ActivatedRouteSnapshot {
+    let current = route;
+    while ( current.firstChild ) current = current.firstChild;
+    return current;
+  }
+
+  /** On the Write step an update waits until they leave, so autosave isn't cut off. */
   private isEditingPulse (): boolean {
-    return ['/survey-edit', '/survey-dashboard'].some( route => this.router.url.split( '?' )[0].startsWith( route ) );
+    const path = this.router.url.split( '?' )[0];
+    return path.startsWith( '/survey-edit' ) || /^\/survey\/[^/]+\/write/.test( path );
   }
 
   private async activateAndReload ( version: string ): Promise<void> {

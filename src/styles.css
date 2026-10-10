@@ -1,98 +1,56 @@
+@import "@taliferro/ui/styles/tokens.css";
 @import "@taliferro/ui/styles/controls.css";
 @import "@taliferro/ui/styles/universal-menu.css";
 @import "@taliferro/ui/styles/site-footer.css";
-
-/* You can add global styles to this file, and also import other style files */
+@import "@taliferro/ui/styles/app-header.css";
 
 /*
- * Ported from frontend/src/styles.css :root - the brand blue scale plus the
- * --todd-* surface/text token system (light defaults + dark override) that
- * shared components like tab-bar and cockpit-command-deck build on via
- * var(--todd-*). Without these tokens and the dark-mode body rule below,
- * those components render with transparent/undefined backgrounds against a
- * plain white page in dark mode. Still not a port of the full 7000+ line
- * stylesheet - only the pieces pulse's ported components actually use.
+ * Pulse on the Find family tokens (taliferro-ui/PRODUCT-STANDARD.md part 1,
+ * design_handoff_todd_pulse). Colors, type and dark mode all come from
+ * tokens.css; nothing here defines its own dark mode.
+ *
+ * The --todd-* and --field-* names below are what the older pages (profile,
+ * support, get-started, get-the-app) were built on. They now point at the
+ * tokens, so those pages follow the same light/dark look without rewrites.
  */
 :root {
-  --tl-blue: #00bfff;
-  --tl-blue-mid: #0095cc;
-  --tl-blue-deep: #006a99;
-  --tl-blue-glow: rgba(0, 191, 255, 0.18);
+  --todd-panel-bg: var(--bg);
+  --todd-panel-border: var(--surface2);
+  --todd-panel-text: var(--text);
+  --todd-panel-subtext: var(--muted);
+  --todd-bg: var(--bg);
+  --todd-text: var(--text);
+  --todd-subtext: var(--muted);
+  --todd-border: var(--surface2);
+  --todd-surface-1: var(--surface);
+  --todd-surface-2: var(--surface2);
+  --todd-card-bg: var(--surface);
+  --tl-blue: var(--blue);
+  --tl-blue-mid: var(--blue);
+  --tl-blue-deep: var(--blue-ink);
+  --tl-blue-glow: color-mix(in srgb, var(--blue) 18%, transparent);
 
-  /* Core TODD surface/text tokens (light mode defaults) */
-  --todd-panel-bg: rgba(255, 255, 255, 0.94);
-  --todd-panel-border: rgba(0, 0, 0, .08);
-  --todd-panel-text: #222;
-  --todd-panel-subtext: #555;
-
-  --todd-bg: var(--todd-panel-bg);
-  --todd-text: var(--todd-panel-text);
-  --todd-subtext: var(--todd-panel-subtext);
-  --todd-border: var(--todd-panel-border);
-
-  --todd-surface-1: rgba(255, 255, 255, 0.92);
-  --todd-surface-2: rgba(248, 249, 250, 0.9);
-
-  --todd-card-bg: rgba(255, 255, 255, 0.92);
+  --field-bg: var(--bg);
+  --field-border: var(--surface2);
+  --field-placeholder: var(--muted);
+  --field-text: var(--text);
+  --field-shadow: none;
+  --focus-ring: var(--blue);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --todd-panel-bg: #0d1117;
-    --todd-panel-border: rgba(0, 191, 255, 0.12);
-    --todd-panel-text: #f0f6ff;
-    --todd-panel-subtext: #8ba4bd;
-
-    --todd-bg: var(--todd-panel-bg);
-    --todd-text: var(--todd-panel-text);
-    --todd-subtext: var(--todd-panel-subtext);
-    --todd-border: var(--todd-panel-border);
-
-    --todd-surface-1: #131c27;
-    --todd-surface-2: #1a2535;
-
-    --todd-card-bg: #1a2535;
-  }
+html,
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+}
 
 body {
-    background-color: var(--todd-bg);
-    color: var(--todd-text);
-  }
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
 }
 
-app-root > router-outlet + *:not(app-landing) { padding-top:4.5rem; box-sizing:border-box; }
-
-/* ─── TODD Global Field Styles ───────────────────────────────────────────────
- * Ported from frontend/src/styles.css - canonical input/select/textarea
- * styling for all TODD forms. Without it, .form-control/.form-select (used
- * throughout survey-add etc.) fall back to the browser's plain white input
- * chrome even when the surrounding page is dark.
- * ─────────────────────────────────────────────────────────────────────────── */
-:root {
-  --field-bg: linear-gradient(180deg, rgba(248, 250, 252, 0.95), rgba(241, 245, 249, 0.95));
-  --field-border: rgba(148, 163, 184, 0.22);
-  --field-placeholder: rgba(100, 116, 139, 0.88);
-  --field-text: #0f172a;
-  --field-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
-  --focus-ring: rgba(0, 149, 204, 0.55);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --field-bg: linear-gradient(180deg, rgba(27, 30, 36, 0.88), rgba(20, 23, 29, 0.82));
-    --field-border: rgba(148, 163, 184, 0.18);
-    --field-placeholder: rgba(148, 163, 184, 0.72);
-    --field-text: #f8fafc;
-    --field-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
-    --focus-ring: rgba(0, 191, 255, 0.65);
-  }
-
-  .form-select option,
-  .todd-select option {
-    background-color: #1e2127;
-    color: #f8fafc;
-  }
-}
+a { color: var(--blue-ink); }
 
 .form-control,
 .form-select,
@@ -101,51 +59,261 @@ app-root > router-outlet + *:not(app-landing) { padding-top:4.5rem; box-sizing:b
   width: 100%;
   min-height: 48px;
   border-radius: 16px;
-  border: 1px solid var(--field-border);
-  background: var(--field-bg);
-  color: var(--field-text);
-  box-shadow: var(--field-shadow);
+  border: 0;
+  background: var(--surface);
+  color: var(--text);
   padding: 0.85rem 0.95rem;
-  font-family: 'Segoe UI', 'Inter', sans-serif;
+  font-family: var(--font);
   font-size: 0.95rem;
 }
 
-.form-select,
-.todd-select {
-  padding-right: 2.5rem;
-  font-weight: 700;
-}
-
-.form-control::placeholder,
-textarea.form-control::placeholder,
-.multi-select::placeholder {
-  color: var(--field-placeholder);
-}
+.form-control::placeholder { color: var(--muted); }
 
 .form-control:focus,
-.form-select:focus,
-.multi-select:focus {
+.form-select:focus {
   outline: none;
-  border-color: rgba(250, 250, 250, 0.54);
-  box-shadow: 0 0 0 4px var(--focus-ring), 0 10px 24px rgba(37, 99, 235, 0.10);
-  background: var(--field-bg);
-  color: var(--field-text);
+  box-shadow: 0 0 0 2px var(--blue);
+  background: var(--surface);
+  color: var(--text);
 }
 
-.form-control:disabled,
-.form-select:disabled,
-.multi-select:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
+textarea.form-control { min-height: 140px; resize: vertical; }
+
+/* ─── Pulse UI ───────────────────────────────────────────────────────────────
+ * The handful of pieces every new screen shares (design tokens table in the
+ * handoff README): pill buttons, status tags, filter chips, cards, the TODD
+ * card. No borders anywhere: separation comes from --surface on --bg, and
+ * selection/focus is a 2px --blue ring.
+ * ─────────────────────────────────────────────────────────────────────────── */
+
+.p-btn,
+button.p-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-sizing: border-box;
+  height: 44px;
+  min-height: 0;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text);
+  font: 700 14px/1 var(--font);
+  letter-spacing: normal;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: none;
+  transform: none;
 }
 
-textarea.form-control {
-  min-height: 140px;
-  resize: vertical;
+.p-btn:hover { background: var(--surface2); color: var(--text); }
+.p-btn:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+.p-btn[disabled],
+.p-btn[aria-disabled="true"] { opacity: .45; cursor: not-allowed; pointer-events: none; }
+
+.p-btn.p-btn--primary { background: var(--blue); color: #fff; }
+.p-btn.p-btn--primary:hover { background: var(--blue); color: #fff; filter: brightness(1.06); }
+.p-btn.p-btn--dark { background: var(--text); color: var(--bg); }
+.p-btn.p-btn--dark:hover { background: var(--text); color: var(--bg); opacity: .9; }
+.p-btn.p-btn--bg { background: var(--bg); }
+.p-btn.p-btn--bg:hover { background: var(--surface2); }
+.p-btn.p-btn--ghost { background: transparent; }
+.p-btn.p-btn--ghost:hover { background: var(--surface); }
+.p-btn.p-btn--link { background: transparent; color: var(--blue-ink); padding: 0 14px; }
+.p-btn.p-btn--link:hover { background: var(--t-blue); color: var(--blue-ink); }
+.p-btn.p-btn--danger { background: transparent; color: var(--t-pink-fg); }
+.p-btn.p-btn--danger:hover { background: var(--t-pink); color: var(--t-pink-fg); }
+
+.p-btn.p-btn--lg { height: 52px; padding: 0 26px; font-size: 16px; }
+.p-btn.p-btn--xl { height: 56px; padding: 0 30px; font-size: 17px; }
+.p-btn.p-btn--sm { height: 36px; padding: 0 14px; font-size: 13px; }
+.p-btn.p-btn--xs { height: 34px; padding: 0 12px; font-size: 13px; }
+.p-btn.p-btn--block { width: 100%; }
+.p-btn.p-btn--round { width: 40px; padding: 0; }
+.p-btn.p-btn--round.p-btn--xl { width: 56px; }
+
+.p-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 12px;
+  border-radius: 999px;
+  background: var(--surface2);
+  color: var(--muted);
+  font: 700 13px/1 var(--font);
+  white-space: nowrap;
 }
 
-select[multiple].form-select {
-  min-height: 150px;
-  padding-top: 0.55rem;
-  padding-bottom: 0.55rem;
+[data-tint="blue"] { --tint: var(--t-blue); --tint-fg: var(--t-blue-fg); }
+[data-tint="green"] { --tint: var(--t-green); --tint-fg: var(--t-green-fg); }
+[data-tint="yellow"] { --tint: var(--t-yellow); --tint-fg: var(--t-yellow-fg); }
+[data-tint="pink"] { --tint: var(--t-pink); --tint-fg: var(--t-pink-fg); }
+[data-tint="violet"] { --tint: var(--t-violet); --tint-fg: var(--t-violet-fg); }
+[data-tint="cyan"] { --tint: var(--t-cyan); --tint-fg: var(--t-cyan-fg); }
+.p-tag[data-tint],
+.p-tinted[data-tint] { background: var(--tint); color: var(--tint-fg); }
+
+.p-badge {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: var(--blue);
+  color: #fff;
+  font: 700 12px/1 var(--font);
+  white-space: nowrap;
+}
+
+.p-chip,
+button.p-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 38px;
+  min-height: 0;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text);
+  font: 700 14px/1 var(--font);
+  cursor: pointer;
+  box-shadow: none;
+}
+
+.p-chip:hover { background: var(--surface2); }
+.p-chip.is-on { background: var(--text); color: var(--bg); }
+.p-chip:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+.p-chip .p-chip__n { opacity: .6; }
+
+.p-segmented {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 4px;
+  border-radius: 999px;
+  background: var(--surface);
+}
+
+.p-segmented button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 40px;
+  min-height: 0;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text);
+  font: 700 14px/1 var(--font);
+  cursor: pointer;
+  box-shadow: none;
+}
+
+.p-segmented button.is-on { background: var(--text); color: var(--bg); }
+.p-segmented button:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+
+.p-eyebrow {
+  font: 700 12px/1.2 var(--font);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.p-card {
+  background: var(--surface);
+  border-radius: 28px;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.p-todd {
+  background: var(--t-blue);
+  color: var(--text);
+  border-radius: 28px;
+  box-sizing: border-box;
+}
+
+.p-avatar {
+  flex: none;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.p-input,
+textarea.p-input {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 0;
+  border: 0;
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text);
+  font: 400 16px/1.4 var(--font);
+  padding: 0 18px;
+  height: 48px;
+  box-shadow: none !important;
+  outline: none;
+}
+
+textarea.p-input { border-radius: 20px; padding: 12px 18px; height: auto; resize: vertical; }
+.p-input::placeholder { color: var(--muted); }
+.p-input:focus { box-shadow: 0 0 0 2px var(--blue) !important; }
+
+.p-dot-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--bg);
+  color: var(--text);
+  font: 700 14px/1 var(--font);
+}
+
+.p-check-dot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--t-green);
+  color: var(--t-green-fg);
+}
+
+.p-check-dot.is-off { background: transparent; box-shadow: inset 0 0 0 2px var(--muted); color: var(--muted); }
+
+.p-visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* Page frame for signed-in work pages under the header. */
+.p-page {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 16px 40px 56px;
+  font-family: var(--font);
+  color: var(--text);
+}
+
+@media (max-width: 760px) {
+  .p-page { padding: 8px 16px 40px; }
 }

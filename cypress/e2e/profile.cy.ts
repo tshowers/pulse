@@ -103,17 +103,17 @@ describe( 'Profile page', () => {
       body: { success: true, data: {
         completedSteps: 1, totalSteps: 4, allDone: false,
         steps: [
-          { id: 'profile', title: 'Complete your profile', detail: '75% complete', done: false },
-          { id: 'createSurvey', title: 'Create a survey', detail: '1 survey created.', done: true },
-          { id: 'shareSurvey', title: 'Publish and share it', detail: 'Publish a survey to get a link you can send.', done: false },
-          { id: 'firstResponse', title: 'Get your first response', detail: 'Send your link.', done: false },
+          { id: 'createSurvey', title: 'Write your first pulse', detail: 'Done Oct 2', done: true },
+          { id: 'trySurvey', title: 'Try it as a respondent', detail: 'Answer it yourself the way people will.', done: false },
+          { id: 'shareSurvey', title: 'Publish and share the link', detail: 'Publishing is on the paid plan', done: false },
+          { id: 'toddSummary', title: 'Read TODD’s summary', detail: 'Unlocks after 5 answers', done: false },
         ],
       } },
     } );
     signIn( '/help' );
     cy.get( '[data-cy="help-progress"]', { timeout: 10000 } ).should( 'contain.text', '1 of 4 done' );
     cy.get( '[data-cy="help-progress-step"]' ).should( 'have.length', 4 );
-    cy.contains( '[data-cy="help-progress-step"]', 'Create a survey' ).should( 'have.class', 'is-done' );
+    cy.contains( '[data-cy="help-progress-step"]', 'Write your first pulse' ).should( 'have.class', 'is-done' );
   } );
 
   it( 'links Profile in the menu to the in-app page, not TODD', () => {

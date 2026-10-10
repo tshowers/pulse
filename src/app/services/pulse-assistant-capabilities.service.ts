@@ -38,11 +38,11 @@ export class PulseAssistantCapabilitiesService {
   private readonly directRouteAliases: Record<string, string> = {
     'pulse': 'app',
     'my pulse': 'app',
-    'customer health': 'app',
-    'surveys': 'survey-list',
-    'my surveys': 'survey-list',
-    'pulse list': 'survey-list',
-    'survey list': 'survey-list',
+    'pulses': 'app',
+    'surveys': 'app',
+    'my surveys': 'app',
+    'pulse list': 'app',
+    'survey list': 'app',
     'create pulse': 'survey-edit',
     'create survey': 'survey-edit',
     'new survey': 'survey-edit',
@@ -56,10 +56,10 @@ export class PulseAssistantCapabilitiesService {
     { path: 'app' },
     { path: 'login' },
     { path: 'pricing' },
-    { path: 'survey-list' },
     { path: 'survey-edit' },
+    { path: 'help' },
+    { path: 'about' },
     { path: 'survey/:id', requiresId: true, idParam: 'id' },
-    { path: 'survey-dashboard/:surveyId', requiresId: true, idParam: 'surveyId' },
   ];
 
   private readonly workflowGuides: WorkflowGuide[] = [
@@ -70,10 +70,10 @@ export class PulseAssistantCapabilitiesService {
         /\bhow to create (a )?(pulse|survey)\b/i,
       ],
       message: [
-        '<p><strong>Pulse has two main routes.</strong></p>',
-        '<p><strong>A.</strong> Use <strong>/survey-edit</strong> to create a new Pulse directly.</p>',
-        '<p><strong>B.</strong> Use <strong>/app</strong> if you want the full Customer Health cockpit first.</p>',
-        '<p>After that, <strong>/survey-list</strong> is where you review existing Pulses.</p>'
+        '<p><strong>Every pulse goes Write, Share, Results.</strong></p>',
+        '<p>Choose <strong>New pulse</strong> (/survey-edit) and tell TODD what you want to find out, or pick a template.</p>',
+        '<p>When it reads right, choose <strong>Next: Share</strong> to publish and get your link.</p>',
+        '<p>Answers show up on <strong>Results</strong>. After 5, TODD writes a summary and a next move.</p>'
       ].join( '' )
     },
   ];

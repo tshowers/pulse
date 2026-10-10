@@ -1,171 +1,76 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
+
+import { GettingStarted, GettingStartedService } from '../../services/getting-started.service';
+import { PulseAssistantSignalService } from '../../services/pulse-assistant-signal.service';
 import { PulseAuthService } from '../../services/pulse-auth.service';
-import { GettingStarted, GettingStartedService, GettingStartedStep } from '../../services/getting-started.service';
+import { IconComponent } from '../../shared/icon/icon.component';
+import { SiteFooterComponent } from '../../shared/site-footer/site-footer.component';
 
-interface HelpStep {
-  number: string;
-  title: string;
-  copy: string;
-  details: string[];
-  route?: string;
-  action?: string;
-}
-
-interface HelpCard {
-  title: string;
-  copy: string;
-}
-
-interface HelpFaq {
-  question: string;
-  answer: string;
-}
-
-@Component({
+/**
+ * Pulse help (design_handoff_todd_pulse 2c). Signed in: Getting started
+ * progress on top. Then the three steps (Write, Share, Results), tips for
+ * good questions and the FAQ. Ask TODD opens the assistant.
+ */
+@Component( {
   selector: 'app-help',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [RouterLink, IconComponent, SiteFooterComponent],
   templateUrl: './help.component.html',
   styleUrl: './help.component.css',
-})
+} )
 export class HelpComponent implements OnInit {
-  /** Signed-in only: the Getting Started checklist, checked off from real data. */
-  progress: GettingStarted | null = null;
-  showAfterSignIn = true;
+  private readonly auth = inject( PulseAuthService );
+  private readonly assistant = inject( PulseAssistantSignalService );
+  readonly gettingStarted = inject( GettingStartedService );
 
-  constructor (
-    private readonly authService: PulseAuthService,
-    readonly gettingStarted: GettingStartedService,
-  ) { }
+  readonly signedIn = signal( false );
+  readonly progress = signal<GettingStarted | null>( null );
+  readonly showAfterSignIn = signal( true );
+  readonly active = signal( 'your-progress' );
+  readonly openFaq = signal( 0 );
 
-  ngOnInit (): void {
-    this.showAfterSignIn = this.gettingStarted.showAfterSignIn;
-    this.authService.getUserId().subscribe( ( userId ) => {
-      if ( !userId ) {
-        this.progress = null;
-        return;
-      }
-      this.gettingStarted.load().then( ( progress ) => ( this.progress = progress ) ).catch( () => ( this.progress = null ) );
-    } );
-  }
+  readonly nav = [
+    { id: 'your-progress', label: 'Getting started', signedInOnly: true },
+    { id: 'how-it-works', label: 'From a question to a decision' },
+    { id: 'tips', label: 'Writing good questions' },
+    { id: 'faq', label: 'Common questions' },
+  ];
 
-  toggleShowAfterSignIn ( value: boolean ): void {
-    this.showAfterSignIn = value;
-    this.gettingStarted.showAfterSignIn = value;
-  }
-
-  trackStep ( _index: number, step: GettingStartedStep ): string {
-    return step.id;
-  }
-
-  readonly audiences: HelpCard[] = [
+  readonly steps = [
     {
-      title: 'Small business owners',
-      copy: 'Find out why customers come back, why they stop, and what they wish you offered — without hiring a research firm.',
+      n: 1, title: 'Write', tint: 'green', lead: 'A pulse is a short survey about one decision. Start from New pulse.',
+      details: [
+        'Describe what you want to find out and TODD drafts 3 to 5 questions, or pick a template, or start blank.',
+        'Each question can be a short or long answer, one choice, pick any, yes or no, or a rating.',
+        'TODD reviews your questions as you go and suggests fixes. Apply or dismiss each one.',
+        'Use Try it to answer it yourself the way respondents will. Nothing is saved.',
+      ],
+      action: 'Start a pulse', route: '/survey-edit',
     },
     {
-      title: 'Founders and product leads',
-      copy: 'Check a pricing idea, a feature, or a message with real users before you spend the time building it.',
+      n: 2, title: 'Share', tint: 'violet', lead: 'When it reads right, choose Next: Share.',
+      details: [
+        'Choose when to stop taking answers, and whether to ask for names or keep it anonymous.',
+        'Publish and get your link. Publishing is on the paid plan; writing never is.',
+        'Copy the link or send it by email, text or QR code. Anyone with it can answer, no account needed.',
+        'Need to change a question? Move it back to draft. Answers you already have are kept.',
+      ],
+      action: 'See your pulses', route: '/app',
     },
     {
-      title: 'Team leads',
-      copy: 'Run a quick check-in with your team and see where people agree, where they don’t, and what is getting in the way.',
+      n: 3, title: 'Results', tint: 'blue', lead: 'Results update the moment someone answers.',
+      details: [
+        'After 5 answers, TODD writes a summary of what people said and suggests one next move.',
+        'Act on it right there: draft the email, add it to your tasks, or ask for another idea.',
+        'Every question has its own chart, and TODD groups written answers by theme.',
+        'Download a CSV any time. Close the pulse when you have enough.',
+      ],
+      action: 'Open results', route: '/app',
     },
   ];
 
-  readonly steps: HelpStep[] = [
-    {
-      number: '01',
-      title: 'Start at Pulse Home',
-      copy: 'Pulse Home is where you check how well you are listening. It scores your feedback habit and points to the one part of it that needs attention next.',
-      details: [
-        'Guests see a preview of the dashboard. Sign in to see your own Pulses and responses.',
-        'Use the buttons at the top to jump to Create Pulse or Pulse List.',
-        'See “How Pulse Home works” below for what each meter means.',
-      ],
-      route: '/app',
-      action: 'Open Pulse Home',
-    },
-    {
-      number: '02',
-      title: 'Create a Pulse around one decision',
-      copy: 'A Pulse is a short survey. The best ones ask about a single decision you are trying to make, so every answer helps you make it.',
-      details: [
-        'Give it a clear title and a one-line description so people know why you are asking.',
-        'Add questions. Each one can be a text answer, a multiple-choice (pick one), or a checkbox (pick any).',
-        'Add or remove answer options as you shape each question.',
-        'Watch the live preview to see what respondents will see, then save. Saving is free.',
-      ],
-      route: '/survey-edit',
-      action: 'Create a Pulse',
-    },
-    {
-      number: '03',
-      title: 'Publish and share it',
-      copy: 'Open your Pulse from the Pulse List (called “Current Pulse” in the side menu) to take it from draft to live.',
-      details: [
-        'Preview it as a respondent will see it. Use Back to Edit if anything reads wrong.',
-        'Publish when it is ready. Publishing requires a Pulse plan; building and saving drafts do not.',
-        'Copy the share link and send it where your audience already is: email, text, a receipt, your site, or a team chat.',
-        'Anyone with the link can answer. They do not need a Pulse account.',
-      ],
-      route: '/survey-list',
-      action: 'Go to Pulse List',
-    },
-    {
-      number: '04',
-      title: 'Check it the way respondents will',
-      copy: 'Before sending the link widely, walk through the live Pulse once, then have one person you trust complete it.',
-      details: [
-        'Use Open Live Survey to see the public page. People answer one question at a time with Next and Back.',
-        'As the owner you can preview your own Pulse, but you cannot submit a response to it. Ask a colleague to send a test answer.',
-        'After someone submits, they see a confirmation and their answers show up in your results.',
-      ],
-    },
-    {
-      number: '05',
-      title: 'Read the results and pick one change',
-      copy: 'The results dashboard shows how many people answered, how each option was chosen, and every written answer.',
-      details: [
-        'Open results from the Pulse List or from the Pulse itself.',
-        'Start with the response count. A handful of answers is a hint; wait for more before making big calls.',
-        'Read the written answers in full. They usually explain the numbers.',
-        'Finish by writing down one thing you will do differently because of what you read.',
-      ],
-      route: '/survey-list',
-      action: 'Open results from Pulse List',
-    },
-    {
-      number: '06',
-      title: 'Come back and run the next one',
-      copy: 'Pulse pays off as a habit, not a one-time survey. Head back to Pulse Home, see what it flags, and start the next Pulse.',
-      details: [
-        'Once you have made your change, ask a follow-up Pulse to check whether it helped.',
-        'Publish your drafts or delete them. Drafts sitting around lower your score on Home.',
-        'Pick a regular rhythm, such as one Pulse a month, and stick to it.',
-      ],
-      route: '/app',
-      action: 'Back to Pulse Home',
-    },
-  ];
-
-  readonly meters: HelpCard[] = [
-    { title: 'Feedback coverage', copy: 'The share of your Pulses that are collecting feedback right now.' },
-    { title: 'Listening cadence', copy: 'The share of your Pulses that are published instead of sitting as drafts.' },
-    { title: 'Response flow', copy: 'The share of your published Pulses that have received at least one response.' },
-    { title: 'Draft pressure', copy: 'Higher is better. It drops as unpublished drafts pile up.' },
-  ];
-
-  readonly careCycle: HelpCard[] = [
-    { title: 'Symptom', copy: 'What is wrong with your feedback loop, such as “Customer feedback is missing” or “Survey participation is low.”' },
-    { title: 'Treatment', copy: 'What TODD is doing about it, such as watching published Pulses for the first responses.' },
-    { title: 'Relief', copy: 'Whether the problem is getting better, and what would fix it.' },
-    { title: 'Proof', copy: 'The numbers behind it, such as responses collected or Pulses published.' },
-  ];
-
-  readonly tips: HelpCard[] = [
+  readonly tips = [
     { title: 'Keep it short', copy: 'Three to five questions. Every extra question means fewer people finish.' },
     { title: 'Ask one thing per question', copy: '“Was it fast and friendly?” is two questions. Split it so the answer means something.' },
     { title: 'Mix choice and text', copy: 'Multiple-choice gives you numbers you can compare. One open text question gives you the “why.”' },
@@ -174,34 +79,57 @@ export class HelpComponent implements OnInit {
     { title: 'Close the loop', copy: 'Tell respondents what you changed. People who see results answer the next Pulse.' },
   ];
 
-  readonly faqs: HelpFaq[] = [
-    {
-      question: 'What does Pulse cost?',
-      answer: 'Building and saving Pulses is free, as many as you want. Publishing and collecting responses requires a Pulse plan. See Pricing for the current price.',
-    },
-    {
-      question: 'Are responses anonymous?',
-      answer: 'Respondents are not asked to sign in, and Pulse does not attach their name or email to their answers. If you need to know who answered, add a question that asks for it.',
-    },
-    {
-      question: 'Can someone answer more than once?',
-      answer: 'Pulse allows one response per device, so the same browser cannot submit the same Pulse twice.',
-    },
-    {
-      question: 'Why can’t I submit my own Pulse?',
-      answer: 'Owners can preview their Pulse but not answer it, so your own test answers never skew your results. Ask a colleague to send a test response.',
-    },
-    {
-      question: 'How do I stop collecting responses?',
-      answer: 'Open the Pulse and choose Move Back to Draft. It stops accepting responses, and you can edit it or publish it again later.',
-    },
-    {
-      question: 'Can I export my results?',
-      answer: 'Not yet. The results dashboard shows every option count and every written answer. If you need an export, contact Support.',
-    },
+  readonly faqs = [
+    { question: 'What does Pulse cost?', answer: 'Building and saving Pulses is free, as many as you want. Publishing and collecting responses requires a Pulse plan. See Pricing for the current price.' },
+    { question: 'Are responses anonymous?', answer: 'You choose when you publish. Ask for name and email, or keep it anonymous and Pulse won’t attach anyone’s details to their answers.' },
+    { question: 'Can someone answer more than once?', answer: 'Pulse allows one response per device, so the same browser cannot submit the same Pulse twice.' },
+    { question: 'Why can’t I submit my own Pulse?', answer: 'Owners can preview their Pulse but not answer it, so your own test answers never skew your results. Ask a colleague to send a test response.' },
+    { question: 'How do I stop collecting responses?', answer: 'Choose Close now on the Share step, or set a date or answer limit before you publish. Back to draft also stops it, so you can edit and publish again.' },
+    { question: 'Can I export my results?', answer: 'Yes. Choose CSV on the Results step to download every answer.' },
   ];
 
-  jumpTo ( id: string ): void {
+  ngOnInit (): void {
+    this.showAfterSignIn.set( this.gettingStarted.showAfterSignIn );
+    this.auth.getUserId().subscribe( ( userId ) => {
+      this.signedIn.set( !!userId );
+      if ( !userId ) {
+        this.progress.set( null );
+        this.active.set( 'how-it-works' );
+        return;
+      }
+      this.gettingStarted.load()
+        .then( ( progress ) => {
+          this.progress.set( progress );
+          if ( typeof location !== 'undefined' && location.hash === '#your-progress' ) setTimeout( () => this.jump( 'your-progress' ) );
+        } )
+        .catch( () => this.progress.set( null ) );
+    } );
+  }
+
+  visibleNav () {
+    return this.nav.filter( ( item ) => !item.signedInOnly || this.signedIn() );
+  }
+
+  jump ( id: string ): void {
+    this.active.set( id );
     document.getElementById( id )?.scrollIntoView( { behavior: 'smooth', block: 'start' } );
+  }
+
+  askTodd (): void {
+    this.assistant.openAssistant();
+  }
+
+  toggleFaq ( index: number ): void {
+    this.openFaq.set( this.openFaq() === index ? -1 : index );
+  }
+
+  setShowAfterSignIn ( value: boolean ): void {
+    this.showAfterSignIn.set( value );
+    this.gettingStarted.showAfterSignIn = value;
+  }
+
+  progressPct (): number {
+    const progress = this.progress();
+    return progress ? ( progress.completedSteps / Math.max( 1, progress.totalSteps ) ) * 100 : 0;
   }
 }

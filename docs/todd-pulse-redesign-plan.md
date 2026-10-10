@@ -361,17 +361,15 @@ Within Phase 3, build in this order: **Results (1f)** first, since it's the reas
 
 ---
 
-## 8. Decisions needed before Phase 1
+## 8. Decisions (answered 2026-10-10)
 
-1. **Pricing model (F10).** Design: write free, publish paid. Today: web is browse-only without a plan, iOS paywalls the whole app. *Recommendation:* adopt the design. It's the lower-friction funnel, and TODD drafting questions on the free tier is the hook. The backend already gates only publish and public submit, so most of the work is client-side.
-2. **Where web users pay.** `/pricing` currently says "get the app" (App Store exclusive billing). If publishing on the web needs a plan, does "Choose a plan to publish" send people to Pulsur, or bring back web checkout (`/survey/checkout` still exists)?
-3. **Brand split.** Web stays "TODD Pulse" and iOS is "Pulsur"? The respondent footer ("Powered by TODD Pulse") and the landing iPhone CTA depend on this.
-4. **"Add to my tasks"** creates a Moves task. Should it work for users without a Moves subscription (as a free system task), or be hidden for them?
-5. **"Draft the email"** hands off to Email Creator / Outreach, or opens a simple `mailto:` with the draft? *Recommendation:* `mailto:` in v1 and the Email Creator handoff later.
-6. **Link slugs** (`/take/q4-check-in`) or keep ids? *Recommendation:* keep ids for v1.
-7. **"One answer per device" (F9):** soften the About copy, or add a server-side device token?
-
----
+1. **Pricing:** writing is free, publishing is paid. The mechanics with Apple are being worked out separately; Pulsur shows the paywall at Publish, and `PulsurPolicy.writingIsFree` restores the whole-app paywall if needed.
+2. **Where web users pay:** "Choose a plan to publish" goes to `/pricing` as today; settled with the pricing work.
+3. **Names:** the product is (TODD) Pulse; the iPhone app is **Pulsur** in the App Store and on the home screen. A home-screen name of "Pulse" only if App Store Connect accepts an App Store name that close (e.g. "Pulse by TODD"), because of guideline 2.3.8.
+4. **Add to my tasks:** only for tenants with a Moves plan (server returns 403 `MOVES_PLAN_REQUIRED`; the button is hidden otherwise).
+5. **Draft the email:** a `mailto:` with the group in BCC; nothing is sent by Pulse.
+6. **Link slugs:** kept ids for now.
+7. **One answer per device:** kept as the browser check; the About copy says "the same browser can't submit the same pulse twice", which is what it does.
 
 ## 9. Risks
 
