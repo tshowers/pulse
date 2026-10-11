@@ -33,8 +33,10 @@ describe( 'Pulse Write - Next: Share rules', () => {
     cy.contains( 'button', 'Next: Share' ).should( 'not.be.disabled' );
     cy.wait( '@save' ).its( 'request.body.questions.0.questionText' ).should( 'eq', 'Anything blocking you?' );
 
-    // Without a plan, Share offers the plan instead of publishing.
+    // Without a plan, Publish asks for the plan right there instead of publishing.
     cy.contains( 'button', 'Next: Share' ).click();
-    cy.contains( 'button', 'Choose a plan to publish' ).should( 'be.visible' );
+    cy.get( '[data-cy="pulse-publish"]' ).click();
+    cy.get( '[data-cy="write-access-prompt"]' ).should( 'contain', 'Subscribe to publish this pulse' );
+    cy.get( '[data-cy="write-access-subscribe"]' ).should( 'be.visible' );
   } );
 } );

@@ -62,9 +62,9 @@
         </div>
         <span class="s-setting__note">{{ collectIdentity() ? 'People add their name and email at the end, so TODD can help you follow up.' : "Answers come in without names. Pulse won't attach anyone's details." }}</span>
       </div>
-      <div class="s-publish"> @if (access() === 'canWrite' || access() === 'loading') { <button type="button" class="p-btn p-btn--primary p-btn--lg" [disabled]="blockers().length > 0 || publishing() || access() === 'loading'" (click)="publish()">
+      <div class="s-publish"> <button type="button" class="p-btn p-btn--primary p-btn--lg" appWriteAction="publish this pulse" [disabled]="blockers().length > 0 || publishing() || access() === 'loading'" (click)="publish()" data-cy="pulse-publish">
           <app-icon name="send" />{{ publishing() ? 'Publishing…' : status() === 'closed' ? 'Reopen and keep my link' : 'Publish and get my link' }}
-        </button> } @else { <button type="button" class="p-btn p-btn--primary p-btn--lg" (click)="publish()">Choose a plan to publish</button> } <span class="s-publish__note">Publishing is part of your paid plan. Writing and editing pulses is always free.</span>
+        </button> <span class="s-publish__note">Publishing is part of your paid plan. Writing and editing pulses is always free.</span>
       </div> @if (publishError()) { <p class="s-error" role="alert">{{ publishError() }}</p> } @if (blockers().length > 0) { <p class="s-error">Finish writing first: {{ blockers()[0] }}. <a [routerLink]="['/survey', survey().id, 'write']">Back to Write</a></p> }
     </div>
     <aside class="p-card s-next">

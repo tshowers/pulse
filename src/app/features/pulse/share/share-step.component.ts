@@ -9,6 +9,7 @@ import { SurveyCloseRule } from '../../../models/survey.model';
 import { PulseNotificationService } from '../../../services/pulse-notification.service';
 import { SurveyApiService } from '../../../services/survey-api.service';
 import { WriteAccessService, WriteAccessState } from '../../../services/write-access.service';
+import { WriteActionDirective } from '../../../shared/write-access/write-action.directive';
 import { IconComponent } from '../../../shared/icon/icon.component';
 import { PulseBarComponent } from '../shell/pulse-bar.component';
 import { PulseStore } from '../pulse.store';
@@ -27,7 +28,7 @@ const DEFAULT_CLOSE_COUNT = 50;
 @Component( {
   selector: 'app-share-step',
   standalone: true,
-  imports: [PulseBarComponent, IconComponent, RouterLink],
+  imports: [PulseBarComponent, IconComponent, RouterLink, WriteActionDirective],
   templateUrl: './share-step.component.html',
   styleUrl: './share-step.component.css',
 } )
@@ -119,11 +120,8 @@ export class ShareStepComponent implements OnInit {
 
   // ── Publish and after ────────────────────────────────────────────────────
 
+  /** The button's appWriteAction asks for sign-in or the plan first, then presses it again. */
   async publish (): Promise<void> {
-    if ( this.access() !== 'canWrite' ) {
-      await this.router.navigate( ['/pricing'], { queryParams: { returnUrl: this.router.url } } );
-      return;
-    }
     this.publishing.set( true );
     this.publishError.set( '' );
     try {

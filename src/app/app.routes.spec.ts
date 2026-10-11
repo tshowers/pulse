@@ -112,7 +112,7 @@ describe( 'app.routes', () => {
     expect( router.url ).toBe( '/survey/survey-123/results' );
   } );
 
-  it( 'routes /pricing to GetTheAppComponent ("Choose a plan to publish" lands here)', async () => {
+  it( 'routes /pricing to GetTheAppComponent', async () => {
     // Checks the route without rendering it: Karma's webpack build doesn't
     // load the symlinked @taliferro/ui model the page reads.
     const route = routes.find( ( candidate ) => candidate.path === 'pricing' );
