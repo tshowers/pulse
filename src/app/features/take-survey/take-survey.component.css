@@ -30,7 +30,7 @@
 
 .ts-sender { display: flex; flex-direction: column; min-width: 0; flex: 1; }
 .ts-sender__name { font-size: 16px; font-weight: 700; }
-.ts-sender__title { font-size: 14px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ts-sender__title { font-size: 17px; font-weight: 600; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 .ts-preview {
   flex: none;
@@ -179,7 +179,8 @@
 .ts-keys { font-size: 14px; color: var(--muted); }
 
 /* Done */
-.ts-done { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 20px; width: min(820px, 100%); }
+.ts-done { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 20px; width: min(820px, 100%); align-items: start; }
+.ts-done .ts-card--done { position: sticky; top: 24px; }
 .ts-done:not(:has(.ts-sent)) { grid-template-columns: minmax(0, 1fr); }
 .ts-card--done { width: auto; padding: 48px; gap: 18px; }
 .ts-check { width: 80px; height: 80px; border-radius: 50%; background: var(--t-green); color: var(--t-green-fg); display: flex; align-items: center; justify-content: center; }
@@ -188,7 +189,7 @@
 .ts-sent { width: auto; padding: 24px; gap: 4px; box-shadow: none; border-radius: 28px; }
 .ts-sent__title { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
 .ts-sent__q { font-size: 13px; color: var(--muted); margin-top: 6px; }
-.ts-sent__a { font-size: 15px; font-weight: 700; overflow-wrap: anywhere; }
+.ts-sent__a { font-size: 15px; line-height: 1.5; overflow-wrap: anywhere; }
 .ts-card--message { gap: 12px; }
 .ts-card--message .ts-lede { margin: 0; }
 
@@ -209,7 +210,7 @@
   .ts-top { padding: 24px 20px 0; gap: 10px; flex-wrap: wrap; }
   .ts-avatar { width: 36px; height: 36px; font-size: 14px; }
   .ts-sender__name { font-size: 15px; }
-  .ts-sender__title { font-size: 13px; }
+  .ts-sender__title { font-size: 15px; }
   .ts-preview { order: 3; }
   .ts-wide,
   .ts-wide-block { display: none !important; }
@@ -230,7 +231,7 @@
   .ts-next { flex: 1; }
 
   .ts-done { grid-template-columns: minmax(0, 1fr) !important; width: 100%; flex: 1; align-content: center; }
-  .ts-card--done { padding: 0; gap: 18px; }
+  .ts-card--done { padding: 0; gap: 18px; position: static !important; }
   .ts-check { width: 88px; height: 88px; }
   .ts-card--done .ts-q { font-size: 34px; }
   .ts-own {
