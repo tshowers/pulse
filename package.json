@@ -1,6 +1,6 @@
 {
   "name": "pulse",
-  "version": "2026.10.10-build.5",
+  "version": "2026.10.11-build.1",
   "scripts": {
     "ng": "ng",
     "generate-version": "node scripts/generate-version.js",
