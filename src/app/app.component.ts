@@ -1,5 +1,5 @@
-import { AsyncPipe, NgIf } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { AsyncPipe, NgIf, isPlatformBrowser } from '@angular/common';
+import { Component, OnInit, PLATFORM_ID, inject } from '@angular/core';
 import { ActivatedRouteSnapshot, NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { map } from 'rxjs';
 import { filter } from 'rxjs';
@@ -23,6 +23,7 @@ export class AppComponent implements OnInit {
   private readonly authService = inject( PulseAuthService );
   private readonly router = inject( Router );
   private readonly updates = inject( SwUpdate );
+  private readonly platformId = inject( PLATFORM_ID );
   private isReloadingForUpdate = false;
   private isRecoveringFromChunkError = false;
   private pendingUpdateVersion = '';
@@ -52,6 +53,8 @@ export class AppComponent implements OnInit {
     this.router.events.pipe( filter( event => event instanceof NavigationEnd ) ).subscribe( () => {
       this.showHeader = this.deepestRoute( this.router.routerState.snapshot.root ).data['chrome'] !== 'none';
     } );
+    // Prerendering (app.routes.server.ts) has no window, storage or service worker.
+    if ( !isPlatformBrowser( this.platformId ) ) return;
     this.showUpdateNoticeAfterReload();
     if ( !environment.production ) return;
     window.addEventListener( 'error', this.handleWindowError, true );

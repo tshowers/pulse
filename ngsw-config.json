@@ -1,11 +1,11 @@
 {
   "$schema": "./node_modules/@angular/service-worker/config/schema.json",
-  "index": "/index.html",
+  "index": "/index.csr.html",
   "assetGroups": [
     {
       "name": "pulse-app",
       "installMode": "prefetch",
-      "resources": { "files": ["/favicon.ico", "/index.html", "/*.css", "/*.js"] }
+      "resources": { "files": ["/favicon.ico", "/index.csr.html", "/*.css", "/*.js"] }
     },
     {
       "name": "pulse-assets",

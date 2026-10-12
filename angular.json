@@ -44,7 +44,9 @@
             ],
             "allowedCommonJsDependencies": [
               "qrcode"
-            ]
+            ],
+            "server": "src/main.server.ts",
+            "outputMode": "static"
           },
           "configurations": {
             "production": {

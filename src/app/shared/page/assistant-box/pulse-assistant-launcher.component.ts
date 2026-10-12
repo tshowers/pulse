@@ -110,7 +110,9 @@ export class PulseAssistantLauncherComponent implements OnInit, OnDestroy {
     // single mousemove/touchstart anywhere on the page, whether or not the
     // pointer is anywhere near the hotzone. Only re-enter the zone
     // (`this.zone.run`) on the rare occasion the pointer is actually in the
-    // hotzone and launcherVisible needs to update.
+    // hotzone and launcherVisible needs to update. No document while
+    // pages prerender (app.routes.server.ts).
+    if ( typeof document === 'undefined' ) return;
     this.zone.runOutsideAngular( () => {
       document.addEventListener( 'mousemove', this.onDocumentMouseMove, { passive: true } );
       document.addEventListener( 'touchstart', this.onDocumentTouchStart, { passive: true } );
@@ -120,6 +122,7 @@ export class PulseAssistantLauncherComponent implements OnInit, OnDestroy {
   ngOnDestroy (): void {
     if ( this.launcherHideTimer ) clearTimeout( this.launcherHideTimer );
     this.subscriptions.forEach( ( s ) => s.unsubscribe() );
+    if ( typeof document === 'undefined' ) return;
     document.removeEventListener( 'mousemove', this.onDocumentMouseMove );
     document.removeEventListener( 'touchstart', this.onDocumentTouchStart );
   }
