@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, HostListener, OnDestroy, OnInit, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
+import { AlsoFromUsComponent } from '../../shared/also-from-us/also-from-us.component';
 import { LandingEngagementService } from '../../services/landing-engagement.service';
 import { IconComponent } from '../../shared/icon/icon.component';
 import { SiteFooterComponent } from '../../shared/site-footer/site-footer.component';
@@ -13,7 +14,7 @@ import { SiteFooterComponent } from '../../shared/site-footer/site-footer.compon
 @Component( {
   selector: 'app-landing',
   standalone: true,
-  imports: [RouterLink, IconComponent, SiteFooterComponent],
+  imports: [RouterLink, IconComponent, SiteFooterComponent, AlsoFromUsComponent],
   templateUrl: './landing.component.html',
   styleUrl: './landing.component.css',
 } )
