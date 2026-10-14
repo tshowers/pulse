@@ -1,31 +1,35 @@
-import { AfterViewInit, Component, HostListener, OnDestroy, OnInit, inject, signal } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, OnDestroy, OnInit, computed, inject, signal, viewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { ThemeMode, currentTheme } from '@taliferro/ui/platform/theme';
 
 import { AlsoFromUsComponent } from '../../shared/also-from-us/also-from-us.component';
 import { LandingEngagementService } from '../../services/landing-engagement.service';
-import { IconComponent } from '../../shared/icon/icon.component';
 import { SiteFooterComponent } from '../../shared/site-footer/site-footer.component';
 
 /**
- * The signed-out home (design_handoff_todd_pulse 2a). The hero's product
- * card is real markup in the Results look, not a screenshot, so it follows
- * light/dark. The sample numbers are illustrative.
+ * The signed-out home (design_handoff_todd_pulse 2a). The hero plays the
+ * Pulse story video, with a light and a dark cut that follow the site theme.
+ * It only plays while on screen, and waits for a tap under reduced motion.
  */
 @Component( {
   selector: 'app-landing',
   standalone: true,
-  imports: [RouterLink, IconComponent, SiteFooterComponent, AlsoFromUsComponent],
+  imports: [RouterLink, SiteFooterComponent, AlsoFromUsComponent],
   templateUrl: './landing.component.html',
   styleUrl: './landing.component.css',
 } )
 export class LandingComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly landingContext = inject( LandingEngagementService );
 
-  readonly sampleBars = [
-    { label: 'Yes', value: '30 · 79%', pct: 79, color: 'var(--t-green-fg)' },
-    { label: 'Not sure', value: '8 · 21%', pct: 21, color: 'var(--t-yellow-fg)' },
-    { label: 'No', value: '0 · 0%', pct: 0, color: 'var(--muted)' },
-  ];
+  private readonly storyVideo = viewChild<ElementRef<HTMLVideoElement>>( 'storyVideo' );
+  private readonly theme = signal<ThemeMode>( 'light' );
+  /** Path without extension: the .mp4 and its .jpg poster share it. */
+  readonly videoSrc = computed( () => `assets/video/pulse-story-${ this.theme() }` );
+  readonly reducedMotion = typeof window !== 'undefined' && window.matchMedia?.( '(prefers-reduced-motion: reduce)' ).matches;
+  private videoVisible = false;
+  private videoObserver?: IntersectionObserver;
+  private systemTheme?: MediaQueryList;
+  private readonly syncTheme = (): void => this.theme.set( currentTheme() );
 
   readonly steps = [
     { n: 1, title: 'Write', tint: 'green', copy: 'Tell TODD what you want to find out and she drafts the questions. Change anything, or write your own. Free, as many as you like.' },
@@ -58,6 +62,7 @@ export class LandingComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly openFaq = signal( 0 );
 
   ngOnInit (): void {
+    if ( typeof window !== 'undefined' ) this.theme.set( currentTheme() );
     this.landingContext.start( {
       featureKey: 'pulse',
       title: 'Pulse Landing',
@@ -71,10 +76,18 @@ export class LandingComponent implements OnInit, AfterViewInit, OnDestroy {
     if ( typeof window === 'undefined' ) return;
     window.scrollTo( 0, 0 );
     this.publishScrollDepth();
+    window.addEventListener( 'platform-theme-change', this.syncTheme );
+    this.systemTheme = window.matchMedia?.( '(prefers-color-scheme: dark)' );
+    this.systemTheme?.addEventListener( 'change', this.syncTheme );
+    this.watchVideo();
   }
 
   ngOnDestroy (): void {
     this.landingContext.stop();
+    this.videoObserver?.disconnect();
+    if ( typeof window === 'undefined' ) return;
+    window.removeEventListener( 'platform-theme-change', this.syncTheme );
+    this.systemTheme?.removeEventListener( 'change', this.syncTheme );
   }
 
   toggleFaq ( index: number ): void {
@@ -97,6 +110,38 @@ export class LandingComponent implements OnInit, AfterViewInit, OnDestroy {
   @HostListener( 'document:mouseout', ['$event'] )
   onDocumentMouseOut ( event: MouseEvent ): void {
     if ( event.clientY <= 0 ) this.landingContext.markExitIntent();
+  }
+
+  /** Plays the story only while at least a quarter of it is on screen. */
+  private watchVideo (): void {
+    const video = this.storyVideo()?.nativeElement;
+    if ( !video || this.reducedMotion ) return;
+    // Angular only sets the muted attribute; Safari and Firefox need the
+    // property before they allow play() without a gesture.
+    video.muted = true;
+    if ( typeof IntersectionObserver === 'undefined' ) {
+      this.videoVisible = true;
+      this.playVideo();
+      return;
+    }
+    this.videoObserver = new IntersectionObserver( ( [entry] ) => {
+      this.videoVisible = entry.isIntersecting;
+      if ( this.videoVisible ) this.playVideo();
+      else video.pause();
+    }, { threshold: 0.25 } );
+    this.videoObserver.observe( video );
+  }
+
+  /** A theme swap reloads the source, so start again once it is ready. */
+  onVideoReady (): void {
+    this.playVideo();
+  }
+
+  private playVideo (): void {
+    const video = this.storyVideo()?.nativeElement;
+    if ( !video || this.reducedMotion || !this.videoVisible ) return;
+    video.muted = true;
+    video.play().catch( () => undefined );
   }
 
   private publishScrollDepth (): void {

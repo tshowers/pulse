@@ -12,23 +12,10 @@
       <span class="lp-note">Free to write and try. Publishing is on the paid plan.</span>
       <p class="tt-made-by"><a href="https://todd.taliferro.tech" target="_blank" rel="noopener"><span class="tt-made-by__todd"><img src="assets/TODD-icon.png" alt="" /></span>Powered by <strong>TODD</strong></a><i aria-hidden="true"></i><a appAlsoFromUs></a></p>
     </div>
-    <div class="lp-demo" aria-label="Example: what TODD gives you">
-      <div class="p-todd lp-demo__todd">
-        <div class="lp-demo__source"><img class="p-avatar" src="assets/TODD-icon.png" alt="" width="28" height="28" /><span>What TODD heard · 38 answers</span></div>
-        <span class="lp-demo__headline">Clients like the work and most will renew. The ones who might leave are frustrated by slow replies.</span>
-        <div class="lp-demo__move">
-          <span class="p-eyebrow lp-demo__eyebrow">Your next move</span>
-          <span class="lp-demo__text">Email the 8 "Not sure" clients this week and promise a reply within one business day.</span>
-          <span class="p-btn p-btn--primary p-btn--sm lp-demo__btn" aria-hidden="true"><app-icon name="mail" />Draft the email</span>
-        </div>
-      </div>
-      <div class="lp-demo__q">
-        <span class="lp-demo__qtitle">Will you renew with us next year?</span> @for (bar of sampleBars; track bar.label) { <div class="lp-bar">
-          <div class="lp-bar__row"><span>{{ bar.label }}</span><b>{{ bar.value }}</b></div>
-          <span class="lp-bar__track"><span [style.width.%]="bar.pct" [style.background]="bar.color"></span></span>
-        </div> }
-      </div>
-    </div>
+    <figure class="lp-media">
+      <video #storyVideo class="lp-media__video" [src]="videoSrc() + '.mp4'" [poster]="videoSrc() + '.jpg'" [muted]="true" muted loop playsinline preload="auto" [attr.controls]="reducedMotion ? '' : null" (loadeddata)="onVideoReady()"
+        aria-label="A client goes quiet after a project ends. Pulse sends a three-question check-in, TODD reads all 38 answers and finds what is behind the Not sure replies, then drafts an email to those 8 clients."></video>
+    </figure>
   </section>
   <section class="lp-section">
     <h2 class="lp-h2">Three steps, every time</h2>

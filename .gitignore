@@ -48,3 +48,6 @@ Thumbs.db
 firestore-debug.log
 ui-debug.log
 firebase-debug.log
+
+# Landing hero videos: served from the local build only, not kept in git
+/src/assets/video/*.mp4
