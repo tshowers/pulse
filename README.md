@@ -2,7 +2,7 @@
 
 Pulse is 16Ahead's survey product: write a short pulse of focused questions, share a link, and read the answers as a decision rather than a pile of responses. Built by [Taliferro Tech](https://taliferro.com) as part of the [16Ahead](https://app.16ahead.com) product family.
 
-**Live:** [pulse.taliferro.tech](https://pulse.taliferro.tech) · **iOS twin:** `apps/ios/pulse-ios` (Pulsur, native Swift, separate repo)
+**Live:** [pulse.16ahead.com](https://pulse.16ahead.com) · **iOS twin:** `apps/ios/pulse-ios` (Pulsur, native Swift, separate repo)
 
 ## How it fits together
 
@@ -54,7 +54,7 @@ npm install
 npm start            # ng serve → http://localhost:4200
 ```
 
-The dev server reloads on change. Signing in from `localhost` uses the hosted-login client `pulse-web-local`, which hands you back to your local `/auth/callback`. If sign-in doesn't come back to your machine, check that client's return URL in TODD's hosted-login setup.
+The dev server reloads on change. Signing in from `localhost` uses the hosted-login client `pulse-web-local`, which hands you back to your local `/auth/callback`. If sign-in doesn't come back to your machine, check that client's return URL in 16Ahead's hosted-login setup.
 
 ## Configuration
 
@@ -66,7 +66,7 @@ There is **no `.env` file and nothing to fill in**. All configuration is committ
 | Key | Used for |
 | --- | --- |
 | `production` | Turns on the service worker, version polling and chunk-error recovery |
-| `PLATFORM_URL` | Public origin, `https://pulse.taliferro.tech` |
+| `PLATFORM_URL` | Public origin, `https://pulse.16ahead.com` |
 | `backendURL` | 16Ahead backend base URL, `https://api.taliferro.tech/api` |
 | `apiKey` | Bearer key sent to the backend's `/app-assistant` endpoint |
 | `firebaseConfig` | Firebase web config for the `taliferrotech` project |
