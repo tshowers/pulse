@@ -2,7 +2,7 @@
  * Fails fast when the e2e dev-server port is already taken.
  *
  * start-server-and-test only waits for *something* to answer on the URL, so
- * if another app (TODD Docs, an old `ng serve`) already holds the port,
+ * if another app (Docs, an old `ng serve`) already holds the port,
  * `ng serve` dies and Cypress quietly runs every Pulse spec against the
  * wrong app. Checking first turns that into one clear error.
  *

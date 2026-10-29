@@ -13,11 +13,11 @@ export interface ProductCheckoutRequest {
 
 /**
  * Copied from web-products/network's NetworkPurchaseFlowService - same
- * checkout/confirm calls against the same todd-backend endpoints (nothing
+ * checkout/confirm calls against the same backend endpoints (nothing
  * about billing changes), but drops MarketingFunnelService's
  * trackCheckoutStarted / trackPaidConversion calls, which are fire-and-
  * forget marketing-funnel analytics, not core to completing a purchase -
- * and MarketingFunnelService itself pulls in TODD's full
+ * and MarketingFunnelService itself pulls in the hub app's full
  * AuthService/UserService, which isn't worth carrying over for an
  * analytics side-effect.
  */

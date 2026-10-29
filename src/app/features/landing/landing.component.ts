@@ -32,9 +32,9 @@ export class LandingComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly syncTheme = (): void => this.theme.set( currentTheme() );
 
   readonly steps = [
-    { n: 1, title: 'Write', tint: 'green', copy: 'Tell TODD what you want to find out and she drafts the questions. Change anything, or write your own. Free, as many as you like.' },
+    { n: 1, title: 'Write', tint: 'green', copy: 'Tell 16Ahead what you want to find out and she drafts the questions. Change anything, or write your own. Free, as many as you like.' },
     { n: 2, title: 'Share', tint: 'violet', copy: 'Publish to get one link. People answer on any phone or computer, one question at a time, with no account to make.' },
-    { n: 3, title: 'Results', tint: 'blue', copy: 'Answers fill in live. After 5 answers TODD writes a summary of what people said and suggests your next move.' },
+    { n: 3, title: 'Results', tint: 'blue', copy: 'Answers fill in live. After 5 answers 16Ahead writes a summary of what people said and suggests your next move.' },
   ];
 
   readonly painPoints = [
@@ -54,7 +54,7 @@ export class LandingComponent implements OnInit, AfterViewInit, OnDestroy {
 
   readonly faqs = [
     { question: 'Can I build a Pulse before I pay?', answer: 'Yes. You can create and preview pulses for free, then upgrade when you are ready to publish and collect responses.' },
-    { question: 'How are responses summarized?', answer: 'Each question gets a live chart or list of answers. TODD reads all of them, groups written answers by theme, and writes a short summary with a suggested next move once 5 people have answered.' },
+    { question: 'How are responses summarized?', answer: 'Each question gets a live chart or list of answers. 16Ahead reads all of them, groups written answers by theme, and writes a short summary with a suggested next move once 5 people have answered.' },
     { question: 'Do respondents need an account?', answer: 'No. A published pulse can be shared by link, and people can respond without installing an app or signing in.' },
     { question: 'Who is Pulse for?', answer: 'Pulse is for teams that need to ask a clear question, collect real feedback, and turn the answers into a direction quickly.' },
   ];
@@ -66,7 +66,7 @@ export class LandingComponent implements OnInit, AfterViewInit, OnDestroy {
     this.landingContext.start( {
       featureKey: 'pulse',
       title: 'Pulse Landing',
-      description: 'Public product landing page for visitors evaluating Pulse as TODD\'s survey and feedback tool.',
+      description: 'Public product landing page for visitors evaluating Pulse as 16Ahead\'s survey and feedback tool.',
       primaryRoute: '/app',
       pricingRoute: '/pricing',
     } );

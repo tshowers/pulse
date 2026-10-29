@@ -20,7 +20,7 @@ const DEFAULT_CLOSE_COUNT = 50;
 /**
  * Step 2, Share. Before publishing (1d): a quick check, when to stop taking
  * answers, names or anonymous, and Publish. After (1e): the link is the
- * whole screen, plus answers so far, TODD's note and Close / Back to draft.
+ * whole screen, plus answers so far, 16Ahead's note and Close / Back to draft.
  *
  * Writing is free; publishing is paid. Without the plan the button reads
  * "Choose a plan to publish" and goes to /pricing.

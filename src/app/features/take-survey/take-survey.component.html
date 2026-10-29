@@ -32,7 +32,7 @@
       </aside> }
     </div> @if (!preview()) { <div class="ts-own ts-phone-block">
       <span class="ts-own__title">Want to run your own?</span>
-      <span class="ts-own__text">TODD Pulse writes the questions and tells you what the answers mean.</span>
+      <span class="ts-own__text">16Ahead Pulse writes the questions and tells you what the answers mean.</span>
       <a class="p-btn p-btn--dark" routerLink="/">Try it free</a>
     </div> } } @default { <!-- answer, identity, sending -->
     <div class="ts-card ts-card--question">
@@ -62,7 +62,7 @@
       </div>
     </div> } }
   </main>
-  <footer class="ts-foot"> @if (phase() === 'done' || phase() === 'already') { <span class="ts-wide">Want to ask your own questions? <a routerLink="/">Try TODD Pulse free</a></span>
-    <span class="ts-phone">Powered by TODD Pulse</span> } @else { <span>Your answers go to {{ sender() }}.@if (survey()?.collectIdentity && phase() === 'answer') {<span class="ts-wide"> They're asking for your name and email at the end.</span>}<span class="ts-phone"> Powered by TODD Pulse.</span></span> } <span class="ts-wide">Powered by TODD Pulse</span>
+  <footer class="ts-foot"> @if (phase() === 'done' || phase() === 'already') { <span class="ts-wide">Want to ask your own questions? <a routerLink="/">Try 16Ahead Pulse free</a></span>
+    <span class="ts-phone">Powered by 16Ahead Pulse</span> } @else { <span>Your answers go to {{ sender() }}.@if (survey()?.collectIdentity && phase() === 'answer') {<span class="ts-wide"> They're asking for your name and email at the end.</span>}<span class="ts-phone"> Powered by 16Ahead Pulse.</span></span> } <span class="ts-wide">Powered by 16Ahead Pulse</span>
   </footer>
 </div>

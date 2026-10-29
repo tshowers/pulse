@@ -100,10 +100,10 @@
 
       <ng-container *ngSwitchCase="'signUp'">
         <h1 class="gs-question" data-cy="get-started-question">Last step: create your account</h1>
-        <p class="gs-hint">"{{ draft.survey.title }}" &middot; {{ draft.survey.questions.length }} question{{ draft.survey.questions.length === 1 ? '' : 's' }} ready. Sign in with TODD to save it.</p>
+        <p class="gs-hint">"{{ draft.survey.title }}" &middot; {{ draft.survey.questions.length }} question{{ draft.survey.questions.length === 1 ? '' : 's' }} ready. Sign in with 16Ahead to save it.</p>
         <div class="gs-actions">
           <button type="button" class="gs-button" [disabled]="isSigningIn" (click)="signIn()" data-cy="get-started-sign-in">
-            {{ isSigningIn ? 'Redirecting...' : 'Sign in with TODD' }}</button>
+            {{ isSigningIn ? 'Redirecting...' : 'Sign in with 16Ahead' }}</button>
         </div>
       </ng-container>
     </ng-container>

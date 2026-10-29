@@ -57,10 +57,10 @@ export interface AssistantEngineHelpers {
 }
 
 /**
- * Trimmed port of TODD's AssistantEngineService. Same dispatch shape as
+ * Trimmed port of the hub app's AssistantEngineService. Same dispatch shape as
  * web-products/network's port (direct nav -> pre-checks -> domain routing ->
  * general LLM fallback), minus even the local-intent step Network had -
- * TODD's original never had a "local survey intent" layer the way it had
+ * the hub app's original never had a "local survey intent" layer the way it had
  * one for contacts, so there's nothing to port or drop here.
  */
 @Injectable( { providedIn: 'root' } )

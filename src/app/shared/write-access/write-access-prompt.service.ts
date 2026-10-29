@@ -10,7 +10,7 @@ export interface WriteAccessPrompt {
   action: string;
   /** The button that was stopped - pressed again once the purchase lands. */
   element?: HTMLElement;
-  /** 'suite' when opened from a TODD Suite offer: lead with Suite instead of this app. */
+  /** 'suite' when opened from a 16Ahead Suite offer: lead with Suite instead of this app. */
   plan?: 'suite';
 }
 

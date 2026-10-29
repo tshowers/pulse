@@ -32,7 +32,7 @@ interface ChoiceField {
  * todd.taliferro.tech/update-profile. Same fields and one-tap choices
  * (@taliferro/ui/platform/profile-choices.model), same API
  * (ProfileApiService). Advanced settings (products, signature, billing)
- * stay on TODD's own profile page, linked at the bottom.
+ * stay on the hub's own profile page, linked at the bottom.
  */
 @Component( {
   selector: 'app-profile',
@@ -75,7 +75,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   private loadedForUser = false;
 
   ngOnInit (): void {
-    this.title.setTitle( 'Profile — Pulse | Taliferro Tech' );
+    this.title.setTitle( 'Profile — Pulse | 16Ahead' );
     // React to auth state rather than checking once: a session that finishes
     // signing in after the page loads should still load the profile.
     this.authSubscription = this.authService.isLoggedIn().subscribe( ( signedIn ) => {

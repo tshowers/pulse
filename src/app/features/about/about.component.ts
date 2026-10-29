@@ -5,7 +5,7 @@ import { IconComponent } from '../../shared/icon/icon.component';
 import { PulseLogoComponent } from '../../shared/pulse-logo/pulse-logo.component';
 import { SiteFooterComponent } from '../../shared/site-footer/site-footer.component';
 
-/** About (design_handoff_todd_pulse 2b): what Pulse is, who it's for, how it fits into TODD, and what respondents can count on. */
+/** About (design_handoff_todd_pulse 2b): what Pulse is, who it's for, how it fits into 16Ahead, and what respondents can count on. */
 @Component( {
   selector: 'app-about',
   standalone: true,
@@ -15,8 +15,8 @@ import { SiteFooterComponent } from '../../shared/site-footer/site-footer.compon
       <section class="ab-intro">
         <div class="ab-intro__copy">
           <span class="p-eyebrow">About Pulse</span>
-          <h1>Pulse is how TODD listens</h1>
-          <p>TODD is the assistant that helps small teams decide their next move. Pulse is the part that asks your customers, users and team a few focused questions, so each move is based on what people actually said instead of a guess.</p>
+          <h1>Pulse is how 16Ahead listens</h1>
+          <p>16Ahead is the assistant that helps small teams decide their next move. Pulse is the part that asks your customers, users and team a few focused questions, so each move is based on what people actually said instead of a guess.</p>
         </div>
         <app-pulse-logo class="ab-logo" />
       </section>
@@ -36,9 +36,9 @@ import { SiteFooterComponent } from '../../shared/site-footer/site-footer.compon
 
       <section class="ab-pair">
         <div class="p-card ab-card">
-          <span class="p-eyebrow">Part of TODD</span>
+          <span class="p-eyebrow">Part of 16Ahead</span>
           <span class="ab-card__title">What you learn here shows up elsewhere</span>
-          <span class="ab-card__copy">Your daily briefing tracks your live pulses alongside everything else on your plate, and Maya can start a new pulse straight out of a conversation instead of you starting from a blank screen.</span>
+          <span class="ab-card__copy">Your daily briefing tracks your live pulses alongside everything else on your plate, and the Marketing Assistant can start a new pulse straight out of a conversation instead of you starting from a blank screen.</span>
         </div>
         <div class="p-card ab-card">
           <span class="p-eyebrow">For the people answering</span>
@@ -52,10 +52,10 @@ import { SiteFooterComponent } from '../../shared/site-footer/site-footer.compon
       </section>
 
       <section class="p-todd ab-cta">
-        <img class="p-avatar" src="assets/TODD-icon.png" alt="" width="64" height="64" />
+        <img class="p-avatar" src="assets/16ahead-icon.png" alt="" width="64" height="64" />
         <div class="ab-cta__copy">
           <span class="ab-cta__title">Have a decision you're unsure about?</span>
-          <span class="ab-cta__sub">Tell TODD and she'll write the questions to settle it.</span>
+          <span class="ab-cta__sub">Tell 16Ahead and it'll write the questions to settle it.</span>
         </div>
         <a class="p-btn p-btn--primary ab-cta__btn" routerLink="/get-started">Get started free</a>
       </section>

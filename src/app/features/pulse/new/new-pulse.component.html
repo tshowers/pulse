@@ -2,10 +2,10 @@
   <div class="np">
     <div class="np-head">
       <h1>What do you want to find out?</h1>
-      <p>Describe it in a sentence. TODD drafts 3 to 5 questions you can change before anyone sees them.</p>
+      <p>Describe it in a sentence. 16Ahead drafts 3 to 5 questions you can change before anyone sees them.</p>
     </div>
     <form class="p-todd np-prompt" (submit)="$event.preventDefault(); writeWithTodd()">
-      <img class="p-avatar" src="assets/TODD-icon.png" alt="" width="36" height="36" />
+      <img class="p-avatar" src="assets/16ahead-icon.png" alt="" width="36" height="36" />
       <label class="p-visually-hidden" for="np-prompt">What do you want to find out?</label>
       <textarea id="np-prompt" class="np-prompt__input" rows="1" [value]="prompt()" (input)="prompt.set($any($event.target).value)" (keydown)="onPromptKey($event)" maxlength="600" [disabled]="busy() === 'todd'" placeholder="Whether our clients are happy and planning to renew next year"></textarea>
       <button type="submit" class="p-btn p-btn--primary np-prompt__go" [disabled]="prompt().trim().length < 3 || busy() !== ''">

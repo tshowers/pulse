@@ -45,9 +45,9 @@
         </div> @if (previewQuestion()) { <app-question-preview [question]="previewQuestion()!" [index]="selectedIndex()" [total]="questions().length" /> } @else { <p class="w-empty">Add a question to see it here the way people will.</p> }
       </div> @if (!readOnly() && reviewState() !== 'idle') { <div class="p-todd w-review" aria-live="polite">
         <div class="w-review__head">
-          <img class="p-avatar" src="assets/TODD-icon.png" alt="" width="28" height="28" />
-          <span>TODD's review</span>
-        </div> @if (reviewState() === 'loading' && visibleSuggestions().length === 0) { <div class="w-review__item"><span class="w-muted">Reading your questions…</span></div> } @else if (reviewState() === 'error') { <div class="w-review__item"><span class="w-muted">TODD couldn't review this right now. It'll try again after your next change.</span></div> } @else if (visibleSuggestions().length === 0) { <div class="w-review__item"><span>These read well. TODD has no changes to suggest.</span></div> } @for (suggestion of visibleSuggestions(); track suggestion.id) { <div class="w-review__item">
+          <img class="p-avatar" src="assets/16ahead-icon.png" alt="" width="28" height="28" />
+          <span>16Ahead's review</span>
+        </div> @if (reviewState() === 'loading' && visibleSuggestions().length === 0) { <div class="w-review__item"><span class="w-muted">Reading your questions…</span></div> } @else if (reviewState() === 'error') { <div class="w-review__item"><span class="w-muted">16Ahead couldn't review this right now. It'll try again after your next change.</span></div> } @else if (visibleSuggestions().length === 0) { <div class="w-review__item"><span>These read well. 16Ahead has no changes to suggest.</span></div> } @for (suggestion of visibleSuggestions(); track suggestion.id) { <div class="w-review__item">
           <span>{{ suggestion.message }}</span>
           <div class="w-review__actions">
             <button type="button" class="p-btn p-btn--primary p-btn--xs" (click)="apply(suggestion)">{{ suggestion.label }}</button>

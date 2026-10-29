@@ -17,13 +17,13 @@ import { AssistantMissionComponent, AssistantMissionsService } from '../../missi
 type ChatMsg = { role: 'user' | 'assistant' | 'mission'; content: string; missionId?: string; };
 
 /**
- * Pulse's own assistant-box - trimmed port of TODD's
+ * Pulse's own assistant-box - trimmed port of the hub app's
  * shared/page/assistant-box/assistant-box.component.ts, same scoping
  * decision as web-products/network's port: everything tied to domains this
  * app doesn't have (Moves/Docs/Network tasks-documents-contacts, the
  * Outreach/Catalyst email composer flow, the Momentum Engine "goal"
- * intercept, TODD's landing-page guest/demo mode) is dropped rather than
- * stubbed. Lighter than Network's port in one respect: TODD's original
+ * intercept, the hub app's landing-page guest/demo mode) is dropped rather than
+ * stubbed. Lighter than Network's port in one respect: the hub app's original
  * never had a "local survey intent" pre-processing layer the way it had
  * ContactLocalAssistantService for contacts, so there's no equivalent here
  * either - prompts go straight from direct-nav/pre-checks to the Survey LLM.
@@ -301,7 +301,7 @@ export class AssistantBoxComponent implements OnInit, OnChanges, OnDestroy {
         if ( looksLikeQuotaOrBilling ) {
             return [
                 '<div class="assistant-nudge">',
-                '<strong>TODD could not finish that right now.</strong><br>',
+                '<strong>16Ahead could not finish that right now.</strong><br>',
                 'It looks like the OpenAI Platform account may need attention because the balance, quota, or usage limit was reached.<br>',
                 'Please try again shortly.',
                 '</div>'

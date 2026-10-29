@@ -1,4 +1,4 @@
-/* TODD brand-shell tokens - Network doesn't define these globally (they're
+/* Hub brand-shell tokens (--todd-*) - Network doesn't define these globally (they're
    the main frontend app's theme vars), so they're scoped here rather than
    added to Network's global stylesheet, which only this launcher uses them. */
 :host {
@@ -41,6 +41,10 @@
   height: 180px;
   z-index: 998;
   background: transparent;
+  /* The reveal reads the pointer from document mousemove
+     (isInBottomRightHotzone), so this box never needs a click: it must not
+     sit over a page's own links and buttons in the corner. */
+  pointer-events: none;
 }
 
 /* Floating launcher pill */

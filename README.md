@@ -1,6 +1,6 @@
 # Pulse
 
-Pulse is TODD's survey product: write a short pulse of focused questions, share a link, and read the answers as a decision rather than a pile of responses. Built by [Taliferro Tech](https://taliferro.com) as part of the [TODD](https://todd.taliferro.tech) product family.
+Pulse is 16Ahead's survey product: write a short pulse of focused questions, share a link, and read the answers as a decision rather than a pile of responses. Built by [Taliferro Tech](https://taliferro.com) as part of the [16Ahead](https://app.16ahead.com) product family.
 
 **Live:** [pulse.taliferro.tech](https://pulse.taliferro.tech) · **iOS twin:** `apps/ios/pulse-ios` (Pulsur, native Swift, separate repo)
 
@@ -10,9 +10,9 @@ Pulse is TODD's survey product: write a short pulse of focused questions, share 
 | --- | --- |
 | This repo | Angular 19 standalone-component app (Bootstrap 5, Font Awesome). Public pages are prerendered at build time; everything else renders in the browser. |
 | `@taliferro/ui` | Shared menu, footer, theme and product-page components used by every Taliferro web product. Installed from a **sibling checkout** (`file:../../taliferro-ui`), not from npm. |
-| Firebase project `taliferrotech` | Shared by TODD and all its products. Pulse uses Firebase Auth (session), Firestore (`users/{uid}` for tenant lookup), and Hosting (site `todd-pulse`). |
-| `https://api.taliferro.tech/api` | The shared TODD backend. Surveys, public survey/response endpoints, profile, account/billing, checkout, onboarding and the in-app assistant. |
-| TODD hosted login | Sign-in isn't done in this app. `/login` sends people to `todd.taliferro.tech/login?client=pulse-web`, which returns a custom token to `/auth/callback`. |
+| Firebase project `taliferrotech` | Shared by the 16Ahead hub and all its products. Pulse uses Firebase Auth (session), Firestore (`users/{uid}` for tenant lookup), and Hosting (site `todd-pulse`). |
+| `https://api.taliferro.tech/api` | The shared 16Ahead backend. Surveys, public survey/response endpoints, profile, account/billing, checkout, onboarding and the in-app assistant. |
+| 16Ahead hosted login | Sign-in isn't done in this app. `/login` sends people to the hub's hosted login (`app.16ahead.com/login?client=pulse-web` on 16ahead.com hosts, the legacy `todd.taliferro.tech/login` on localhost and taliferro.tech hosts; see `hostedLoginUrl` in `@taliferro/ui/platform/hosted-login.model`), which returns a custom token to `/auth/callback`. |
 
 ## Prerequisites
 
@@ -22,7 +22,7 @@ Pulse is TODD's survey product: write a short pulse of focused questions, share 
 - **Java runtime** (e.g. `brew install openjdk`) — the Firestore emulator used by the end-to-end tests needs it
 - **Google Chrome** — the unit tests run in headless Chrome
 - Access to the GitHub repos `tshowers/pulse` and `tshowers/taliferro-ui`
-- A TODD account to sign in with (any account the hosted login accepts; sign in once at [todd.taliferro.tech](https://todd.taliferro.tech))
+- A 16Ahead account to sign in with (any account the hosted login accepts; sign in once at [app.16ahead.com](https://app.16ahead.com))
 
 ### What you don't need
 
@@ -67,7 +67,7 @@ There is **no `.env` file and nothing to fill in**. All configuration is committ
 | --- | --- |
 | `production` | Turns on the service worker, version polling and chunk-error recovery |
 | `PLATFORM_URL` | Public origin, `https://pulse.taliferro.tech` |
-| `backendURL` | TODD backend base URL, `https://api.taliferro.tech/api` |
+| `backendURL` | 16Ahead backend base URL, `https://api.taliferro.tech/api` |
 | `apiKey` | Bearer key sent to the backend's `/app-assistant` endpoint |
 | `firebaseConfig` | Firebase web config for the `taliferrotech` project |
 | `taliferroTenantId` | The Taliferro admin account; signed-in as this uid shows admin-only UI |
@@ -89,7 +89,7 @@ Pulse calls these backend routes (all under `backendURL`). Signed-in requests ca
 | `/profile`, `/onboarding/profile`, `/getting-started/pulse` | Profile and first-run setup |
 | `/account` | Plan and billing state |
 | `/survey/checkout`, `/survey/checkout/confirm` | Web subscription checkout |
-| `/app-assistant` | "Ask TODD" assistant |
+| `/app-assistant` | General Assistant |
 
 The backend lives in its own repo, [taliferro-tech/taliferrotech](https://github.com/taliferro-tech/taliferrotech) (Firebase Functions; older code comments call it `todd-backend`). Changing an endpoint is done and deployed there, not here.
 

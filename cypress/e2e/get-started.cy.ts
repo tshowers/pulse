@@ -1,6 +1,6 @@
 /**
  * Pulse's pre-sign-in wizard at /get-started: build a first survey, then
- * name and company, then hand off to TODD's hosted login. The draft is kept
+ * name and company, then hand off to the 16Ahead hosted login. The draft is kept
  * in localStorage so it survives that redirect (it's saved after sign-in
  * by PulseSignupDraftService.submitIfPending in AuthCallbackComponent).
  */

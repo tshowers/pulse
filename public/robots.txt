@@ -12,4 +12,4 @@ Disallow: /get-started
 Disallow: /login
 Disallow: /auth/
 
-Sitemap: https://pulse.taliferro.tech/sitemap.xml
+Sitemap: https://pulse.16ahead.com/sitemap.xml

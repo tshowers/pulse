@@ -9,14 +9,14 @@ import { OwnerTokenComponent } from './owner-token.component';
 import { PlanStripComponent, paint } from './plan-strip.component';
 import { StepDrawerComponent } from './step-drawer.component';
 
-const ORIGIN: Record<string, string> = { ask: 'Ask TODD', maya: 'Maya', playbook: 'a playbook', suggestion: 'a suggestion', move: 'Moves', signal: 'the Signal Engine', schedule: 'a schedule', backlog: 'your backlog' };
+const ORIGIN: Record<string, string> = { ask: 'General Assistant', maya: 'the Marketing Assistant', playbook: 'a playbook', suggestion: 'a suggestion', move: 'Moves', signal: 'the Signal Engine', schedule: 'a schedule', backlog: 'your backlog' };
 const OUTCOME: Record<string, string> = { action: 'Action', insight: 'Insight', shortlist: 'Shortlist', program: 'Program', assetSet: 'Asset set' };
 
 /**
  * Mission detail (design 2a, 13a), the core screen: who is doing what right
  * now. A banner for the current step, the strip, the timeline with results,
  * who does what, and - once it's finished - the report. Every step opens the
- * drawer. Refreshes while TODD and Maya work. Synced from taliferro-ui/missions.
+ * drawer. Refreshes while the assistants work. Synced from taliferro-ui/missions.
  */
 @Component( {
   selector: 'tm-mission-detail',
@@ -196,7 +196,7 @@ export class MissionDetailComponent implements OnDestroy {
   readonly kicker = computed( () => {
     const m = this.mission()!;
     const started = m.startedAt ? ` · Started ${new Date( m.startedAt ).toLocaleDateString( undefined, { month: 'short', day: 'numeric' } )}` : m.status === 'proposed' ? ' · Not started' : '';
-    return `Mission · ${OUTCOME[m.outcomeType] || 'Action'}${started} from ${ORIGIN[m.origin] || 'Ask TODD'}`;
+    return `Mission · ${OUTCOME[m.outcomeType] || 'Action'}${started} from ${ORIGIN[m.origin] || 'General Assistant'}`;
   } );
 
   readonly canEdit = computed( () => {
@@ -204,7 +204,7 @@ export class MissionDetailComponent implements OnDestroy {
     return Boolean( m && m.isOwner && m.steps.length && ['proposed', 'active'].includes( m.status ) );
   } );
 
-  /** The current-step banner (2a): Maya/TODD working, waiting on you, waiting on the world, failed. */
+  /** The current-step banner (2a): an assistant working, waiting on you, waiting on the world, failed. */
   readonly banner = computed( () => {
     const m = this.mission();
     if ( !m || m.status === 'done' || m.status === 'proposed' || m.status === 'cancelled' ) return null;
@@ -248,11 +248,11 @@ export class MissionDetailComponent implements OnDestroy {
     const mine = m.steps.filter( ( s ) => s.owner === 'person' && s.holder.assigneeId === this.viewerId() && !s.when );
     const minutes = mine.reduce( ( sum, s ) => sum + ( s.minutes || ( s.kind === 'approval' ? 3 : s.kind === 'decision' ? 1 : 10 ) ), 0 );
     const approvals = mine.filter( ( s ) => s.kind === 'approval' ).length;
-    if ( !minutes ) return 'None. TODD and Maya do every step.';
+    if ( !minutes ) return 'None. 16Ahead and the Marketing Assistant do every step.';
     return `About ${minutes} minute${minutes === 1 ? '' : 's'}${approvals ? `, for ${approvals} approval${approvals === 1 ? '' : 's'}` : ''}`;
   } );
 
-  /** Asset set (13a): what Maya made that the waiting approval covers. */
+  /** Asset set (13a): what the Marketing Assistant made that the waiting approval covers. */
   readonly assets = computed( () => {
     const m = this.mission();
     if ( !m || m.outcomeType !== 'assetSet' ) return [];
@@ -298,7 +298,7 @@ export class MissionDetailComponent implements OnDestroy {
       const mission = await this.api.get( id );
       this.mission.set( mission );
       this.error.set( '' );
-      // Keep it live while TODD and Maya are working; slow down when it's waiting on people.
+      // Keep it live while the assistants are working; slow down when it's waiting on people.
       if ( ['queued', 'running'].includes( mission.status ) || mission.phase === 'working' ) this.refreshSoon( 4000 );
       else if ( mission.status === 'active' ) this.refreshSoon( 30000 );
     } catch ( error: any ) {

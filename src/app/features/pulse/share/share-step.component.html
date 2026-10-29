@@ -21,9 +21,9 @@
       <span class="s-card__note">Results update the moment someone answers.</span>
     </div>
     <div class="s-card s-card--todd">
-      <img class="p-avatar" src="assets/TODD-icon.png" alt="" width="32" height="32" />
+      <img class="p-avatar" src="assets/16ahead-icon.png" alt="" width="32" height="32" />
       <span class="s-card__todd">
-        <span class="s-card__label s-card__label--todd">TODD</span> @if (survey().insights?.summary) { <span>{{ survey().insights?.summary }}</span>
+        <span class="s-card__label s-card__label--todd">16Ahead</span> @if (survey().insights?.summary) { <span>{{ survey().insights?.summary }}</span>
         <a [routerLink]="['/survey', survey().id, 'results']">Read the summary</a> } @else if (count() >= 5) { <span>I'm reading the answers now. Your summary and next move will be on Results in a minute.</span> } @else { <span>I'll write your summary and next move once 5 people have answered.</span> } </span>
     </div>
     <div class="s-card">
@@ -60,7 +60,7 @@
           <button type="button" role="radio" [class.is-on]="collectIdentity()" [attr.aria-checked]="collectIdentity()" (click)="setIdentity(true)">Ask for name and email</button>
           <button type="button" role="radio" [class.is-on]="!collectIdentity()" [attr.aria-checked]="!collectIdentity()" (click)="setIdentity(false)">Anonymous</button>
         </div>
-        <span class="s-setting__note">{{ collectIdentity() ? 'People add their name and email at the end, so TODD can help you follow up.' : "Answers come in without names. Pulse won't attach anyone's details." }}</span>
+        <span class="s-setting__note">{{ collectIdentity() ? 'People add their name and email at the end, so 16Ahead can help you follow up.' : "Answers come in without names. Pulse won't attach anyone's details." }}</span>
       </div>
       <div class="s-publish"> <button type="button" class="p-btn p-btn--primary p-btn--lg" appWriteAction="publish this pulse" [disabled]="blockers().length > 0 || publishing() || access() === 'loading'" (click)="publish()" data-cy="pulse-publish">
           <app-icon name="send" />{{ publishing() ? 'Publishing…' : status() === 'closed' ? 'Reopen and keep my link' : 'Publish and get my link' }}
@@ -76,7 +76,7 @@
         <span><b>Answers show up live</b><span>Every question fills in as people respond. No refreshing.</span></span>
       </div>
       <div class="s-step"><span class="s-step__dot" data-tint="blue"><app-icon name="spark" [size]="18" /></span>
-        <span><b>TODD tells you what it means</b><span>After 5 answers, TODD writes a summary and suggests your next move.</span></span>
+        <span><b>16Ahead tells you what it means</b><span>After 5 answers, 16Ahead writes a summary and suggests your next move.</span></span>
       </div>
       <span class="s-next__foot">You can move it back to draft any time to change questions. Answers you already have are kept.</span>
     </aside>

@@ -7,7 +7,7 @@ import { MissionsApiService } from './missions-api.service';
 export type AssistantRoute = { kind: 'mission'; missionId: string } | { kind: 'answer'; text: string } | null;
 
 /**
- * The TODD assistant's Missions gate, the same in every app (first built in
+ * The assistant's Missions gate, the same in every app (first built in
  * Outreach, 2026-10-20). Real work becomes a Mission shown right in the
  * conversation; a quick question is answered by the right tool; help
  * questions (no tool) and any error return null so the app's assistant
@@ -58,7 +58,7 @@ export class AssistantMissionsService {
   template: `
     <div class="assistant-mission" data-cy="assistant-mission">
       <tm-mission-detail [missionId]="missionId()" [viewerId]="viewerId()" />
-      <a class="open" [href]="'https://moves.taliferro.tech/missions/' + missionId()" target="_blank" rel="noopener">Open in Moves ↗</a>
+      <a class="open" [href]="'https://moves.16ahead.com/missions/' + missionId()" target="_blank" rel="noopener">Open in Moves ↗</a>
     </div>
   `,
   styles: [`

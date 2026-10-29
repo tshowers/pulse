@@ -4,7 +4,7 @@
   width: 100%;
 }
 
-/* btn-todd / ios-input stand-ins: TODD's real design system isn't ported
+/* btn-todd / ios-input stand-ins: the hub app's real design system isn't ported
    here - same pattern already used in contact-edit.component.css and
    csv-import.component.css for this class name. */
 .btn-todd {

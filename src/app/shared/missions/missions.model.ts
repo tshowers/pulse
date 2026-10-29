@@ -3,7 +3,7 @@
  * src/app/shared/missions/ by ../missions/sync.sh - edit the .tmpl in
  * taliferro-ui, never the copy.
  *
- * The API shapes match todd-backend orchestrator/routes.js
+ * The API shapes match the backend orchestrator/routes.js
  * (/api/orchestration/missions). The view logic below is plain TypeScript so
  * every app draws a plan the same way: which steps are columns, which are
  * branch paths, what state each is in, and who holds it.
@@ -184,8 +184,8 @@ export function whoOf ( holder: { owner: Owner; assigneeId: string }, viewerId: 
 export interface Person { id: string; name: string; left?: boolean }
 
 export function nameOf ( who: Who, people: Record<string, Person> = {} ): string {
-  if ( who === 'todd' ) return 'TODD';
-  if ( who === 'maya' ) return 'Maya';
+  if ( who === 'todd' ) return 'General Assistant';
+  if ( who === 'maya' ) return 'Marketing Assistant';
   if ( who === 'you' ) return 'You';
   return ( people[who] && people[who].name.split( ' ' )[0] ) || 'A teammate';
 }
@@ -405,7 +405,7 @@ export function doneCount ( columns: ColumnView[] ): number {
   return columns.filter( ( column ) => column.look === 'done' || column.look === 'skip' ).length;
 }
 
-/** Owner split for a plan, by display owner ("5 by TODD · 4 by Maya · 1 by you"). */
+/** Owner split for a plan, by display owner ("5 by 16Ahead · 4 by the Marketing Assistant · 1 by you"). */
 export function splitLine ( columns: ColumnView[] ): string {
   const counts = { todd: 0, maya: 0, you: 0, teammates: 0 };
   columns.forEach( ( column ) => {
@@ -416,8 +416,8 @@ export function splitLine ( columns: ColumnView[] ): string {
     else counts.teammates += 1;
   } );
   return [
-    counts.todd ? `${counts.todd} by TODD` : '',
-    counts.maya ? `${counts.maya} by Maya` : '',
+    counts.todd ? `${counts.todd} by 16Ahead` : '',
+    counts.maya ? `${counts.maya} by the Marketing Assistant` : '',
     counts.teammates ? `${counts.teammates} by teammates` : '',
     counts.you ? `${counts.you} by you` : '',
   ].filter( Boolean ).join( ' · ' );
@@ -426,11 +426,11 @@ export function splitLine ( columns: ColumnView[] ): string {
 /** Product ids as people read them. */
 export const PRODUCT_LABEL: Record<string, string> = {
   network: 'Network', 'lead-vault': 'Lead Vault', find: 'Find', outreach: 'Outreach', 'email-creator': 'Email Creator',
-  'image-creator': 'Image Creator', maya: 'Maya', social: 'Social', docs: 'Docs', 'knowledge-base': 'Knowledge', pulse: 'Pulse',
-  moves: 'Moves', sayit: 'SayIt', 'email-signature': 'Email Signature', events: 'Events', todd: 'TODD',
+  'image-creator': 'Image Creator', maya: 'Marketing Assistant', social: 'Social', docs: 'Docs', 'knowledge-base': 'Knowledge', pulse: 'Pulse',
+  moves: 'Moves', sayit: 'SayIt', 'email-signature': 'Email Signature', events: 'Events', todd: '16Ahead',
 };
 
-/** The app filter on Playbooks (14a): Maya covers her tools' products. */
+/** The app filter on Playbooks (14a): the Marketing Assistant covers its tools' products. */
 export function appOf ( product: string ): string {
   return ['image-creator', 'email-creator', 'social', 'sayit', 'maya'].includes( product ) ? 'maya' : product;
 }

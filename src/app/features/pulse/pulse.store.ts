@@ -26,7 +26,7 @@ const SERVER_FIELDS: ( keyof Survey )[] = [
  *   saved on another device first) stops autosave and asks for a reload
  *   rather than overwriting.
  * - Live: while a step asks for it and the tab is visible, the pulse is
- *   re-read every 15s; `changes` ticks when answers, TODD's summary or the
+ *   re-read every 15s; `changes` ticks when answers, 16Ahead's summary or the
  *   status moved, so Results can refetch.
  */
 @Injectable()

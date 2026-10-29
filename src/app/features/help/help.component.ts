@@ -10,7 +10,7 @@ import { SiteFooterComponent } from '../../shared/site-footer/site-footer.compon
 /**
  * Pulse help (design_handoff_todd_pulse 2c). Signed in: Getting started
  * progress on top. Then the three steps (Write, Share, Results), tips for
- * good questions and the FAQ. Ask TODD opens the assistant.
+ * good questions and the FAQ. The General Assistant button opens the assistant.
  */
 @Component( {
   selector: 'app-help',
@@ -41,9 +41,9 @@ export class HelpComponent implements OnInit {
     {
       n: 1, title: 'Write', tint: 'green', lead: 'A pulse is a short survey about one decision. Start from New pulse.',
       details: [
-        'Describe what you want to find out and TODD drafts 3 to 5 questions, or pick a template, or start blank.',
+        'Describe what you want to find out and 16Ahead drafts 3 to 5 questions, or pick a template, or start blank.',
         'Each question can be a short or long answer, one choice, pick any, yes or no, or a rating.',
-        'TODD reviews your questions as you go and suggests fixes. Apply or dismiss each one.',
+        '16Ahead reviews your questions as you go and suggests fixes. Apply or dismiss each one.',
         'Use Try it to answer it yourself the way respondents will. Nothing is saved.',
       ],
       action: 'Start a pulse', route: '/survey-edit',
@@ -61,9 +61,9 @@ export class HelpComponent implements OnInit {
     {
       n: 3, title: 'Results', tint: 'blue', lead: 'Results update the moment someone answers.',
       details: [
-        'After 5 answers, TODD writes a summary of what people said and suggests one next move.',
+        'After 5 answers, 16Ahead writes a summary of what people said and suggests one next move.',
         'Act on it right there: draft the email, add it to your tasks, or ask for another idea.',
-        'Every question has its own chart, and TODD groups written answers by theme.',
+        'Every question has its own chart, and 16Ahead groups written answers by theme.',
         'Download a CSV any time. Close the pulse when you have enough.',
       ],
       action: 'Open results', route: '/app',

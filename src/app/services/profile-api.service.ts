@@ -6,7 +6,7 @@ import { ToddProfile } from '@taliferro/ui/platform/profile-choices.model';
 import { environment } from '../../environments/environment';
 
 /**
- * The shared in-app profile API (todd-backend/functions/profileRoutes.js):
+ * The shared in-app profile API (backend functions/profileRoutes.js):
  * the same `GET/PATCH /api/profile` and `DELETE /api/account` network-ios's
  * TODDProfileKit uses, authenticated with the signed-in user's Firebase ID
  * token rather than any client-side Firestore write.

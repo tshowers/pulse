@@ -55,7 +55,7 @@ export class TakeSurveyComponent implements OnInit {
   readonly total = computed( () => this.questions().length + ( this.survey()?.collectIdentity ? 1 : 0 ) );
   readonly step = computed( () => this.phase() === 'identity' ? this.questions().length + 1 : this.index() + 1 );
   readonly progress = computed( () => ( this.step() / Math.max( 1, this.total() ) ) * 100 );
-  readonly sender = computed( () => this.survey()?.ownerDisplay?.name || ( this.preview() ? 'Your business' : 'TODD Pulse' ) );
+  readonly sender = computed( () => this.survey()?.ownerDisplay?.name || ( this.preview() ? 'Your business' : '16Ahead Pulse' ) );
   readonly initials = computed( () => this.sender().split( /\s+/ ).filter( Boolean ).slice( 0, 2 ).map( ( w ) => w[0] ).join( '' ).toUpperCase() || 'P' );
   readonly duration = computed( () => {
     const minutes = Math.max( 1, Math.round( this.questions().length * 15 / 60 ) );

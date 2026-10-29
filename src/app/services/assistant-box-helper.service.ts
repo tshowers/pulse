@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { LoggerService } from './logger.service';
 
 /**
- * Trimmed port of TODD's AssistantBoxHelperService. routeLabelMap and the
+ * Trimmed port of the hub app's AssistantBoxHelperService. routeLabelMap and the
  * backtick-stripping term list are cut down to Pulse's own routes only -
  * same trim as web-products/network's port.
  */

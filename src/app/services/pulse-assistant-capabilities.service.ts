@@ -24,12 +24,12 @@ export type CapabilityContext = {
 };
 
 /**
- * Pulse's own slice of TODD's AssistantCapabilitiesService - same scoping
+ * Pulse's own slice of the hub app's AssistantCapabilitiesService - same scoping
  * decision as web-products/network's NetworkAssistantCapabilitiesService.
  * Only Pulse's own routes and the create-pulse workflow guide (adapted from
- * TODD's original '/survey' + '/pulse/app' paths to this app's own
+ * the hub app's original '/survey' + '/pulse/app' paths to this app's own
  * '/survey-edit' + '/app'). No suite-wide routes, no route-intent phrase
- * bank ported from elsewhere - TODD's original never had a rich phrase bank
+ * bank ported from elsewhere - the hub app's original never had a rich phrase bank
  * for surveys the way it did for contacts, so there's nothing to carry over
  * beyond the one workflow guide.
  */
@@ -71,9 +71,9 @@ export class PulseAssistantCapabilitiesService {
       ],
       message: [
         '<p><strong>Every pulse goes Write, Share, Results.</strong></p>',
-        '<p>Choose <strong>New pulse</strong> (/survey-edit) and tell TODD what you want to find out, or pick a template.</p>',
+        '<p>Choose <strong>New pulse</strong> (/survey-edit) and tell 16Ahead what you want to find out, or pick a template.</p>',
         '<p>When it reads right, choose <strong>Next: Share</strong> to publish and get your link.</p>',
-        '<p>Answers show up on <strong>Results</strong>. After 5, TODD writes a summary and a next move.</p>'
+        '<p>Answers show up on <strong>Results</strong>. After 5, 16Ahead writes a summary and a next move.</p>'
       ].join( '' )
     },
   ];

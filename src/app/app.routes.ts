@@ -19,20 +19,20 @@ export const routes: Routes = [
   },
   {
     path: 'about',
-    data: { meta: { title: 'About Pulse — How TODD listens | Taliferro Tech', description: 'Pulse asks your customers, users and team a few focused questions, so your next move is based on what people actually said instead of a guess.' } satisfies PageMeta },
+    data: { meta: { title: 'About Pulse — How 16Ahead listens | 16Ahead', description: 'Pulse asks your customers, users and team a few focused questions, so your next move is based on what people actually said instead of a guess.' } satisfies PageMeta },
     loadComponent: () =>
       import( './features/about/about.component' ).then( ( m ) => m.AboutComponent ),
   },
   {
     path: 'help',
-    data: { meta: { title: 'Pulse help — Writing surveys that get answers | Taliferro Tech', description: 'How to write, share and read a pulse: from a question to a decision, writing questions that get answers, and common questions about plans and publishing.' } satisfies PageMeta },
+    data: { meta: { title: 'Pulse help — Writing surveys that get answers | 16Ahead', description: 'How to write, share and read a pulse: from a question to a decision, writing questions that get answers, and common questions about plans and publishing.' } satisfies PageMeta },
     loadComponent: () =>
       import( './features/help/help.component' ).then( ( m ) => m.HelpComponent ),
   },
   {
     // Dedicated product showcase for the Pulsur iOS app.
     path: 'ios',
-    data: { meta: { title: 'Pulsur — Pulse in your pocket for iPhone | Taliferro Tech', description: 'Pulsur brings Pulse to iPhone: the question, the responses, and the read on the room, wherever the moment happens. Coming soon to the App Store.' } satisfies PageMeta },
+    data: { meta: { title: 'Pulsur — Pulse in your pocket for iPhone | 16Ahead', description: 'Pulsur brings Pulse to iPhone: the question, the responses, and the read on the room, wherever the moment happens. Coming soon to the App Store.' } satisfies PageMeta },
     loadComponent: () =>
       import( './features/app-showcase/app-showcase.component' ).then( ( m ) => m.AppShowcaseComponent ),
   },
@@ -95,7 +95,7 @@ export const routes: Routes = [
     path: 'pricing',
     data: {
       product: 'pulse',
-      meta: { title: 'Pricing — Pulse | Taliferro Tech', description: 'Pulse pricing: writing pulses is free. Publishing a pulse and collecting answers is on the paid plan.' } satisfies PageMeta,
+      meta: { title: 'Pricing — Pulse | 16Ahead', description: 'Pulse pricing: writing pulses is free. Publishing a pulse and collecting answers is on the paid plan.' } satisfies PageMeta,
     },
     loadComponent: () =>
       import( './features/get-the-app/get-the-app.component' ).then( ( m ) => m.GetTheAppComponent ),
@@ -110,7 +110,7 @@ export const routes: Routes = [
   },
   {
     // In-app profile (shared fields/API with the iOS apps' TODDProfileKit),
-    // replacing the menu's link out to TODD's /update-profile.
+    // replacing the menu's link out to the hub's /update-profile.
     path: 'profile',
     loadComponent: () =>
       import( './features/profile/profile.component' ).then( ( m ) => m.ProfileComponent ),
@@ -128,7 +128,7 @@ export const routes: Routes = [
   },
   {
     path: 'support',
-    data: { meta: { title: 'Pulse support | Taliferro Tech', description: 'Questions about your surveys, your account, or the Pulse app? Read the FAQ or reach out and we\'ll get back to you.' } satisfies PageMeta },
+    data: { meta: { title: 'Pulse support | 16Ahead', description: 'Questions about your surveys, your account, or the Pulse app? Read the FAQ or reach out and we\'ll get back to you.' } satisfies PageMeta },
     loadComponent: () =>
       import( './features/support/support.component' ).then( ( m ) => m.SupportComponent ),
   },

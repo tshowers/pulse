@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 /**
- * Trimmed port of TODD's AssistantIntentRunnerService. The original also
+ * Trimmed port of the hub app's AssistantIntentRunnerService. The original also
  * decides early intercepts for Catalyst/composer/email-sent flows and
  * routes across four domains - none of that applies here, since this app
  * only ever has one domain. Same trim as web-products/network's port.

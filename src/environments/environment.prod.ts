@@ -1,7 +1,7 @@
 export const environment = {
   production: true,
   COMPANY_NAME: 'Pulse',
-  PLATFORM_URL: 'https://pulse.taliferro.tech',
+  PLATFORM_URL: 'https://pulse.16ahead.com',
   backendURL: 'https://api.taliferro.tech/api',
   taliferroTenantId: 'yH3nWanUv0RqDCNfwXBOXLWuxt52',
   firebaseConfig: {
@@ -11,6 +11,6 @@ export const environment = {
     storageBucket: 'taliferrotech.appspot.com',
     messagingSenderId: '633736143723',
     appId: '1:633736143723:web:1f91a0cc7efcdc9b5fe22e',
-    measurementId: 'G-YQ9PHPM6FJ',
+    measurementId: 'G-4QZ1CSSGYJ',
   },
 };

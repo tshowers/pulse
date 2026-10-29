@@ -33,7 +33,7 @@ export interface SurveyCloseRule {
     value?: string | number | null;
 }
 
-/** The compact TODD summary that rides along on survey reads and lists. */
+/** The compact 16Ahead summary that rides along on survey reads and lists. */
 export interface ToddInsightsSummary {
     state: ToddInsightsState;
     answerCount: number;
@@ -121,7 +121,7 @@ export interface SurveyResults {
     questions: QuestionResult[];
 }
 
-// ── TODD (GET /surveys/:id/insights and the todd/* actions) ────────────────
+// ── 16Ahead insights (GET /surveys/:id/insights and the todd/* actions) ──────
 
 export type ToddInsightsState = 'waiting' | 'pending' | 'ready' | 'error';
 export type NextMoveAction = 'draft_email' | 'add_task' | 'another_idea';

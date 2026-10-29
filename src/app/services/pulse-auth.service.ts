@@ -9,13 +9,14 @@ import {
 } from 'firebase/auth';
 import { doc, getDoc, getFirestore } from 'firebase/firestore';
 import { Observable, shareReplay, switchMap, of } from 'rxjs';
+import { hostedLoginUrl } from '@taliferro/ui/platform/hosted-login.model';
 
 /**
  * Auth service for the standalone Pulse app. Sign-in itself no longer
- * happens here - it redirects to TODD's hosted login
+ * happens here - it redirects to the 16Ahead hosted login
  * (todd.taliferro.tech/login), the same page network-ios/pulse-ios open
  * via TODDAuthKit's HostedLogin (ASWebAuthenticationSession) and that
- * Network web now redirects to as well, so every TODD client presents the
+ * Network web now redirects to as well, so every 16Ahead client presents the
  * identical sign-in screen instead of each maintaining its own copy of
  * Google/Apple/email-link/phone code that can drift out of sync (this
  * service previously offered Google + email/password only - a narrower,
@@ -23,9 +24,9 @@ import { Observable, shareReplay, switchMap, of } from 'rxjs';
  * still needs locally: completing the redirect back from that page, and
  * tenant/session reads.
  *
- * Mirrors the exact same resolution TODD's own `AuthService` uses
+ * Mirrors the exact same resolution the hub app's own `AuthService` uses
  * (`resolveAssignedTenantId`): `users/{uid}.companyId` if set, else the
- * uid itself is the tenant. Keeping this identical across every TODD
+ * uid itself is the tenant. Keeping this identical across every 16Ahead
  * client is deliberate - independent reimplementations of the same rule
  * are fine; different *rules* would silently fragment which tenant a user
  * lands in depending which client they signed in from.
@@ -48,7 +49,7 @@ export class PulseAuthService {
     } );
   }
 
-  /** Matches TODD's own AuthService.getUserId() shape - components ported
+  /** Matches the hub app's own AuthService.getUserId() shape - components ported
    * from features/survey/* call this by name, so keeping the signature
    * identical means the rest of a component's logic ports unchanged. */
   getUserId (): Observable<string> {
@@ -86,9 +87,9 @@ export class PulseAuthService {
   }
 
   /**
-   * Leaves the app entirely for TODD's hosted login
+   * Leaves the app entirely for the 16Ahead hosted login
    * (todd.taliferro.tech/login?client=pulse-web&state=...), the same page
-   * every TODD client signs in through. `state` is a random value stashed
+   * every 16Ahead client signs in through. `state` is a random value stashed
    * alongside `returnUrl` in sessionStorage before leaving, and checked
    * again in AuthCallbackComponent when the page sends the user back - a
    * CSRF guard against a forged callback.
@@ -97,7 +98,7 @@ export class PulseAuthService {
     const state = crypto.randomUUID();
     sessionStorage.setItem( this.pendingLoginStorageKey, JSON.stringify( { state, returnUrl } ) );
     const client = this.isLocalDevelopmentHost() ? 'pulse-web-local' : 'pulse-web';
-    window.location.href = `https://todd.taliferro.tech/login?client=${client}&state=${state}`;
+    window.location.href = hostedLoginUrl(client, state);
   }
 
   private isLocalDevelopmentHost (): boolean {
@@ -134,7 +135,7 @@ export class PulseAuthService {
   }
 
   /**
-   * Same rule as TODD's `users.service.ts`'s `getTenantLoggedInContactInfo`.
+   * Same rule as the hub app's `users.service.ts`'s `getTenantLoggedInContactInfo`.
    */
   async resolveTenantId ( uid: string ): Promise<string> {
     const snap = await getDoc( doc( getFirestore(), 'users', uid ) );

@@ -9,7 +9,7 @@ const APPS = ['network', 'find', 'outreach', 'maya', 'docs', 'pulse', 'moves'];
 /**
  * Playbooks (design 14a): plans that worked, by what you want to do, with
  * the apps each one uses as a filter. "Use this" opens the plan reply,
- * planned for you. They're starting points: TODD still plans each request
+ * planned for you. They're starting points: 16Ahead still plans each request
  * from every product's tools. Synced from taliferro-ui/missions.
  */
 @Component( {
@@ -127,7 +127,7 @@ export class PlaybooksComponent implements OnInit {
   }
 
   ownersLine ( p: Playbook ): string {
-    return [p.owners.todd ? `${p.owners.todd} by TODD` : '', p.owners.maya ? `${p.owners.maya} by Maya` : '', p.owners.person ? `${p.owners.person} by you` : ''].filter( Boolean ).join( ' · ' );
+    return [p.owners.todd ? `${p.owners.todd} by 16Ahead` : '', p.owners.maya ? `${p.owners.maya} by the Marketing Assistant` : '', p.owners.person ? `${p.owners.person} by you` : ''].filter( Boolean ).join( ' · ' );
   }
 
 }

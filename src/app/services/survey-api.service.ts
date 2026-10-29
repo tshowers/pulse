@@ -151,12 +151,12 @@ export class SurveyApiService {
     return this.http.post<ToddInsights>( `${this.baseUrl}/${id}/insights/refresh`, {} );
   }
 
-  /** "Write my questions": TODD drafts a pulse from one sentence (not saved). */
+  /** "Write my questions": 16Ahead drafts a pulse from one sentence (not saved). */
   draftWithTodd ( prompt: string ): Observable<ToddDraft> {
     return this.http.post<ToddDraft>( `${this.baseUrl}/todd/draft`, { prompt } );
   }
 
-  /** TODD's review of the draft as it is on screen. */
+  /** 16Ahead's review of the draft as it is on screen. */
   reviewWithTodd ( id: string, draft: Pick<Survey, 'title' | 'description' | 'questions'> ): Observable<{ suggestions: ToddSuggestion[]; hash: string; }> {
     return this.http.post<{ suggestions: ToddSuggestion[]; hash: string; }>( `${this.baseUrl}/${id}/todd/review`, draft );
   }

@@ -11,7 +11,7 @@ export interface LandingEngagementConfig {
 /**
  * No-op stand-in for LandingPageEngagementContextService, copied from
  * web-products/network's identical stub. The real one feeds scroll-depth/
- * exit-intent/CTA-click signals to TODD's assistant bus so the assistant
+ * exit-intent/CTA-click signals to the assistant bus so the assistant
  * can react to visitor engagement - since this app deliberately doesn't
  * carry the full assistant bus, there's nothing for these signals to feed.
  * Kept as a same-shaped no-op rather than deleted so the landing

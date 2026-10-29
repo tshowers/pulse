@@ -7,9 +7,9 @@ import { MenuProduct, ProductKey, menuProductsFor } from '@taliferro/ui/platform
 import { PLATFORM_MENU_CONFIG } from '../platform-menu/platform-menu.config';
 
 /**
- * "Also from us <logo> Product" beside "Powered by TODD" on a landing page:
+ * "Also from us <logo> Product" beside "Powered by 16Ahead" on a landing page:
  * a different product, picked at random, on every visit. Never this app, and
- * never Ask TODD (TODD is already in the line).
+ * never the General Assistant (16Ahead is already in the line).
  *
  *   <a appAlsoFromUs></a>
  *   <a appAlsoFromUs [skip]="['music']"></a>   (the page links Music itself)

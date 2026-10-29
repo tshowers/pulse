@@ -5,7 +5,7 @@ import { PulseAuthService } from '../../services/pulse-auth.service';
 import { firstValueFrom } from 'rxjs';
 
 /**
- * Sign-in for Pulse - redirects to TODD's hosted login
+ * Sign-in for Pulse - redirects to the 16Ahead hosted login
  * (todd.taliferro.tech/login, the same page network-ios/pulse-ios open
  * via TODDAuthKit's HostedLogin, and that Network web now redirects to as
  * well) instead of rendering its own provider buttons. See
@@ -37,7 +37,7 @@ export class SignInComponent implements OnInit {
       return;
     }
     // /login is a compatibility handoff route. Send visitors directly to
-    // TODD's shared hosted login instead of making them click twice.
+    // the shared 16Ahead hosted login instead of making them click twice.
     this.signIn();
   }
 

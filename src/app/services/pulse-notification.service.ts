@@ -12,7 +12,7 @@ export interface Toast {
 }
 
 /**
- * Trimmed replacement for TODD's NotificationService, copied from
+ * Trimmed replacement for the hub app's NotificationService, copied from
  * web-products/network's NetworkNotificationService - same `show(header,
  * description, type)` call shape so ported components don't need their
  * calls rewritten, but the queue/pending-notifier registration machinery

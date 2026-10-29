@@ -81,7 +81,7 @@ describe( 'pulse-state', () => {
     expect( pulseMeta( survey() ) ).toBe( '3 questions · not shared yet' );
     expect( pulseMeta( survey( { status: 'published', responseCount: 38, publishedAt: '2026-10-02T15:00:00Z' } ) ) ).toBe( '3 questions · 38 answers · live since Oct 2' );
     expect( pulseHint( survey( { questions: [survey().questions[0]] } ) ) ).toBe( 'One question rarely tells you much. Add two more.' );
-    expect( pulseHint( survey( { status: 'published', responseCount: 3 } ) ) ).toBe( 'TODD writes a summary after 5 answers. 3 so far.' );
+    expect( pulseHint( survey( { status: 'published', responseCount: 3 } ) ) ).toBe( '16Ahead writes a summary after 5 answers. 3 so far.' );
     expect( pulseHint( survey( { status: 'archived', insights: { state: 'ready', answerCount: 52, updatedAt: '2026-08-30T10:00:00Z', summary: 'Most clients preferred monthly billing.', nextMove: null } } ) ) )
       .toBe( 'Most clients preferred monthly billing.' );
   } );

@@ -1,10 +1,10 @@
 /**
  * A pulse end to end through the redesign (design_handoff_todd_pulse):
  * New pulse from a template → Write (autosave) → Share (settings, publish)
- * → live link → Results with TODD's summary → back to Pulses → delete.
+ * → live link → Results with 16Ahead's summary → back to Pulses → delete.
  *
  * Auth is real (Firebase Auth emulator via visitWithFirebaseEmulators); the
- * TODD backend is stubbed with cy.intercept, mutating one `survey` the way
+ * The backend is stubbed with cy.intercept, mutating one `survey` the way
  * the real API would. Screenshots of each screen at laptop and phone width
  * land in cypress/screenshots for design review.
  */
@@ -119,7 +119,7 @@ describe( 'Pulse flow - New, Write, Share, Results', () => {
     cy.wait( '@updateSurvey' ).its( 'request.body.title' ).should( 'eq', 'Q4 client check-in' );
     cy.contains( 'Draft · saved' ).should( 'be.visible' );
     cy.wait( '@review', { timeout: 10000 } );
-    cy.contains( "TODD's review" ).should( 'be.visible' );
+    cy.contains( "16Ahead's review" ).should( 'be.visible' );
     snap( '1c-write' );
     cy.contains( 'button', 'Next: Share' ).should( 'not.be.disabled' ).click();
 
@@ -143,7 +143,7 @@ describe( 'Pulse flow - New, Write, Share, Results', () => {
     cy.contains( 'a', 'See results' ).click();
     cy.wait( ['@results', '@insights'] );
     cy.contains( 'Clients like the work and most will renew.' ).should( 'be.visible' );
-    cy.contains( 'What TODD heard · from 38 answers' ).should( 'be.visible' );
+    cy.contains( 'What 16Ahead heard · from 38 answers' ).should( 'be.visible' );
     cy.contains( 'button', 'Draft the email' ).should( 'not.exist' );
     cy.contains( '8.0' ).should( 'be.visible' );
     cy.contains( 'button', 'Faster replies · 2' ).click();

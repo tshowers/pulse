@@ -164,7 +164,7 @@ describe( 'SurveyApiService', () => {
     req.flush( { id: 'survey-1', status: 'published', visibility: 'link_only' } );
   } );
 
-  it( 'asks TODD for a draft, a review, and next-move actions on their own endpoints', () => {
+  it( 'asks 16Ahead for a draft, a review, and next-move actions on their own endpoints', () => {
     service.draftWithTodd( 'Are clients happy?' ).subscribe();
     const draft = httpMock.expectOne( `${baseUrl}/todd/draft` );
     expect( draft.request.body ).toEqual( { prompt: 'Are clients happy?' } );

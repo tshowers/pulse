@@ -25,7 +25,7 @@ export type RunSurveyArgs = {
 };
 
 /**
- * Port of TODD's SurveyLLMService, unchanged - it only ever depended on
+ * Port of the hub app's SurveyLLMService, unchanged - it only ever depended on
  * OpenAIService/AssistantBoxHelperService/LoggerService, so it was already
  * scoped to just the Survey domain (same as ContactLLMService was for
  * Network's ContactLLMService).

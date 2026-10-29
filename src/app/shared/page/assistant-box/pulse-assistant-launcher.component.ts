@@ -26,7 +26,7 @@ interface PulseGuidanceCard {
 type RenderedGuidanceCard = PulseGuidanceCard & { toneClass: string };
 
 /**
- * Pulse's launcher shell - same from-scratch equivalent of TODD's
+ * Pulse's launcher shell - same from-scratch equivalent of the hub app's
  * todd-assistant.component.ts as web-products/network's
  * NetworkAssistantLauncherComponent. See that file's header comment for the
  * full rationale (suite-wide onboarding stripped, launcher chrome ported
@@ -183,12 +183,12 @@ export class PulseAssistantLauncherComponent implements OnInit, OnDestroy {
       tone: 'neutral',
       icon: 'fa-solid fa-compass',
       title: 'Pulse tracks how your customers actually feel',
-      message: 'TODD uses survey responses to show where relief is visible, where a symptom still needs treatment, and what proof is emerging. Sign in to see it work with your own data.',
+      message: '16Ahead uses survey responses to show where relief is visible, where a symptom still needs treatment, and what proof is emerging. Sign in to see it work with your own data.',
       whyItMatters: "A survey by itself is just a form - Pulse is what turns responses into a signal you can act on.",
       bullets: [
         'Create a Pulse to start collecting responses.',
-        'TODD flags surveys sitting as drafts or published with no responses yet.',
-        'Ask this chat how Pulse works, or what TODD actually does.',
+        '16Ahead flags surveys sitting as drafts or published with no responses yet.',
+        'Ask this chat how Pulse works, or what 16Ahead actually does.',
       ],
     };
   }
@@ -207,7 +207,7 @@ export class PulseAssistantLauncherComponent implements OnInit, OnDestroy {
           tone: total ? 'neutral' : 'attention',
           icon: 'fa-solid fa-list',
           title: total ? 'Every pulse shows the one thing it needs' : 'Ask your first question',
-          message: total ? 'Live pulses open their results, drafts open Write or Share. TODD’s latest next move sits on top.' : 'Describe what you want to find out and TODD drafts the questions.',
+          message: total ? 'Live pulses open their results, drafts open Write or Share. 16Ahead’s latest next move sits on top.' : 'Describe what you want to find out and 16Ahead drafts the questions.',
           whyItMatters: 'A pulse only says something once people have answered it.',
           bullets: ['Ask me which pulse needs attention, or what a summary means.'],
         };
@@ -219,7 +219,7 @@ export class PulseAssistantLauncherComponent implements OnInit, OnDestroy {
           tone: 'progress',
           icon: 'fa-solid fa-pen',
           title: 'Short, neutral questions get the most answers',
-          message: 'Everything saves as you type. TODD’s review on the right suggests fixes you can apply in one tap.',
+          message: 'Everything saves as you type. 16Ahead’s review on the right suggests fixes you can apply in one tap.',
           whyItMatters: 'Three to five questions is the sweet spot: every extra one means fewer people finish.',
           bullets: ['Use Try it to answer it yourself before you share it.'],
         };
@@ -229,7 +229,7 @@ export class PulseAssistantLauncherComponent implements OnInit, OnDestroy {
           stageLabel: `${Number( summary['answers'] || 0 )} answers`,
           tone: summary['toddSummary'] ? 'ready' : 'progress',
           icon: 'fa-solid fa-chart-simple',
-          title: summary['toddSummary'] ? 'Ask me about these results' : 'TODD writes a summary at 5 answers',
+          title: summary['toddSummary'] ? 'Ask me about these results' : '16Ahead writes a summary at 5 answers',
           message: summary['toddSummary'] ? String( summary['toddSummary'] ) : 'Question cards fill in as people answer. The summary and a next move appear once 5 people have answered.',
           whyItMatters: 'A result is only useful once it changes what you do next.',
           bullets: summary['nextMove'] ? [`Next move: ${summary['nextMove']}`] : [],

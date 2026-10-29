@@ -27,7 +27,7 @@ const REVIEW_DELAY_MS = 3000;
 
 /**
  * Step 1, Write (1c). Everything autosaves through PulseStore; there is no
- * Save button. One question is open at a time. TODD reviews the questions a
+ * Save button. One question is open at a time. 16Ahead reviews the questions a
  * few seconds after the last edit and offers one-tap fixes.
  *
  * A live or closed pulse is read-only here: changing questions people are
@@ -77,7 +77,7 @@ export class WriteStepComponent implements OnInit {
     }
   } );
 
-  // TODD's review
+  // 16Ahead's review
   readonly review = signal<ToddSuggestion[]>( [] );
   readonly reviewState = signal<'idle' | 'loading' | 'ready' | 'error'>( 'idle' );
   private readonly dismissed = signal<Set<string>>( new Set() );
@@ -281,7 +281,7 @@ export class WriteStepComponent implements OnInit {
     }
   }
 
-  // ── TODD's review ────────────────────────────────────────────────────────
+  // ── 16Ahead's review ────────────────────────────────────────────────────────
 
   private scheduleReview ( key: string ): void {
     if ( this.reviewTimer ) clearTimeout( this.reviewTimer );

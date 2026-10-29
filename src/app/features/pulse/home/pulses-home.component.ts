@@ -42,7 +42,7 @@ interface Row {
 }
 
 /**
- * Pulses home (1a): TODD's latest next move across live pulses, then every
+ * Pulses home (1a): 16Ahead's latest next move across live pulses, then every
  * pulse with the one action it needs. With no pulses yet, New pulse (1b) is
  * the page. Replaces the Customer Health board and the old pulse list.
  */

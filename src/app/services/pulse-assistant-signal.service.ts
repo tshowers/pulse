@@ -73,7 +73,7 @@ export class PulseAssistantSignalService {
   readonly activity$ = this.activitySubject.asObservable();
   readonly unread$ = this.unreadSubject.asObservable();
   readonly ready$ = this.readySubject.asObservable();
-  /** "Ask TODD" buttons (Help) ask the launcher to open the chat. */
+  /** "General Assistant" buttons (Help) ask the launcher to open the chat. */
   readonly openRequests$ = this.openSubject.asObservable();
 
   get currentPageContext (): PulseAssistantPageContext | null {

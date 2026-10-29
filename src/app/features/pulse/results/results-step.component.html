@@ -3,10 +3,10 @@
   </app-pulse-bar> @if (loadFailed() && !results()) { <div class="p-card r-failed">
     <span>Results didn't load.</span>
     <button type="button" class="p-btn p-btn--bg" (click)="retry()">Try again</button>
-  </div> } @if (results(); as results) { <!-- TODD's summary --> @if (hasSummary()) { <section class="p-todd r-summary" aria-label="TODD's summary">
+  </div> } @if (results(); as results) { <!-- 16Ahead's summary --> @if (hasSummary()) { <section class="p-todd r-summary" aria-label="16Ahead's summary">
     <div class="r-summary__main">
       <div class="r-source">
-        <img class="p-avatar" src="assets/TODD-icon.png" alt="" width="32" height="32" />
+        <img class="p-avatar" src="assets/16ahead-icon.png" alt="" width="32" height="32" />
         <span>{{ sourceLine() }}</span> @if ((survey().responseCount || 0) > (insights()?.answerCount || 0) && insights()?.state !== 'pending') { <button type="button" class="r-update" (click)="refreshSummary()" [disabled]="busy() === 'refresh'">{{ busy() === 'refresh' ? 'Updating…' : 'Update now' }}</button> } @else if (insights()?.state === 'pending') { <span class="r-updating">Updating…</span> }
       </div>
       <p class="r-headline">{{ insights()?.summary }}</p>
@@ -26,8 +26,8 @@
       </div>
     </div> }
   </section> } @else { <section class="p-todd r-waiting">
-    <img class="p-avatar" src="assets/TODD-icon.png" alt="" width="40" height="40" /> @if ((survey().responseCount || 0) < (insights()?.minAnswers || 5)) { <span>TODD will write a summary after {{ insights()?.minAnswers || 5 }} answers. {{ survey().responseCount || 0 }} so far.</span> } @else if (insights()?.state === 'error') { <span>TODD couldn't write the summary yet. It'll try again with the next answer.</span>
-      <button type="button" class="p-btn p-btn--bg p-btn--sm" (click)="refreshSummary()" [disabled]="busy() === 'refresh'">Try now</button> } @else { <span>TODD is reading the answers. The summary will appear here in a minute.</span> }
+    <img class="p-avatar" src="assets/16ahead-icon.png" alt="" width="40" height="40" /> @if ((survey().responseCount || 0) < (insights()?.minAnswers || 5)) { <span>16Ahead will write a summary after {{ insights()?.minAnswers || 5 }} answers. {{ survey().responseCount || 0 }} so far.</span> } @else if (insights()?.state === 'error') { <span>16Ahead couldn't write the summary yet. It'll try again with the next answer.</span>
+      <button type="button" class="p-btn p-btn--bg p-btn--sm" (click)="refreshSummary()" [disabled]="busy() === 'refresh'">Try now</button> } @else { <span>16Ahead is reading the answers. The summary will appear here in a minute.</span> }
   </section> } <!-- Questions -->
   <div class="r-grid"> @for (question of results.questions; track question.questionId) { <section class="p-card r-q">
       <div class="r-q__head">
@@ -41,12 +41,12 @@
         <span class="r-bar__track"><span [style.width.%]="bar.pct" [style.background]="bar.color"></span></span>
       </div> } } @case ('number') { <span class="r-rating__avg"><span class="r-rating__n">{{ question.average ?? '–' }}</span><span class="r-rating__label">average</span></span>
       <div class="r-tally">@for (row of tallyRows(question); track row.label) { <span>{{ row.label }} · {{ row.count }}</span> }</div> } @default { @if (themes(question).length) { <div class="r-themes">
-        <span class="r-themes__label">TODD grouped them</span> @for (theme of themes(question); track theme.label) { <button type="button" class="p-tag r-theme" [attr.data-tint]="theme.tint" [class.is-on]="themeFilter()[question.questionId] === theme.label" [attr.aria-pressed]="themeFilter()[question.questionId] === theme.label" (click)="toggleTheme(question, theme.label)">{{ theme.label }} · {{ theme.count }}</button> }
+        <span class="r-themes__label">16Ahead grouped them</span> @for (theme of themes(question); track theme.label) { <button type="button" class="p-tag r-theme" [attr.data-tint]="theme.tint" [class.is-on]="themeFilter()[question.questionId] === theme.label" [attr.aria-pressed]="themeFilter()[question.questionId] === theme.label" (click)="toggleTheme(question, theme.label)">{{ theme.label }} · {{ theme.count }}</button> }
       </div> } @for (quote of quotes(question); track quote.responseId) { <blockquote class="r-quote"><span>“{{ quote.text }}”</span><span class="r-quote__meta">{{ shortDate(quote.submittedAt) }}</span></blockquote> } @empty { <p class="r-none">No written answers yet.</p> } @if ((question.quotes?.length || 0) > 3 && !themeFilter()[question.questionId]) { <button type="button" class="r-all" (click)="showAll(question)">{{ expanded()[question.questionId] ? 'Show fewer' : 'See all ' + question.responseCount + ' answers' }}</button> } } }
     </section> } </div> } @else if (!loadFailed()) { <div class="r-loading" aria-busy="true"><span class="r-spinner"></span></div> }
 </div> @if (emailDraft(); as draft) { <div class="r-modal" role="dialog" aria-modal="true" aria-labelledby="email-title" (click)="emailDraft.set(null)">
   <div class="r-modal__card" (click)="$event.stopPropagation()">
-    <span class="p-eyebrow">Draft from TODD · to {{ draft.recipientCount }} {{ draft.recipientCount === 1 ? 'person' : 'people' }} in BCC</span>
+    <span class="p-eyebrow">Draft from 16Ahead · to {{ draft.recipientCount }} {{ draft.recipientCount === 1 ? 'person' : 'people' }} in BCC</span>
     <h2 id="email-title">{{ draft.subject }}</h2>
     <pre class="r-modal__body">{{ draft.body }}</pre> @if (draft.truncated) { <span class="r-modal__note">Only the first {{ draft.recipients.length }} addresses fit in one email.</span> } <span class="r-modal__note">Nothing is sent until you send it from your email app.</span>
     <div class="r-modal__actions">

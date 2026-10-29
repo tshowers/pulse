@@ -22,7 +22,7 @@ const SIGNED_OUT_TABS: HeaderTab[] = [
 
 /**
  * The Pulse header (design_handoff_todd_pulse, "Information architecture"):
- * TODD Pulse logo; Pulses and Help when signed in, Home, About and Help when
+ * 16Ahead Pulse logo; Pulses and Help when signed in, Home, About and Help when
  * not; New pulse on Pulses home and Help; the theme pill and the Menu pill
  * (taliferro-ui/styles/app-header.css). One Menu button per screen.
  */

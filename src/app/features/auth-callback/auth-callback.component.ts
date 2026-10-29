@@ -6,7 +6,7 @@ import { PulseSignupDraftService } from '../../services/pulse-signup-draft.servi
 import { GettingStartedService } from '../../services/getting-started.service';
 
 /**
- * Lands here after TODD's hosted login (todd.taliferro.tech/login) hands
+ * Lands here after the 16Ahead hosted login (todd.taliferro.tech/login) hands
  * a signed-in session back to this app: ?token=<custom token>&state=<...>.
  * Verifies `state` against what signIn() stashed before leaving (a forged
  * or replayed callback won't have a matching sessionStorage entry),

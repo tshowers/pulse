@@ -6,7 +6,7 @@ import { environment } from '../../../environments/environment';
 import { Cockpit, DirectAnswer, MissionReport, MissionView, Playbook, StepActionType, StepView, WaitingItem } from './missions.model';
 
 /**
- * /api/orchestration/missions (todd-backend orchestrator/routes.js). The
+ * /api/orchestration/missions (backend orchestrator/routes.js). The
  * app's id-token and tenant interceptors sign every call. Synced from
  * taliferro-ui/missions - edit the .tmpl there.
  */

@@ -6,12 +6,12 @@ import { environment } from '../../environments/environment';
 import { LoggerService } from './logger.service';
 
 /**
- * Trimmed port of TODD's open-ai.service.ts, scoped to the one endpoint the
+ * Trimmed port of the hub app's open-ai.service.ts, scoped to the one endpoint the
  * assistant-box pilot needs: the shared `/app-assistant` endpoint that the
  * whole suite already calls, parameterized by domain. Pulse only ever asks
  * for the 'survey' domain slice of it - see the assistant-box scoping
  * decision (frontend/.../assistant-capabilities.service.ts and its
- * siblings carry the other domains for TODD itself). Same pattern as
+ * siblings carry the other domains for the hub app itself). Same pattern as
  * web-products/network's port.
  */
 @Injectable( { providedIn: 'root' } )

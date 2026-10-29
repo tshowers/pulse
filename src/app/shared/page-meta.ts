@@ -8,10 +8,13 @@ import { filter } from 'rxjs/operators';
 export interface PageMeta {
   title: string;
   description: string;
+  /** Leave the Open Graph / Twitter tags as index.html has them (the home
+   *  page, whose link preview is the product's card). */
+  keepSocial?: boolean;
 }
 
 const TAGS = {
-  description: [ 'name="description"', 'property="og:description"', 'name="twitter:description"' ],
+  socialDescription: [ 'property="og:description"', 'name="twitter:description"' ],
   title: [ 'property="og:title"', 'name="twitter:title"' ],
 };
 
@@ -33,18 +36,23 @@ export function providePageMeta (): EnvironmentProviders {
 
     const defaults: PageMeta = {
       title: title.getTitle(),
-      description: meta.getTag( TAGS.description[0] )?.content ?? '',
+      description: meta.getTag( 'name="description"' )?.content ?? '',
     };
+    // The link-preview copy is the line on the product's card, not the
+    // search description, so it has its own defaults.
     const defaultSocialTitle = meta.getTag( TAGS.title[0] )?.content ?? defaults.title;
+    const defaultSocialDescription = meta.getTag( TAGS.socialDescription[0] )?.content ?? defaults.description;
 
     router.events
       .pipe( filter( ( event ): event is NavigationEnd => event instanceof NavigationEnd ) )
       .subscribe( () => {
         const page = deepest( router.routerState.snapshot.root ).data['meta'] as PageMeta | undefined;
-        const socialTitle = page ? page.title.replace( / \| Taliferro Tech$/, '' ) : defaultSocialTitle;
+        const social = page && !page.keepSocial ? page : undefined;
+        const socialTitle = social ? social.title.replace( / \| 16Ahead$/, '' ) : defaultSocialTitle;
 
         title.setTitle( page?.title ?? defaults.title );
-        TAGS.description.forEach( ( selector ) => setContent( selector, page?.description ?? defaults.description ) );
+        setContent( 'name="description"', page?.description ?? defaults.description );
+        TAGS.socialDescription.forEach( ( selector ) => setContent( selector, social?.description ?? defaultSocialDescription ) );
         TAGS.title.forEach( ( selector ) => setContent( selector, socialTitle ) );
 
         // og:url follows the canonical link that provideCanonicalUrl() keeps current.

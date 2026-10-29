@@ -1,7 +1,7 @@
 /**
- * Trimmed from TODD's services/purchase-flow.config.ts - only the Pulse
+ * Trimmed from the hub app's services/purchase-flow.config.ts - only the Pulse
  * entry, and postConfirmRoute/loginReturnUrl point at this app's own root
- * ('/') and '/app' rather than TODD's '/pulse' sub-route, since this app IS
+ * ('/') and '/app' rather than the hub app's '/pulse' sub-route, since this app IS
  * Pulse, not a page inside a larger app. Endpoint/field values (checkout
  * endpoint, confirm endpoint, checkoutUrlField, legacyAccessStorageKey) are
  * copied verbatim from the monorepo's PULSE_PURCHASE_FLOW - those are real

@@ -53,7 +53,7 @@ export interface PulseSignupDraft {
  * PreAuthSurveyBuilderView: a first survey, then name and company. Kept in
  * localStorage because sign-in leaves the site for todd.taliferro.tech and
  * comes back to /auth/callback. After sign-in, submitIfPending() saves the
- * name/company to the TODD profile (POST /api/onboarding/profile, blank
+ * name/company to the 16Ahead profile (POST /api/onboarding/profile, blank
  * fields only) and creates the survey as a draft.
  */
 @Injectable( { providedIn: 'root' } )

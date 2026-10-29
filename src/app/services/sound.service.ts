@@ -2,7 +2,7 @@
 // taliferro-ui/sound/sync.sh.
 import { Injectable } from '@angular/core';
 
-/** Same names and files as the TODD site's SoundService, so ported calls keep working. */
+/** Same names and files as the hub site's SoundService, so ported calls keep working. */
 const SOUNDS: Record<string, string> = {
   click: 'assets/sounds/button.wav',
   notification: 'assets/sounds/notification.wav',

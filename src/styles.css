@@ -82,7 +82,7 @@ textarea.form-control { min-height: 140px; resize: vertical; }
 
 /* ─── Pulse UI ───────────────────────────────────────────────────────────────
  * The handful of pieces every new screen shares (design tokens table in the
- * handoff README): pill buttons, status tags, filter chips, cards, the TODD
+ * handoff README): pill buttons, status tags, filter chips, cards, the 16Ahead
  * card. No borders anywhere: separation comes from --surface on --bg, and
  * selection/focus is a 2px --blue ring.
  * ─────────────────────────────────────────────────────────────────────────── */
@@ -318,3 +318,15 @@ textarea.p-input { border-radius: 20px; padding: 12px 18px; height: auto; resize
 @media (max-width: 760px) {
   .p-page { padding: 8px 16px 40px; }
 }
+
+/* The product mark (design_handoff_16ahead_logos) comes as a light/dark
+ * pair: each spot renders both and the theme hides one. The light set's
+ * black ticks vanish on dark, and inverting it turns the blue tick orange. */
+@media not (prefers-color-scheme: dark) {
+  :root:not(.dark):not([data-theme="dark"]) .brand-mark--dark { display: none !important; }
+}
+:root.light .brand-mark--dark, :root[data-theme="light"] .brand-mark--dark { display: none !important; }
+@media (prefers-color-scheme: dark) {
+  :root:not(.light):not([data-theme="light"]) .brand-mark--light { display: none !important; }
+}
+:root.dark .brand-mark--light, :root[data-theme="dark"] .brand-mark--light { display: none !important; }

@@ -37,7 +37,7 @@ export interface AccountSummaryResponse {
       message: string;
     }>;
     /** Per product: may this tenant create/edit/delete on the web? App
-     * Store purchase or master tenant only (todd-backend accessControl.js
+     * Store purchase or master tenant only (backend accessControl.js
      * hasWriteAccess). Absent on an older backend. */
     writeAccess?: Record<string, boolean>;
     stripeCheckouts: any[];

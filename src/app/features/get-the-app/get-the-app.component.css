@@ -1,4 +1,4 @@
-/* Scoped tokens (light/dark) so the page looks the same on every TODD site
+/* Scoped tokens (light/dark) so the page looks the same on every 16Ahead site
  * whatever that site's global stylesheet defines. */
 :host {
   display: block;

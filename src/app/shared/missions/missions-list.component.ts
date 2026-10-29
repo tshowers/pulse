@@ -8,7 +8,7 @@ type Filter = 'all' | 'mine' | 'others';
 
 /**
  * Missions as Moves rows (design 5a): each row carries a compact plan strip
- * that says who holds it now, in place of the old "Maya" / "Person" pill.
+ * that says who holds it now, in place of the old assistant / "Person" pill.
  * Filters: all, waiting on you, waiting on others. Synced from taliferro-ui/missions.
  */
 @Component( {
@@ -29,7 +29,7 @@ type Filter = 'all' | 'mine' | 'others';
       @if (!loaded()) {
         <p class="muted">Loading…</p>
       } @else if (!shown().length) {
-        <p class="muted" data-cy="missions-empty">{{ filter() === 'mine' ? 'Nothing is waiting on you.' : 'No Missions here yet. Ask TODD for something to get one started.' }}</p>
+        <p class="muted" data-cy="missions-empty">{{ filter() === 'mine' ? 'Nothing is waiting on you.' : 'No Missions here yet. Ask the General Assistant for something to get one started.' }}</p>
       } @else {
         <ol>
           @for (m of shown(); track m.id) {

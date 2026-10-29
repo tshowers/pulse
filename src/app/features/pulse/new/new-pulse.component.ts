@@ -11,7 +11,7 @@ import { blankQuestion, plural } from '../pulse-state';
 import { PULSE_TEMPLATES, PulseTemplate, templateQuestions } from '../pulse-templates';
 
 /**
- * New pulse (1b): say what you want to find out and TODD writes the
+ * New pulse (1b): say what you want to find out and 16Ahead writes the
  * questions, or start from a template or blank. Every path creates a draft
  * and opens Write with it. Also the Pulses home when there are no pulses yet.
  *
@@ -59,7 +59,7 @@ export class NewPulseComponent implements OnInit {
       const draft = await firstValueFrom( this.api.draftWithTodd( prompt ) );
       await this.create( { title: draft.title, description: draft.description, questions: draft.questions } );
     } catch ( error ) {
-      this.error.set( ( error as HttpErrorResponse )?.error?.error || "TODD couldn't write questions just now. Try again, or start from a template." );
+      this.error.set( ( error as HttpErrorResponse )?.error?.error || "16Ahead couldn't write questions just now. Try again, or start from a template." );
       this.busy.set( '' );
     }
   }

@@ -3,11 +3,11 @@ import { getAuth } from 'firebase/auth';
 import { from, switchMap } from 'rxjs';
 
 /**
- * Proves who is calling the TODD backend: adds the signed-in person's
+ * Proves who is calling the 16Ahead backend: adds the signed-in person's
  * Firebase ID token (`Authorization: Bearer ...`) to every /api/ request
  * that doesn't already set its own Authorization header. The backend
  * verifies it - /send-email refuses unverified calls
- * (todd-backend/functions/middleware/sendEmailAuth.js), and more routes
+ * (backend functions/middleware/sendEmailAuth.js), and more routes
  * will follow. Signed out, or outside the browser (prerendering), the
  * request goes out unchanged. getIdToken() is cached by Firebase and only
  * refreshes near expiry.
@@ -18,7 +18,9 @@ function isToddBackend ( url: string ): boolean {
   if ( url.startsWith( '/' ) ) return true;
   try {
     const host = new URL( url ).hostname;
-    return host === 'taliferro.tech' || host.endsWith( '.taliferro.tech' ) || host.endsWith( '.run.app' ) ||
+    return host === 'taliferro.tech' || host.endsWith( '.taliferro.tech' ) ||
+      host === '16ahead.io' || host.endsWith( '.16ahead.io' ) || host.endsWith( '.16ahead.com' ) || host.endsWith( '.16ahead.store' ) ||
+      host.endsWith( '.run.app' ) ||
       host === 'localhost' || host === '127.0.0.1';
   } catch {
     return false;

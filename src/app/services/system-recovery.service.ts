@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 /**
- * Trimmed port of TODD's SystemRecoveryService - just the "is the user
+ * Trimmed port of the hub app's SystemRecoveryService - just the "is the user
  * telling me something's broken" detector. Same trim as web-products/network's
  * port: the original also builds a recovery-actions list, but assistant-box
  * never renders that list anyway.

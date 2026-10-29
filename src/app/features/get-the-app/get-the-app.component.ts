@@ -18,7 +18,7 @@ import { WebCheckoutService } from '../../shared/write-access/web-checkout.servi
 import { WriteAccessPromptService } from '../../shared/write-access/write-access-prompt.service';
 
 /**
- * /pricing - "Browse free, subscribe to create." Same page on every TODD
+ * /pricing - "Browse free, subscribe to create." Same page on every 16Ahead
  * web app; all wording, prices and App Store ids come from
  * @taliferro/ui/platform/get-the-app.model.ts. Subscribe opens the shared
  * write-access prompt (Stripe in a new tab); the App Store button shows
@@ -49,7 +49,7 @@ export class GetTheAppComponent implements OnInit {
   isLive = false;
   appStoreLink = '';
   readonly suite = TODD_SUITE;
-  /** Already on TODD Suite (checked once signed in). */
+  /** Already on 16Ahead Suite (checked once signed in). */
   hasSuite = false;
 
   async ngOnInit (): Promise<void> {
@@ -57,7 +57,7 @@ export class GetTheAppComponent implements OnInit {
     this.product = GET_THE_APP_PRODUCTS[key];
     this.faqs = getTheAppFaqs( this.product );
     this.state$ = this.writeAccess.state( key );
-    this.title.setTitle( `Pricing — ${this.product.shortName} | Taliferro Tech` );
+    this.title.setTitle( `Pricing — ${this.product.shortName} | 16Ahead` );
     this.isLive = await isLiveOnAppStore( this.product );
     this.appStoreLink = this.isLive ? appStoreUrl( this.product ) : '';
     // Prerendered pages have no browser session; signed out there's nothing to check.
@@ -66,7 +66,7 @@ export class GetTheAppComponent implements OnInit {
     }
   }
 
-  /** TODD Suite through the shared prompt: sign in first, then Stripe in a new tab. */
+  /** 16Ahead Suite through the shared prompt: sign in first, then Stripe in a new tab. */
   async getSuite (): Promise<void> {
     const state = await firstValueFrom( this.state$ );
     this.prompts.open( state === 'signedOut' ?

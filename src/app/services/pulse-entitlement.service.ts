@@ -7,9 +7,9 @@ import { PulseAuthService } from './pulse-auth.service';
 
 /**
  * Copied from web-products/network's NetworkEntitlementService (itself a
- * near-verbatim port of TODD's services/entitlement.service.ts) - logic
+ * near-verbatim port of the hub app's services/entitlement.service.ts) - logic
  * unchanged, only the auth dependency is swapped for PulseAuthService. This
- * is generic infrastructure shared by all six of TODD's paid modules, not
+ * is generic infrastructure shared by all six paid 16Ahead modules, not
  * Pulse-specific, so it's a near-verbatim port rather than a trimmed
  * reimplementation.
  */

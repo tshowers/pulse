@@ -11,7 +11,7 @@ interface BillingStatus {
 }
 
 /**
- * Web billing through todd-backend's /api/billing (Stripe). The ID-token
+ * Web billing through the backend's /api/billing (Stripe). The ID-token
  * interceptor signs every call; the backend takes the workspace from the
  * token. Access is granted by Stripe's webhook, not by this page, so after
  * checkout we poll /billing/status until it lands.

@@ -137,7 +137,7 @@ export function pulseActions ( survey: Survey ): { primary: PulseAction; seconda
   return { primary: { label: 'Keep writing', route: ['/survey', id, 'write'] }, secondary: null };
 }
 
-/** The one-line hint on a pulse row: TODD's words when it has them. */
+/** The one-line hint on a pulse row: 16Ahead's words when it has them. */
 export function pulseHint ( survey: Survey, now = new Date() ): string {
   const status = pulseStatus( survey );
   const insights = survey.insights;
@@ -146,13 +146,13 @@ export function pulseHint ( survey: Survey, now = new Date() ): string {
     return insights?.summary || ( count ? `${plural( count, 'answer' )} in. Closed.` : 'Closed before anyone answered.' );
   }
   if ( status === 'live' ) {
-    if ( insights?.summary && insights.updatedAt ) return `TODD updated the summary ${relativeDay( insights.updatedAt, now )}.`;
+    if ( insights?.summary && insights.updatedAt ) return `16Ahead updated the summary ${relativeDay( insights.updatedAt, now )}.`;
     if ( count === 0 ) return 'Waiting for the first answer. Send the link.';
-    if ( count < 5 ) return `TODD writes a summary after 5 answers. ${count} so far.`;
-    return 'TODD is reading the answers.';
+    if ( count < 5 ) return `16Ahead writes a summary after 5 answers. ${count} so far.`;
+    return '16Ahead is reading the answers.';
   }
   const questions = survey.questions || [];
-  if ( !survey.title?.trim() && questions.length === 0 ) return 'Start with a title or let TODD write the questions.';
+  if ( !survey.title?.trim() && questions.length === 0 ) return 'Start with a title or let 16Ahead write the questions.';
   if ( questions.length === 1 ) return 'One question rarely tells you much. Add two more.';
   if ( publishBlockers( survey ).length ) return publishBlockers( survey )[0] + ' to share it.';
   return survey.everPublished ? 'Back in draft. Publish again to keep collecting.' : 'Ready to share.';

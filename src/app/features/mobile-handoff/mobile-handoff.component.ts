@@ -5,7 +5,7 @@ import { filter, firstValueFrom, take } from 'rxjs';
 import { PulseAuthService } from '../../services/pulse-auth.service';
 
 /**
- * Lands here when a native TODD app (via TODDAuthKit's WebHandoff) hands
+ * Lands here when a native 16Ahead app (via TODDAuthKit's WebHandoff) hands
  * off to a page on this app, already signed in - the "Real Token Handoff"
  * feature. Unlike AuthCallbackComponent (which completes this app's own
  * hosted-login redirect to todd.taliferro.tech/login and checks a

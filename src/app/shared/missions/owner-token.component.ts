@@ -4,8 +4,8 @@ import { Person, Who, initialsOf, nameOf } from './missions.model';
 
 /**
  * Who holds a step (design 0a, OwnerToken). Shape carries identity so it
- * reads in grayscale and for colorblind people: TODD is a rounded square,
- * Maya a photo, you a solid circle, teammates an outlined circle, someone
+ * reads in grayscale and for colorblind people: the General Assistant is a rounded square,
+ * the Marketing Assistant a photo, you a solid circle, teammates an outlined circle, someone
  * who left a dashed one. Synced from taliferro-ui/missions.
  */
 @Component( {

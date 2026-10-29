@@ -20,7 +20,7 @@ export interface GettingStarted {
 
 /**
  * Pulse's Getting Started checklist (`GET /api/getting-started/pulse`) -
- * write a pulse, try it, publish it, read TODD's summary - the same data
+ * write a pulse, try it, publish it, read 16Ahead's summary - the same data
  * Pulsur shows. On the Help page, and opened after sign-in while steps
  * remain. Mirrors Network web's getting-started.service.ts.
  */

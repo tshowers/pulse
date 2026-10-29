@@ -1,6 +1,6 @@
 /**
  * In-app profile page (/profile) - replaces the menu's old link out to
- * TODD's /update-profile. The profile API (GET/PATCH /api/profile,
+ * the hub's /update-profile. The profile API (GET/PATCH /api/profile,
  * DELETE /api/account) is stubbed; sign-in uses the Firebase emulators.
  */
 describe( 'Profile page', () => {
@@ -106,7 +106,7 @@ describe( 'Profile page', () => {
           { id: 'createSurvey', title: 'Write your first pulse', detail: 'Done Oct 2', done: true },
           { id: 'trySurvey', title: 'Try it as a respondent', detail: 'Answer it yourself the way people will.', done: false },
           { id: 'shareSurvey', title: 'Publish and share the link', detail: 'Publishing is on the paid plan', done: false },
-          { id: 'toddSummary', title: 'Read TODD’s summary', detail: 'Unlocks after 5 answers', done: false },
+          { id: 'toddSummary', title: 'Read 16Ahead’s summary', detail: 'Unlocks after 5 answers', done: false },
         ],
       } },
     } );
@@ -116,7 +116,7 @@ describe( 'Profile page', () => {
     cy.contains( '[data-cy="help-progress-step"]', 'Write your first pulse' ).should( 'have.class', 'is-done' );
   } );
 
-  it( 'links Profile in the menu to the in-app page, not TODD', () => {
+  it( 'links Profile in the menu to the in-app page, not the hub', () => {
     signIn( '/app' );
     // The shared universal menu (taliferro-ui/menu-component): the Menu pill
     // in the header opens it; the signed-in name links to the profile.

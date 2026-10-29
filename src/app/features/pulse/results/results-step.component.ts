@@ -18,7 +18,7 @@ const THEME_TINTS = ['pink', 'yellow', 'green', 'cyan', 'violet'];
 interface Bar { label: string; count: number; pct: number; color: string; }
 
 /**
- * Step 3, Results (1f). TODD's summary and next move first, then every
+ * Step 3, Results (1f). 16Ahead's summary and next move first, then every
  * question, all updating live (PulseStore polls; this refetches when the
  * answer count or the summary moves). Opening it resets the "N new" badge.
  */
@@ -62,7 +62,7 @@ export class ResultsStepComponent implements OnInit {
     const insights = this.insights();
     if ( !insights?.summary ) return '';
     const updated = insights.updatedAt ? `, updated ${timeAgo( insights.updatedAt, this.now() )}` : '';
-    return `What TODD heard · from ${plural( insights.answerCount, 'answer' )}${updated}`;
+    return `What 16Ahead heard · from ${plural( insights.answerCount, 'answer' )}${updated}`;
   } );
 
   constructor () {
@@ -228,7 +228,7 @@ export class ResultsStepComponent implements OnInit {
     try {
       this.emailDraft.set( await firstValueFrom( this.api.draftNextMoveEmail( this.survey().id! ) ) );
     } catch ( error ) {
-      this.notifications.show( "TODD couldn't draft it", this.messageOf( error, 'Try again in a moment.' ), 'error' );
+      this.notifications.show( "16Ahead couldn't draft it", this.messageOf( error, 'Try again in a moment.' ), 'error' );
     } finally {
       this.busy.set( '' );
     }
@@ -264,7 +264,7 @@ export class ResultsStepComponent implements OnInit {
       this.insights.set( await firstValueFrom( this.api.anotherNextMove( this.survey().id! ) ) );
       this.taskAdded.set( false );
     } catch ( error ) {
-      this.notifications.show( "TODD couldn't think of another", this.messageOf( error, 'Try again in a moment.' ), 'error' );
+      this.notifications.show( "16Ahead couldn't think of another", this.messageOf( error, 'Try again in a moment.' ), 'error' );
     } finally {
       this.busy.set( '' );
     }
