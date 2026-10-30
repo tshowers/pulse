@@ -129,6 +129,6 @@ describe( 'Profile page', () => {
     cy.visit( '/profile' );
     cy.get( '[data-cy="profile-signed-out"]' ).should( 'be.visible' );
     cy.get( '[data-cy="profile-sign-in"]' ).click();
-    cy.location( 'href', { timeout: 10000 } ).should( 'include', 'todd.taliferro.tech/login' );
+    cy.location( 'href', { timeout: 10000 } ).should( 'include', 'app.16ahead.com/login' );
   } );
 } );
