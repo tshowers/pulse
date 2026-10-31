@@ -29,14 +29,14 @@ echo "Running Pulse production hosting deploy"
 echo "Firebase project context: taliferrotech"
 firebase use taliferrotech
 
-echo "Step 1/4: Building the production Pulse bundle..."
+echo "Step 1/5: Building the production Pulse bundle..."
 npm run build
 
-echo "Step 2/4: Running tests (unit + end-to-end)..."
+echo "Step 2/5: Running tests (unit + end-to-end)..."
 npm run test:ci
 npm run e2e
 
-echo "Step 3/4: Committing changes..."
+echo "Step 3/5: Committing changes..."
 if [ -n "$(git status --porcelain)" ]; then
   git add -A
   git commit -m "Deploy $(date +'%Y-%m-%d %H:%M:%S')"
@@ -44,8 +44,17 @@ else
   echo "No changes to commit - working tree is clean."
 fi
 
-echo "Step 4/4: Deploying Pulse to Firebase Hosting site todd-pulse..."
+echo "Step 4/5: Deploying Pulse to Firebase Hosting site todd-pulse..."
 firebase deploy --project taliferrotech --only hosting:todd-pulse
+
+# The deploy is already live at this point, so a push failure (offline, auth,
+# remote ahead) shouldn't report the whole deploy as aborted - warn instead.
+trap - ERR
+echo "Step 5/5: Pushing to GitHub..."
+BRANCH="$(git rev-parse --abbrev-ref HEAD)"
+if ! git push origin "${BRANCH}"; then
+  echo "WARNING: Deploy succeeded but 'git push origin ${BRANCH}' failed - push manually." >&2
+fi
 
 echo "Pulse hosting deploy complete."
 firebase projects:list
