@@ -9,7 +9,7 @@ const APPS = ['network', 'find', 'outreach', 'maya', 'docs', 'pulse', 'moves'];
 /**
  * Playbooks (design 14a): plans that worked, by what you want to do, with
  * the apps each one uses as a filter. "Use this" opens the plan reply,
- * planned for you. They're starting points: 16Ahead still plans each request
+ * planned for you. They're starting points: TODD still plans each request
  * from every product's tools. Synced from taliferro-ui/missions.
  */
 @Component( {

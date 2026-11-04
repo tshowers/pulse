@@ -6,7 +6,7 @@ import { environment } from '../../../environments/environment';
 import { Cockpit, DirectAnswer, MissionReport, MissionView, Playbook, StepActionType, StepView, WaitingItem } from './missions.model';
 
 /**
- * /api/orchestration/missions (backend orchestrator/routes.js). The
+ * /api/orchestration/missions (todd-backend orchestrator/routes.js). The
  * app's id-token and tenant interceptors sign every call. Synced from
  * taliferro-ui/missions - edit the .tmpl there.
  */
@@ -54,6 +54,11 @@ export class MissionsApiService {
 
   cancel ( id: string ): Promise<MissionView> {
     return firstValueFrom( this.http.post<{ mission: MissionView }>( `${this.base}/${encodeURIComponent( id )}/cancel`, {} ) ).then( ( res ) => res.mission );
+  }
+
+  /** A saved Docs document (GET /api/docs/:id), e.g. the email an approval sends. */
+  doc ( id: string ): Promise<Record<string, any>> {
+    return firstValueFrom( this.http.get<{ document: Record<string, any> }>( `${environment.backendURL}/docs/${encodeURIComponent( id )}` ) ).then( ( res ) => res.document );
   }
 
   report ( id: string ): Promise<MissionReport> {

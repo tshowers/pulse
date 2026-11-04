@@ -9,9 +9,9 @@ import { PlanStripComponent } from './plan-strip.component';
 type Phase = 'idle' | 'planning' | 'direct' | 'plan' | 'questions' | 'started' | 'error';
 
 /**
- * The plan reply (design 1a-1d, 10a): ask the assistant for something and get either
+ * The plan reply (design 1a-1d, 10a): ask TODD for something and get either
  * an answer on the spot or a plan - who does each step, what needs you, how
- * long it takes - to Start or Edit. The same reply for the General Assistant, the Marketing Assistant's chat,
+ * long it takes - to Start or Edit. The same reply for Ask TODD, Maya's chat,
  * a Playbook's "Use this" and a suggestion. Synced from taliferro-ui/missions.
  */
 @Component( {
@@ -190,7 +190,7 @@ export class PlanReplyComponent implements OnInit {
   readonly directText = computed( () => {
     const d = this.direct();
     if ( !d ) return '';
-    // No tool: a question about 16Ahead itself, which the assistant answers.
+    // No tool: a question about TODD itself, which the assistant answers.
     return d.summary || ( d.tool ? 'Here’s what I found.' : 'No plan needed for that one. Ask it in the 16Ahead chat and it answers right away.' );
   } );
   readonly detailLink = computed( () => `${this.detailBase()}${encodeURIComponent( this.mission()?.id || '' )}` );

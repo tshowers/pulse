@@ -7,7 +7,7 @@ import { MissionsApiService } from './missions-api.service';
 export type AssistantRoute = { kind: 'mission'; missionId: string } | { kind: 'answer'; text: string } | null;
 
 /**
- * The assistant's Missions gate, the same in every app (first built in
+ * The TODD assistant's Missions gate, the same in every app (first built in
  * Outreach, 2026-10-20). Real work becomes a Mission shown right in the
  * conversation; a quick question is answered by the right tool; help
  * questions (no tool) and any error return null so the app's assistant

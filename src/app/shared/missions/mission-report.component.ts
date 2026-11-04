@@ -70,7 +70,7 @@ export class MissionReportComponent {
 
   readonly outcomeLabel = computed( () => ( { action: 'Action', insight: 'Insight', shortlist: 'Shortlist', program: 'Program', assetSet: 'Asset set' }[this.mission().outcomeType] || 'Action' ) );
 
-  /** "3 steps by 16Ahead, 2 by teammates, 1 by you." - the line without the time, which gets its own line here. */
+  /** "3 steps by TODD, 2 by teammates, 1 by you." - the line without the time, which gets its own line here. */
   readonly splitHead = computed( () => {
     const r = this.mission().report!;
     const s = r.split;
