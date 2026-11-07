@@ -24,6 +24,17 @@ export interface SurveyQuestion {
     required?: boolean;
     helpText?: string;
     placeholder?: string;
+    /** Branching: ask only when question `questionId` was answered with one of `anyOf`. */
+    showIf?: { questionId: string; anyOf: string[]; } | null;
+}
+
+/** Whether a branched question applies, given the answers so far. */
+export function isQuestionVisible ( question: SurveyQuestion, answers: Record<string, unknown> ): boolean {
+    const rule = question.showIf;
+    if ( !rule ) return true;
+    const value = answers[rule.questionId];
+    const given = Array.isArray( value ) ? value.map( String ) : value === null || value === undefined ? [] : [String( value )];
+    return given.some( ( answer ) => rule.anyOf.includes( answer ) );
 }
 
 /** When a live pulse stops taking answers (Share step). */

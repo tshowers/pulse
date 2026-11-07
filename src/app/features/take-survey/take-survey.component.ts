@@ -3,7 +3,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 
-import { PublicSurvey, SurveyQuestion } from '../../models/survey.model';
+import { PublicSurvey, SurveyQuestion, isQuestionVisible } from '../../models/survey.model';
 import { PulseAuthService } from '../../services/pulse-auth.service';
 import { SurveyApiService } from '../../services/survey-api.service';
 import { IconComponent } from '../../shared/icon/icon.component';
@@ -51,7 +51,11 @@ export class TakeSurveyComponent implements OnInit {
   private digitBuffer = '';
   private digitTimer: ReturnType<typeof setTimeout> | null = null;
 
-  readonly questions = computed( () => this.survey()?.questions || [] );
+  /** The questions on the path these answers take (branching: showIf). */
+  readonly questions = computed( () => {
+    const answers = this.answers();
+    return ( this.survey()?.questions || [] ).filter( ( question ) => isQuestionVisible( question, answers ) );
+  } );
   readonly question = computed<SurveyQuestion | null>( () => this.questions()[this.index()] || null );
   readonly total = computed( () => this.questions().length + ( this.survey()?.collectIdentity ? 1 : 0 ) );
   readonly step = computed( () => this.phase() === 'identity' ? this.questions().length + 1 : this.index() + 1 );
@@ -59,7 +63,12 @@ export class TakeSurveyComponent implements OnInit {
   readonly sender = computed( () => this.survey()?.ownerDisplay?.name || ( this.preview() ? 'Your business' : '16Ahead Pulse' ) );
   readonly initials = computed( () => this.sender().split( /\s+/ ).filter( Boolean ).slice( 0, 2 ).map( ( w ) => w[0] ).join( '' ).toUpperCase() || 'P' );
   readonly duration = computed( () => {
-    const minutes = Math.max( 1, Math.round( this.questions().length * 15 / 60 ) );
+    // Branched pulses: time the longest path, not the questions shown so far.
+    const all = this.survey()?.questions || [];
+    const groups = new Map<string, number>();
+    all.filter( ( q ) => q.showIf ).forEach( ( q ) => groups.set( JSON.stringify( q.showIf ), ( groups.get( JSON.stringify( q.showIf ) ) || 0 ) + 1 ) );
+    const longest = all.filter( ( q ) => !q.showIf ).length + Math.max( 0, ...groups.values() );
+    const minutes = Math.max( 1, Math.round( longest * 15 / 60 ) );
     return minutes === 1 ? 'about a minute' : `about ${minutes} minutes`;
   } );
   readonly isLast = computed( () => this.index() === this.questions().length - 1 );
@@ -212,7 +221,7 @@ export class TakeSurveyComponent implements OnInit {
     try {
       const result = await firstValueFrom( this.api.submitPublicSurveyResponse( this.surveyId, {
         surveyId: this.surveyId,
-        answers: this.answers(),
+        answers: this.visibleAnswers(),
         ...( this.survey()?.collectIdentity ? { respondent: { name: this.name().trim(), email: this.email().trim() } } : {} ),
         submittedAt: new Date(),
       } ) );
@@ -247,6 +256,12 @@ export class TakeSurveyComponent implements OnInit {
     } catch {
       return false;
     }
+  }
+
+  /** Only answers on the path taken; a changed branch leaves stale ones behind. */
+  private visibleAnswers (): Record<string, Answer> {
+    const answers = this.answers();
+    return Object.fromEntries( this.questions().filter( ( q ) => q.id && q.id in answers ).map( ( q ) => [q.id!, answers[q.id!]] ) );
   }
 
   private storedReportToken (): string {

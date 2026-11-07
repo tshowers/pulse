@@ -2,8 +2,14 @@
  * Paid Pulse reports (backend survey/pulseReports.service.js).
  *   generating → ready (teaser, pay to unlock) | failed
  *   ready → in_review (paid, owner reviewing) → released (full report)
+ *   generating → referred (outside the owner's work: free providers from Find)
  */
-export type PulseReportStatus = 'generating' | 'ready' | 'failed' | 'in_review' | 'released';
+export type PulseReportStatus = 'generating' | 'ready' | 'failed' | 'in_review' | 'released' | 'referred';
+
+/** A local provider from Find (the free referral path). */
+export interface PulseReferralProvider { name: string; url: string; displayUrl: string; phone: string; address: string; rating: string; description: string; }
+
+export interface PulseReferral { headline: string; message: string; postalCode: string; providers: PulseReferralProvider[]; }
 
 export interface PulseReportIssue { title: string; severity: 'critical' | 'high' | 'medium'; }
 
@@ -25,6 +31,7 @@ export interface PulseReportPublic {
   releasedAt: string | null;
   debriefUrl: string;
   reportMarkdown: string;
+  referral: PulseReferral | null;
 }
 
 /** The owner's review queue. */
@@ -40,6 +47,8 @@ export interface PulseReportOwner {
   reportMarkdown: string;
   edited: boolean;
   failureReason: string;
+  path: 'report' | 'referral';
+  referral: PulseReferral | null;
   createdAt: string | null;
   readyAt: string | null;
   paidAt: string | null;

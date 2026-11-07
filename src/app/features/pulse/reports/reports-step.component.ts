@@ -15,7 +15,20 @@ const STATUS_LABEL: Record<PulseReportStatus, string> = {
   failed: "Didn't generate",
   in_review: 'Paid · review',
   released: 'Released',
+  referred: 'Referred (free)',
 };
+
+function dueSpan ( ms: number ): string {
+  const hours = Math.round( Math.abs( ms ) / 3600000 );
+  const span = hours >= 1 ? `${hours}h` : `${Math.max( 1, Math.round( Math.abs( ms ) / 60000 ) )}m`;
+  return ms < 0 ? `${span} late` : `due in ${span}`;
+}
+
+function formatWhen ( iso: string | null | undefined ): string {
+  if ( !iso ) return '';
+  const date = new Date( iso );
+  return Number.isNaN( date.getTime() ) ? '' : date.toLocaleString( undefined, { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' } );
+}
 
 /**
  * /survey/:id/reports - the owner's review queue for a paid-report pulse
@@ -37,13 +50,13 @@ const STATUS_LABEL: Record<PulseReportStatus, string> = {
       } @else {
         <div class="rp">
           <ul class="rp-list" aria-label="Reports">
-            @for (r of reports(); track r.token) {
+            @for (r of rows(); track r.token) {
               <li>
                 <button type="button" class="rp-item" [class.is-on]="r.token === selectedToken()" (click)="select(r.token)">
                   <span class="rp-item__name">{{ r.respondent.name || r.respondent.email }}</span>
                   <span class="rp-item__meta">
-                    <span class="rp-status" [attr.data-status]="r.status">{{ label(r.status) }}</span>
-                    @if (r.status === 'in_review' && r.dueAt) { <span [class.rp-late]="isLate(r)">{{ dueText(r) }}</span> }
+                    <span class="rp-status" [attr.data-status]="r.status">{{ r.statusLabel }}</span>
+                    @if (r.dueText) { <span [class.rp-late]="r.late">{{ r.dueText }}</span> }
                   </span>
                 </button>
               </li>
@@ -60,6 +73,14 @@ const STATUS_LABEL: Record<PulseReportStatus, string> = {
               </header>
               @switch (r.status) {
                 @case ('generating') { <p class="rp-muted">16Ahead is writing this report. It'll appear here in a minute or two.</p> }
+                @case ('referred') {
+                  <p class="rp-muted">Outside your work, so they got free providers from Find{{ r.referral?.postalCode ? ' near ' + r.referral!.postalCode : '' }} instead of a report. Their answers are in Results.</p>
+                  @if (r.referral?.providers?.length) {
+                    <ul class="rp-providers">
+                      @for (p of r.referral!.providers; track p.url) { <li><a [href]="p.url" target="_blank" rel="noopener">{{ p.name }}</a></li> }
+                    </ul>
+                  } @else { <p class="rp-muted">Find returned no providers, so their page says to look elsewhere.</p> }
+                }
                 @case ('failed') {
                   <p class="rp-muted">This report didn't generate: {{ r.failureReason || 'unknown reason' }}. They were told you'll follow up.</p>
                   <button type="button" class="p-btn p-btn--primary" (click)="retry(r)" [disabled]="!!busy()">{{ busy() ? 'Retrying…' : 'Try again' }}</button>
@@ -68,8 +89,8 @@ const STATUS_LABEL: Record<PulseReportStatus, string> = {
                   <p class="rp-muted">
                     @switch (r.status) {
                       @case ('ready') { They have the preview and haven't paid yet. You can edit now; release opens after payment. }
-                      @case ('in_review') { Paid {{ r.paidAt ? '· ' + when(r.paidAt) : '' }}. Promised by {{ when(r.dueAt) }}. Review, edit if needed, then release. }
-                      @case ('released') { Released {{ when(r.releasedAt) }}. Edits you save now show on their page right away. }
+                      @case ('in_review') { Paid {{ times().paid ? '· ' + times().paid : '' }}. Promised by {{ times().due }}. Review, edit if needed, then release. }
+                      @case ('released') { Released {{ times().released }}. Edits you save now show on their page right away. }
                     }
                   </p>
                   <div class="rp-tabs" role="tablist">
@@ -108,6 +129,8 @@ const STATUS_LABEL: Record<PulseReportStatus, string> = {
     .rp-status[data-status="in_review"] { background: var(--t-yellow); color: var(--t-yellow-fg); }
     .rp-status[data-status="released"] { background: var(--t-green); color: var(--t-green-fg); }
     .rp-status[data-status="failed"] { background: var(--t-pink); color: var(--t-pink-fg); }
+    .rp-providers { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 4px; }
+    .rp-status[data-status="referred"] { background: var(--t-cyan); color: var(--t-cyan-fg); }
     .rp-late { color: var(--t-pink-fg); font-weight: 700; }
     .rp-detail { padding: 28px; display: flex; flex-direction: column; gap: 16px; }
     .rp-detail__head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
@@ -143,6 +166,18 @@ export class ReportsStepComponent implements OnInit {
   readonly actionError = signal( '' );
   readonly now = signal( Date.now() );
 
+  /** List rows with their label and deadline worked out once per change. */
+  readonly rows = computed( () => {
+    const now = this.now();
+    return this.reports().map( ( r ) => {
+      const ms = r.status === 'in_review' && r.dueAt ? Date.parse( r.dueAt ) - now : NaN;
+      return { ...r, statusLabel: STATUS_LABEL[r.status], late: ms < 0, dueText: Number.isNaN( ms ) ? '' : dueSpan( ms ) };
+    } );
+  } );
+  readonly times = computed( () => {
+    const r = this.selected();
+    return { paid: formatWhen( r?.paidAt ), due: formatWhen( r?.dueAt ), released: formatWhen( r?.releasedAt ) };
+  } );
   readonly selected = computed( () => this.reports().find( ( r ) => r.token === this.selectedToken() ) || null );
   readonly dirty = computed( () => !!this.selected() && this.draft().trim() !== ( this.selected()!.reportMarkdown || '' ).trim() );
   readonly previewHtml = computed( () => renderReportMarkdown( this.draft() ) );
@@ -196,27 +231,6 @@ export class ReportsStepComponent implements OnInit {
     void this.router.navigate( [], { relativeTo: this.route, queryParams: { report: token }, replaceUrl: true } );
   }
 
-  label ( status: PulseReportStatus ): string {
-    return STATUS_LABEL[status];
-  }
-
-  isLate ( r: PulseReportOwner ): boolean {
-    return !!r.dueAt && Date.parse( r.dueAt ) < this.now();
-  }
-
-  dueText ( r: PulseReportOwner ): string {
-    const ms = Date.parse( r.dueAt || '' ) - this.now();
-    if ( Number.isNaN( ms ) ) return '';
-    const hours = Math.round( Math.abs( ms ) / 3600000 );
-    const span = hours >= 1 ? `${hours}h` : `${Math.max( 1, Math.round( Math.abs( ms ) / 60000 ) )}m`;
-    return ms < 0 ? `${span} late` : `due in ${span}`;
-  }
-
-  when ( iso: string | null ): string {
-    if ( !iso ) return '';
-    const date = new Date( iso );
-    return Number.isNaN( date.getTime() ) ? '' : date.toLocaleString( undefined, { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' } );
-  }
 
   private replace ( updated: PulseReportOwner ): void {
     this.reports.update( ( list ) => list.map( ( r ) => ( r.token === updated.token ? updated : r ) ) );

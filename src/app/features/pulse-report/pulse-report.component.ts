@@ -3,7 +3,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 
-import { PulseReportPublic } from '../../models/pulse-report.model';
+import { PulseReferralProvider, PulseReportPublic } from '../../models/pulse-report.model';
 import { SurveyApiService } from '../../services/survey-api.service';
 import { renderReportMarkdown } from '../../shared/report-markdown';
 
@@ -77,6 +77,29 @@ import { renderReportMarkdown } from '../../shared/report-markdown';
                 </div>
               </div>
             }
+            @case ('referred') {
+              <div class="pr-card pr-card--wide">
+                <span class="pr-eyebrow">Thanks{{ r.firstName ? ', ' + r.firstName : '' }}</span>
+                <h1>{{ r.referral?.headline || 'Some places that can help' }}</h1>
+                <p class="pr-lede">{{ r.referral?.message || "What you need is outside what we do, so here are providers near you. There's no charge for this." }}</p>
+                @if (r.referral?.providers?.length) {
+                  <ul class="pr-providers">
+                    @for (p of providers(); track p.url) {
+                      <li>
+                        <a class="pr-provider" [href]="p.url" target="_blank" rel="noopener nofollow">
+                          <span class="pr-provider__name">{{ p.name }}</span>
+                          <span class="pr-provider__meta">{{ p.meta }}</span>
+                          @if (p.description) { <span class="pr-provider__desc">{{ p.description }}</span> }
+                        </a>
+                      </li>
+                    }
+                  </ul>
+                } @else {
+                  <p class="pr-lede">We couldn't pull up providers{{ r.referral?.postalCode ? ' near ' + r.referral!.postalCode : '' }} just now.</p>
+                }
+                <p class="pr-fine">Listings found with <a href="https://find.16ahead.com" target="_blank" rel="noopener">Find</a>. We don't get paid for these, and we haven't vetted them.</p>
+              </div>
+            }
             @case ('in_review') {
               <div class="pr-card">
                 <span class="pr-eyebrow">Payment received</span>
@@ -140,6 +163,14 @@ import { renderReportMarkdown } from '../../shared/report-markdown';
     .pr-body ::ng-deep p { margin: 0 0 12px; }
     .pr-body ::ng-deep ul, .pr-body ::ng-deep ol { margin: 0 0 12px; padding-left: 22px; }
     .pr-body ::ng-deep li { margin: 0 0 6px; }
+    .pr-providers { list-style: none; margin: 0; padding: 0; width: 100%; display: flex; flex-direction: column; gap: 10px; }
+    .pr-provider { display: flex; flex-direction: column; gap: 4px; padding: 16px; border-radius: 16px; background: var(--surface); color: var(--text); text-decoration: none; }
+    .pr-provider:hover { background: var(--surface2); }
+    .pr-provider__name { font-size: 17px; font-weight: 700; }
+    .pr-provider__meta { font-size: 14px; color: var(--muted); }
+    .pr-provider__desc { font-size: 15px; line-height: 1.45; color: var(--muted); }
+    .pr-fine { margin: 0; font-size: 13px; color: var(--muted); }
+    .pr-fine a { color: var(--blue-ink); }
     .pr-spinner { width: 28px; height: 28px; border-radius: 50%; border: 3px solid var(--surface2); border-top-color: var(--blue); animation: spin .8s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
     @media (max-width: 640px) {
@@ -160,6 +191,8 @@ export class PulseReportComponent implements OnInit {
   readonly actionError = signal( '' );
 
   readonly initials = computed( () => ( this.report()?.ownerName || '' ).split( /\s+/ ).filter( Boolean ).slice( 0, 2 ).map( ( w ) => w[0].toUpperCase() ).join( '' ) );
+  readonly providers = computed<( PulseReferralProvider & { meta: string; } )[]>( () =>
+    ( this.report()?.referral?.providers || [] ).map( ( p ) => ( { ...p, meta: [p.rating, p.phone, p.address || p.displayUrl].filter( Boolean ).join( ' · ' ) } ) ) );
   readonly reportHtml = computed( () => renderReportMarkdown( this.report()?.reportMarkdown || '' ) );
   readonly dueLabel = computed( () => {
     const due = this.report()?.dueAt;
