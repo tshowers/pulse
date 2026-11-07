@@ -43,6 +43,13 @@ export const routes: Routes = [
       import( './features/take-survey/take-survey.component' ).then( ( m ) => m.TakeSurveyComponent ),
   },
   {
+    // A respondent's private paid report (the link is the secret).
+    path: 'report/:token',
+    data: { chrome: 'none' },
+    loadComponent: () =>
+      import( './features/pulse-report/pulse-report.component' ).then( ( m ) => m.PulseReportComponent ),
+  },
+  {
     path: 'app',
     loadComponent: () =>
       import( './features/pulse/home/pulses-home.component' ).then( ( m ) => m.PulsesHomeComponent ),
@@ -78,6 +85,12 @@ export const routes: Routes = [
         path: 'results',
         loadComponent: () =>
           import( './features/pulse/results/results-step.component' ).then( ( m ) => m.ResultsStepComponent ),
+      },
+      {
+        // Paid-report pulses only: review, edit and release each report.
+        path: 'reports',
+        loadComponent: () =>
+          import( './features/pulse/reports/reports-step.component' ).then( ( m ) => m.ReportsStepComponent ),
       },
     ],
   },

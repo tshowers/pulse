@@ -1,6 +1,6 @@
 import { Component, HostListener, OnInit, computed, inject, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 
 import { PublicSurvey, SurveyQuestion } from '../../models/survey.model';
@@ -33,6 +33,7 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 } )
 export class TakeSurveyComponent implements OnInit {
   private readonly route = inject( ActivatedRoute );
+  private readonly router = inject( Router );
   private readonly api = inject( SurveyApiService );
   private readonly auth = inject( PulseAuthService );
 
@@ -117,6 +118,12 @@ export class TakeSurveyComponent implements OnInit {
       if ( !this.preview() && survey.status !== 'published' ) {
         this.phase.set( 'closed' );
       } else if ( !this.preview() && this.alreadyAnswered() ) {
+        // A paid-report pulse answered on this device: reopen their report.
+        const reportToken = this.storedReportToken();
+        if ( reportToken ) {
+          void this.router.navigate( ['/report', reportToken], { replaceUrl: true } );
+          return;
+        }
         this.phase.set( 'already' );
       } else if ( !survey.questions?.length ) {
         this.phase.set( 'unavailable' );
@@ -203,13 +210,19 @@ export class TakeSurveyComponent implements OnInit {
     this.phase.set( 'sending' );
     this.error.set( '' );
     try {
-      await firstValueFrom( this.api.submitPublicSurveyResponse( this.surveyId, {
+      const result = await firstValueFrom( this.api.submitPublicSurveyResponse( this.surveyId, {
         surveyId: this.surveyId,
         answers: this.answers(),
         ...( this.survey()?.collectIdentity ? { respondent: { name: this.name().trim(), email: this.email().trim() } } : {} ),
         submittedAt: new Date(),
       } ) );
       this.rememberAnswered();
+      // Paid-report pulse: straight to their report preview.
+      if ( result?.report?.token ) {
+        this.rememberReport( result.report.token );
+        void this.router.navigate( ['/report', result.report.token] );
+        return;
+      }
       this.phase.set( 'done' );
     } catch ( error ) {
       const code = ( error as HttpErrorResponse )?.error?.code;
@@ -234,6 +247,20 @@ export class TakeSurveyComponent implements OnInit {
     } catch {
       return false;
     }
+  }
+
+  private storedReportToken (): string {
+    try {
+      return localStorage.getItem( `survey_${this.surveyId}_report` ) || '';
+    } catch {
+      return '';
+    }
+  }
+
+  private rememberReport ( token: string ): void {
+    try {
+      localStorage.setItem( `survey_${this.surveyId}_report`, token );
+    } catch { }
   }
 
   private rememberAnswered (): void {

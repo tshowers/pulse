@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { environment } from '../../environments/environment';
 import {
   PublicSurvey,
@@ -21,6 +21,7 @@ import {
   SurveySearchRequest,
   SurveySearchResponse
 } from '../models/survey-search.model';
+import { PulseReportOwner, PulseReportPublic } from '../models/pulse-report.model';
 
 /**
  * Ported near-verbatim from the monorepo's
@@ -41,6 +42,8 @@ export interface SubmitSurveyResponseResult {
   success: boolean;
   responseId?: string;
   message?: string;
+  /** A paid-report pulse: the respondent's private report link token. */
+  report?: { token: string; };
 }
 
 export interface SurveyResponseRecord {
@@ -183,6 +186,32 @@ export class SurveyApiService {
 
   submitPublicSurveyResponse ( id: string, payload: PublicSurveyResponsePayload ): Observable<SubmitSurveyResponseResult> {
     return this.http.post<SubmitSurveyResponseResult>( `${environment.backendURL}/public/surveys/${id}/responses`, payload );
+  }
+
+  // ── Paid reports (backend survey/pulseReports.service.js) ──────────────
+
+  getPublicReport ( token: string ): Observable<PulseReportPublic> {
+    return this.http.get<{ data: PulseReportPublic; }>( `${environment.backendURL}/public/pulse-reports/${token}` ).pipe( map( ( r ) => r.data ) );
+  }
+
+  startReportCheckout ( token: string ): Observable<{ checkoutUrl: string; }> {
+    return this.http.post<{ data: { checkoutUrl: string; }; }>( `${environment.backendURL}/public/pulse-reports/${token}/checkout`, {} ).pipe( map( ( r ) => r.data ) );
+  }
+
+  listReports ( surveyId: string ): Observable<PulseReportOwner[]> {
+    return this.http.get<{ data: PulseReportOwner[]; }>( `${this.baseUrl}/${surveyId}/reports` ).pipe( map( ( r ) => r.data ) );
+  }
+
+  updateReport ( surveyId: string, token: string, reportMarkdown: string ): Observable<PulseReportOwner> {
+    return this.http.put<{ data: PulseReportOwner; }>( `${this.baseUrl}/${surveyId}/reports/${token}`, { reportMarkdown } ).pipe( map( ( r ) => r.data ) );
+  }
+
+  releaseReport ( surveyId: string, token: string ): Observable<PulseReportOwner> {
+    return this.http.post<{ data: PulseReportOwner; }>( `${this.baseUrl}/${surveyId}/reports/${token}/release`, {} ).pipe( map( ( r ) => r.data ) );
+  }
+
+  retryReport ( surveyId: string, token: string ): Observable<PulseReportOwner> {
+    return this.http.post<{ data: PulseReportOwner; }>( `${this.baseUrl}/${surveyId}/reports/${token}/retry`, {} ).pipe( map( ( r ) => r.data ) );
   }
 
   listSurveys ( request?: SurveySearchRequest ): Observable<SurveyListResult> {

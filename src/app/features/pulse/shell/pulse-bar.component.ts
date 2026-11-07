@@ -40,6 +40,11 @@ import { PulseStep, StepState, stepStates } from '../pulse-state';
             </a>
           }
         }
+        @if (survey().paidReport) {
+          <a class="pb-step" [class.is-on]="step() === 'reports'" [routerLink]="['/survey', survey().id, 'reports']" [attr.aria-current]="step() === 'reports' ? 'step' : null">
+            <span class="pb-step__n">$</span>Reports
+          </a>
+        }
       </nav>
       <div class="pb-actions"><ng-content /></div>
     </div>
@@ -48,13 +53,17 @@ import { PulseStep, StepState, stepStates } from '../pulse-state';
 } )
 export class PulseBarComponent {
   readonly survey = input.required<Survey>();
-  readonly step = input.required<PulseStep>();
+  /** 'reports' = the paid-report review queue (only on paid-report pulses). */
+  readonly step = input.required<PulseStep | 'reports'>();
   @Input() subtitle = '';
   @Input() tone: 'muted' | 'live' = 'muted';
   @Input() dot = false;
 
   readonly steps = computed( () => {
-    const states = stepStates( this.survey(), this.step() );
+    const step = this.step();
+    const states = step === 'reports' ?
+      { ...stepStates( this.survey(), 'results' ), results: 'todo' as StepState } :
+      stepStates( this.survey(), step );
     return ( [
       { key: 'write', label: 'Write', n: 1 },
       { key: 'share', label: 'Share', n: 2 },

@@ -70,6 +70,12 @@ export interface Survey {
     closeRule?: SurveyCloseRule;
     /** True: ask respondents for name and email. False: anonymous. */
     collectIdentity?: boolean;
+    /**
+     * Paid-report offer (e.g. the $999 IT Rescue): each answer gets its own
+     * report, unlocked by payment and released after the owner's review.
+     * Set on the server only; the public view carries just price and name.
+     */
+    paidReport?: { priceUsd: number; productName: string; } | null;
 
     // Legacy timestamp support during migration.
     dateAdded?: string;
