@@ -86,7 +86,7 @@ export interface Survey {
      * report, unlocked by payment and released after the owner's review.
      * Set on the server only; the public view carries just price and name.
      */
-    paidReport?: { priceUsd: number; productName: string; } | null;
+    paidReport?: { priceUsd: number; productName: string; metaPixelId?: string; } | null;
 
     // Legacy timestamp support during migration.
     dateAdded?: string;

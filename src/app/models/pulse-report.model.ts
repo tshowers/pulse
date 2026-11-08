@@ -32,6 +32,8 @@ export interface PulseReportPublic {
   debriefUrl: string;
   reportMarkdown: string;
   referral: PulseReferral | null;
+  /** The owner's Meta Pixel (digits) or ''. */
+  metaPixelId?: string;
 }
 
 /** The owner's review queue. */

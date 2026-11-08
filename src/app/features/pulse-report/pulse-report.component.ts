@@ -6,6 +6,7 @@ import { firstValueFrom } from 'rxjs';
 import { PulseReferralProvider, PulseReportPublic } from '../../models/pulse-report.model';
 import { SurveyApiService } from '../../services/survey-api.service';
 import { renderReportMarkdown } from '../../shared/report-markdown';
+import { startMetaPixel, trackMetaPixel } from '../../shared/meta-pixel';
 
 /**
  * /report/:token - a respondent's private paid-report page (backend
@@ -217,6 +218,7 @@ export class PulseReportComponent implements OnInit {
       const report = await firstValueFrom( this.api.getPublicReport( this.token ) );
       this.report.set( report );
       this.loadError.set( '' );
+      startMetaPixel( report.metaPixelId );
       // Keep checking while it's being written, and while paid-but-unreleased
       // (slowly) so a release shows without a refresh.
       if ( report.status === 'generating' ) this.schedule( 4000 );
@@ -240,6 +242,8 @@ export class PulseReportComponent implements OnInit {
     this.busy.set( true );
     this.actionError.set( '' );
     try {
+      const r = this.report();
+      trackMetaPixel( r?.metaPixelId, 'InitiateCheckout', { content_name: r?.productName, value: r?.priceUsd, currency: 'USD' } );
       const { checkoutUrl } = await firstValueFrom( this.api.startReportCheckout( this.token ) );
       window.location.href = checkoutUrl;
     } catch ( error ) {

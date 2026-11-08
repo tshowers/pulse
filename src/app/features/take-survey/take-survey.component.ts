@@ -7,6 +7,7 @@ import { PublicSurvey, SurveyQuestion, isQuestionVisible } from '../../models/su
 import { PulseAuthService } from '../../services/pulse-auth.service';
 import { SurveyApiService } from '../../services/survey-api.service';
 import { IconComponent } from '../../shared/icon/icon.component';
+import { startMetaPixel, trackMetaPixel, trackMetaPixelCustom } from '../../shared/meta-pixel';
 import { typeMeta } from '../pulse/pulse-state';
 
 type Phase = 'loading' | 'unavailable' | 'closed' | 'answer' | 'identity' | 'sending' | 'done' | 'already';
@@ -124,6 +125,7 @@ export class TakeSurveyComponent implements OnInit {
         return;
       }
       this.survey.set( survey );
+      if ( !this.preview() ) startMetaPixel( survey.paidReport?.metaPixelId );
       if ( !this.preview() && survey.status !== 'published' ) {
         this.phase.set( 'closed' );
       } else if ( !this.preview() && this.alreadyAnswered() ) {
@@ -228,6 +230,7 @@ export class TakeSurveyComponent implements OnInit {
       this.rememberAnswered();
       // Paid-report pulse: straight to their report preview.
       if ( result?.report?.token ) {
+        this.trackFinished( result.report.token, result.report.path );
         this.rememberReport( result.report.token );
         void this.router.navigate( ['/report', result.report.token] );
         return;
@@ -243,6 +246,16 @@ export class TakeSurveyComponent implements OnInit {
       this.error.set( code === 'SURVEY_OWNER_CANNOT_RESPOND'
         ? "You made this pulse, so you can try it but can't answer it."
         : ( error as HttpErrorResponse )?.error?.error || "Your answers didn't send. Check your connection and try again." );
+    }
+  }
+
+  /** Ads learn from Lead; the free referral path gets its own event so they don't. */
+  private trackFinished ( token: string, path?: 'report' | 'referral' ): void {
+    const offer = this.survey()?.paidReport;
+    if ( path === 'referral' ) {
+      trackMetaPixelCustom( offer?.metaPixelId, 'PulseReferred', { content_name: offer?.productName }, token );
+    } else {
+      trackMetaPixel( offer?.metaPixelId, 'Lead', { content_name: offer?.productName, value: offer?.priceUsd, currency: 'USD' }, token );
     }
   }
 

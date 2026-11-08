@@ -43,7 +43,7 @@ export interface SubmitSurveyResponseResult {
   responseId?: string;
   message?: string;
   /** A paid-report pulse: the respondent's private report link token. */
-  report?: { token: string; };
+  report?: { token: string; path?: 'report' | 'referral'; };
 }
 
 export interface SurveyResponseRecord {
