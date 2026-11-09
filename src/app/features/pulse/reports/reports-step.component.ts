@@ -3,10 +3,13 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 
-import { PulseReportOwner, PulseReportStatus } from '../../../models/pulse-report.model';
+import { PulseReportOwner, PulseReportStatus, StructuredReport } from '../../../models/pulse-report.model';
 import { SurveyApiService } from '../../../services/survey-api.service';
 import { renderReportMarkdown } from '../../../shared/report-markdown';
 import { PulseBarComponent } from '../shell/pulse-bar.component';
+import { TechReportComponent } from '../../../shared/tech-report/tech-report.component';
+import { buildReportView } from '../../../shared/tech-report/tech-report.view';
+import { ReportEditorComponent } from './report-editor.component';
 import { PulseStore } from '../pulse.store';
 
 const STATUS_LABEL: Record<PulseReportStatus, string> = {
@@ -35,11 +38,15 @@ function formatWhen ( iso: string | null | undefined ): string {
  * (backend survey/pulseReports.service.js). Paid reports waiting on review
  * come first, soonest deadline on top. Pick one to read, edit, and release;
  * releasing emails the respondent their private link.
+ *
+ * Structured reports (2026-11-09 redesign) are edited field by field
+ * (report-editor) and previewed exactly as the client's page shows them;
+ * older reports keep the Markdown editor.
  */
 @Component( {
   selector: 'app-reports-step',
   standalone: true,
-  imports: [PulseBarComponent],
+  imports: [PulseBarComponent, ReportEditorComponent, TechReportComponent],
   template: `
     <div class="p-page">
       <app-pulse-bar [survey]="store.survey()!" step="reports" [subtitle]="subtitle()" />
@@ -97,7 +104,13 @@ function formatWhen ( iso: string | null | undefined ): string {
                     <button type="button" role="tab" class="rp-tab" [class.is-on]="mode() === 'edit'" (click)="mode.set('edit')">Edit</button>
                     <button type="button" role="tab" class="rp-tab" [class.is-on]="mode() === 'preview'" (click)="mode.set('preview')">Preview</button>
                   </div>
-                  @if (mode() === 'edit') {
+                  @if (r.structured) {
+                    @if (mode() === 'edit') {
+                      <app-report-editor [report]="r.structured" (reportChange)="draftStructured.set($event)" />
+                    } @else {
+                      <app-tech-report [view]="previewView()" [embedded]="true" />
+                    }
+                  } @else if (mode() === 'edit') {
                     <textarea class="rp-editor" [value]="draft()" (input)="draft.set($any($event.target).value)" aria-label="Report"></textarea>
                   } @else {
                     <div class="rp-preview" [innerHTML]="previewHtml()"></div>
@@ -161,6 +174,8 @@ export class ReportsStepComponent implements OnInit {
   readonly loadFailed = signal( false );
   readonly selectedToken = signal( '' );
   readonly draft = signal( '' );
+  /** The structured report being edited (null for older Markdown reports). */
+  readonly draftStructured = signal<StructuredReport | null>( null );
   readonly mode = signal<'edit' | 'preview'>( 'preview' );
   readonly busy = signal<'' | 'save' | 'release' | 'retry'>( '' );
   readonly actionError = signal( '' );
@@ -179,8 +194,24 @@ export class ReportsStepComponent implements OnInit {
     return { paid: formatWhen( r?.paidAt ), due: formatWhen( r?.dueAt ), released: formatWhen( r?.releasedAt ) };
   } );
   readonly selected = computed( () => this.reports().find( ( r ) => r.token === this.selectedToken() ) || null );
-  readonly dirty = computed( () => !!this.selected() && this.draft().trim() !== ( this.selected()!.reportMarkdown || '' ).trim() );
+  readonly dirty = computed( () => {
+    const r = this.selected();
+    if ( !r ) return false;
+    if ( r.structured ) return JSON.stringify( this.draftStructured() ) !== JSON.stringify( r.structured );
+    return this.draft().trim() !== ( r.reportMarkdown || '' ).trim();
+  } );
   readonly previewHtml = computed( () => renderReportMarkdown( this.draft() ) );
+  /** The client's page, as it will look with the unsaved edits. */
+  readonly previewView = computed( () => {
+    const r = this.selected();
+    const report = this.draftStructured();
+    if ( !r || !report ) return null;
+    return buildReportView( {
+      mode: 'full', report, preview: null,
+      cover: { preparedFor: r.respondent.name, preparedBy: r.ownerName || '', date: r.releasedAt || r.readyAt, reportId: r.reportId || '', ownerTagline: '', ownerWebsite: '' },
+      ownerName: r.ownerName || '', productName: this.store.survey()?.title || '', priceUsd: r.priceUsd, turnaroundHours: 24,
+    } );
+  } );
   readonly subtitle = computed( () => {
     const waiting = this.reports().filter( ( r ) => r.status === 'in_review' ).length;
     return waiting ? `${waiting} paid report${waiting === 1 ? '' : 's'} to review` : `${this.reports().length} report${this.reports().length === 1 ? '' : 's'}`;
@@ -215,6 +246,7 @@ export class ReportsStepComponent implements OnInit {
         if ( pick ) this.select( pick.token );
       } else if ( this.selected() && !this.dirty() ) {
         this.draft.set( this.selected()!.reportMarkdown );
+        this.draftStructured.set( this.selected()!.structured || null );
       }
     } catch {
       this.loadFailed.set( true );
@@ -226,6 +258,7 @@ export class ReportsStepComponent implements OnInit {
     if ( !report ) return;
     this.selectedToken.set( token );
     this.draft.set( report.reportMarkdown || '' );
+    this.draftStructured.set( report.structured || null );
     this.mode.set( 'preview' );
     this.actionError.set( '' );
     void this.router.navigate( [], { relativeTo: this.route, queryParams: { report: token }, replaceUrl: true } );
@@ -244,9 +277,12 @@ export class ReportsStepComponent implements OnInit {
     this.busy.set( 'save' );
     this.actionError.set( '' );
     try {
-      const updated = await firstValueFrom( this.api.updateReport( this.surveyId, r.token, this.draft() ) );
+      const structured = this.draftStructured();
+      const change = r.structured && structured ? { structured } : { reportMarkdown: this.draft() };
+      const updated = await firstValueFrom( this.api.updateReport( this.surveyId, r.token, change ) );
       this.replace( updated );
       this.draft.set( updated.reportMarkdown );
+      this.draftStructured.set( updated.structured || null );
       return true;
     } catch ( error ) {
       this.actionError.set( this.errorText( error, "Your changes didn't save. Try again." ) );

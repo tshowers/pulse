@@ -15,6 +15,64 @@ export interface PulseReportIssue { title: string; severity: 'critical' | 'high'
 
 export interface PulseReportTeaser { headline: string; summary: string; issues: PulseReportIssue[]; }
 
+/**
+ * The structured report (backend survey/pulseReportStructure.js; design
+ * handoff "Tech Rescue report redesign", 2026-11-09). Reports written before
+ * it have reportMarkdown instead and structured is null.
+ */
+export type ReportStatus = 'off_track' | 'at_risk' | 'on_track';
+export type ReportRating = 'red' | 'amber' | 'green';
+export type ReportSeverity = 'critical' | 'high' | 'medium';
+export interface ReportAction { title: string; detail: string; }
+export interface ReportTile { area: string; rating: ReportRating; level: number; label: string; note: string; }
+export interface ReportCost { spent: number | null; monthsBehind: number | null; monthlyCost: number | null; projection: { label: string; value: number; }[]; headline: string; footnote: string; }
+export interface ReportFinding { severity: ReportSeverity; title: string; saw: string; why: string; assumption: string; good: string; when: string; owner: string; }
+export interface ReportWeek { week: string; title: string; steps: string[]; milestone: string; }
+export interface ReportDecisionOption { name: string; tone: ReportRating; tag: string; criteria: string[]; }
+export interface ReportDecision { intro: string; options: ReportDecisionOption[]; }
+export interface StructuredReport {
+  client: string;
+  project: string;
+  status: ReportStatus;
+  statusNote: string;
+  verdict: string;
+  actions: ReportAction[];
+  scorecard: ReportTile[];
+  cost: ReportCost | null;
+  findings: ReportFinding[];
+  plan: ReportWeek[];
+  decision: ReportDecision | null;
+  questions: string[];
+  heard: string[];
+  scope: string;
+}
+
+/** The free preview: cover, verdict and the three actions; the rest is only counted. */
+export interface ReportPreview {
+  client: string;
+  project: string;
+  status: ReportStatus;
+  statusNote: string;
+  verdict: string;
+  actions: ReportAction[];
+  findingCount: number;
+  hasPlan: boolean;
+  hasDecision: boolean;
+  hasQuestions: boolean;
+}
+
+/** Cover and sign-off details the server fills in. */
+export interface ReportCover {
+  preparedFor: string;
+  preparedBy: string;
+  date: string | null;
+  reportId: string;
+  /** "IT consulting · Seattle" from the owner's business profile, or ''. */
+  ownerTagline: string;
+  /** "taliferro.com", or ''. */
+  ownerWebsite: string;
+}
+
 /** The respondent's private page. Full report only once released. */
 export interface PulseReportPublic {
   token: string;
@@ -31,6 +89,11 @@ export interface PulseReportPublic {
   releasedAt: string | null;
   debriefUrl: string;
   reportMarkdown: string;
+  /** The full structured report, only once released. */
+  structured?: StructuredReport | null;
+  /** The free preview (ready, in_review, released) for structured reports. */
+  preview?: ReportPreview | null;
+  cover?: ReportCover | null;
   referral: PulseReferral | null;
   /** The owner's Meta Pixel (digits) or ''. */
   metaPixelId?: string;
@@ -47,6 +110,10 @@ export interface PulseReportOwner {
   productName: string;
   teaser: PulseReportTeaser | null;
   reportMarkdown: string;
+  /** Null for reports written before the structured redesign. */
+  structured?: StructuredReport | null;
+  reportId?: string;
+  ownerName?: string;
   edited: boolean;
   failureReason: string;
   path: 'report' | 'referral';

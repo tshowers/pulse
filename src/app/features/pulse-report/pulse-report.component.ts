@@ -7,6 +7,8 @@ import { PulseReferralProvider, PulseReportPublic } from '../../models/pulse-rep
 import { SurveyApiService } from '../../services/survey-api.service';
 import { renderReportMarkdown } from '../../shared/report-markdown';
 import { startMetaPixel, trackMetaPixel } from '../../shared/meta-pixel';
+import { TechReportComponent } from '../../shared/tech-report/tech-report.component';
+import { buildReportView } from '../../shared/tech-report/tech-report.view';
 
 /**
  * /report/:token - a respondent's private paid-report page (backend
@@ -16,11 +18,19 @@ import { startMetaPixel, trackMetaPixel } from '../../shared/meta-pixel';
  *   failed     → "we'll follow up" (the owner was emailed)
  *   in_review  → paid, being finalized, with the deadline + debrief link
  *   released   → the full report + debrief link
+ *
+ * Structured reports (2026-11-09 redesign) render as a full-page consulting
+ * deliverable (shared/tech-report): the free preview while 'ready', the
+ * whole report once 'released'. Older Markdown reports keep this card.
  */
 @Component( {
   selector: 'app-pulse-report',
   standalone: true,
+  imports: [TechReportComponent],
   template: `
+    @if (reportView(); as rv) {
+      <app-tech-report [view]="rv" [debriefUrl]="report()?.debriefUrl || ''" [busy]="busy()" [error]="actionError()" (unlock)="unlock()" />
+    } @else {
     <div class="pr">
       <header class="pr-top">
         <span class="pr-avatar" aria-hidden="true">{{ initials() }}</span>
@@ -130,6 +140,7 @@ import { startMetaPixel, trackMetaPixel } from '../../shared/meta-pixel';
         }
       </main>
     </div>
+    }
   `,
   styles: [`
     :host { display: block; }
@@ -195,6 +206,17 @@ export class PulseReportComponent implements OnInit {
   readonly providers = computed<( PulseReferralProvider & { meta: string; } )[]>( () =>
     ( this.report()?.referral?.providers || [] ).map( ( p ) => ( { ...p, meta: [p.rating, p.phone, p.address || p.displayUrl].filter( Boolean ).join( ' · ' ) } ) ) );
   readonly reportHtml = computed( () => renderReportMarkdown( this.report()?.reportMarkdown || '' ) );
+  /** The redesigned report: preview before payment, full once released; null otherwise. */
+  readonly reportView = computed( () => {
+    const r = this.report();
+    if ( !r?.preview ) return null;
+    const mode = r.status === 'released' && r.structured ? 'full' : r.status === 'ready' ? 'preview' : null;
+    if ( !mode ) return null;
+    return buildReportView( {
+      mode, report: r.structured || null, preview: r.preview, cover: r.cover || null,
+      ownerName: r.ownerName, productName: r.surveyTitle, priceUsd: r.priceUsd, turnaroundHours: r.turnaroundHours,
+    } );
+  } );
   readonly dueLabel = computed( () => {
     const due = this.report()?.dueAt;
     if ( !due ) return '';

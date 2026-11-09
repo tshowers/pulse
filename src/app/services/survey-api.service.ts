@@ -21,7 +21,7 @@ import {
   SurveySearchRequest,
   SurveySearchResponse
 } from '../models/survey-search.model';
-import { PulseReportOwner, PulseReportPublic } from '../models/pulse-report.model';
+import { PulseReportOwner, PulseReportPublic, StructuredReport } from '../models/pulse-report.model';
 
 /**
  * Ported near-verbatim from the monorepo's
@@ -202,8 +202,9 @@ export class SurveyApiService {
     return this.http.get<{ data: PulseReportOwner[]; }>( `${this.baseUrl}/${surveyId}/reports` ).pipe( map( ( r ) => r.data ) );
   }
 
-  updateReport ( surveyId: string, token: string, reportMarkdown: string ): Observable<PulseReportOwner> {
-    return this.http.put<{ data: PulseReportOwner; }>( `${this.baseUrl}/${surveyId}/reports/${token}`, { reportMarkdown } ).pipe( map( ( r ) => r.data ) );
+  /** Saves the owner's edit: the structured report, or (older reports) the Markdown. */
+  updateReport ( surveyId: string, token: string, change: { structured: StructuredReport; } | { reportMarkdown: string; } ): Observable<PulseReportOwner> {
+    return this.http.put<{ data: PulseReportOwner; }>( `${this.baseUrl}/${surveyId}/reports/${token}`, change ).pipe( map( ( r ) => r.data ) );
   }
 
   releaseReport ( surveyId: string, token: string ): Observable<PulseReportOwner> {

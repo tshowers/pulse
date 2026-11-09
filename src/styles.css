@@ -330,3 +330,12 @@ textarea.p-input { border-radius: 20px; padding: 12px 18px; height: auto; resize
   :root:not(.light):not([data-theme="light"]) .brand-mark--light { display: none !important; }
 }
 :root.dark .brand-mark--light, :root[data-theme="dark"] .brand-mark--light { display: none !important; }
+
+/*
+ * Newsreader (SIL Open Font License), self-hosted for the paid report's
+ * display type (design handoff "Tech Rescue report redesign", 2026-11-09).
+ */
+@font-face { font-family: "Newsreader"; src: url(/assets/fonts/newsreader-latin-400-normal.woff2) format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "Newsreader"; src: url(/assets/fonts/newsreader-latin-500-normal.woff2) format("woff2"); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: "Newsreader"; src: url(/assets/fonts/newsreader-latin-600-normal.woff2) format("woff2"); font-weight: 600; font-style: normal; font-display: swap; }
+@font-face { font-family: "Newsreader"; src: url(/assets/fonts/newsreader-latin-400-italic.woff2) format("woff2"); font-weight: 400; font-style: italic; font-display: swap; }
