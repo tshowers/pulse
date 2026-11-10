@@ -12,7 +12,7 @@ import { PULSE_PURCHASE_FLOW } from '../../services/purchase-flow.config';
 import { Product } from '../../models/product.model';
 import { ClickSoundDirective } from '../../shared/directives/click-sound.directive';
 
-const DEFAULT_PRICE = '$9/month';
+const DEFAULT_PRICE = '$7.99/month';
 const DEFAULT_HIGHLIGHTS = [
   'Create as many surveys as you want.',
   'Publish surveys and start collecting responses.',
