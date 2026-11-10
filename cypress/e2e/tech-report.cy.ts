@@ -78,7 +78,7 @@ const PREVIEW = {
   verdict: STRUCTURED.verdict, actions: STRUCTURED.actions, findingCount: 5, hasPlan: true, hasDecision: true, hasQuestions: true,
 };
 
-const COVER = { preparedFor: 'Tennal Jennings', preparedBy: 'Taliferro Tech', date: '2026-11-07T18:00:00.000Z', reportId: 'TR-2026-0142', ownerTagline: 'IT consulting · Seattle', ownerWebsite: 'taliferro.com' };
+const COVER = { preparedFor: 'Tennal Jennings', preparedBy: 'Taliferro Tech', date: '2026-11-07T18:00:00.000Z', reportId: 'TR-2026-0142', ownerTagline: 'IT consulting · Seattle', ownerWebsite: 'taliferro.com', ownerLogoUrl: '/assets/16ahead-icon.png' };
 
 const BASE = {
   token: TOKEN, surveyTitle: 'Tech Diagnosis', ownerName: 'Taliferro Tech', firstName: 'Tennal', productName: 'Tech Diagnosis report + debrief',
@@ -125,6 +125,7 @@ describe( 'The redesigned paid report', () => {
     cy.contains( 'IT consulting · Seattle · TR-2026-0142 · November 7, 2026' );
     cy.get( '.tr-pill' ).each( ( pill ) => expect( pill.text().trim() ).not.to.equal( '' ) );
     cy.get( '[data-cy="report-pdf"]' ).should( 'be.visible' );
+    cy.get( '.tr-top .tr-mark--logo img' ).should( 'have.attr', 'src', COVER.ownerLogoUrl );
   } );
 
   it( 'with no cost numbers and no vendor choice, those sections are gone and the numbers close up', () => {

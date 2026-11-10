@@ -23,7 +23,7 @@ import { ReportView } from './tech-report.view';
     @if (view; as v) {
     <div class="tr" [class.tr--embedded]="embedded" [class.tr--preview]="v.mode === 'preview'">
       <header class="tr-top">
-        <span class="tr-mark" aria-hidden="true">{{ v.initials }}</span>
+        @if (v.logoUrl) { <span class="tr-mark tr-mark--logo"><img [src]="v.logoUrl" alt="" /></span> } @else { <span class="tr-mark" aria-hidden="true">{{ v.initials }}</span> }
         <span class="tr-top__name"><span>{{ v.ownerName }}</span><span class="tr-top__product">&nbsp;·&nbsp;{{ v.productName }}</span></span>
         <span class="tr-top__fill"></span>
         @if (v.mode === 'full') {
@@ -37,7 +37,7 @@ import { ReportView } from './tech-report.view';
       <!-- Print only: the full-bleed cover page. -->
       <section class="tr-pdfcover" aria-hidden="true">
         <div class="tr-pdfcover__in">
-          <div class="tr-pdfcover__brand"><span class="tr-mark tr-mark--light">{{ v.initials }}</span><span>{{ v.ownerName }}</span></div>
+          <div class="tr-pdfcover__brand">@if (v.logoUrl) { <span class="tr-mark tr-mark--logo"><img [src]="v.logoUrl" alt="" /></span> } @else { <span class="tr-mark tr-mark--light">{{ v.initials }}</span> }<span>{{ v.ownerName }}</span></div>
           <div class="tr-pdfcover__body">
             <span class="tr-eyebrow tr-brass">{{ v.productName }}</span>
             <span class="tr-serif tr-pdfcover__client">{{ v.client }}</span>
@@ -268,7 +268,7 @@ import { ReportView } from './tech-report.view';
 
             <footer class="tr-sign">
               <div class="tr-sign__row">
-                <span class="tr-mark tr-mark--lg" aria-hidden="true">{{ v.initials }}</span>
+                @if (v.logoUrl) { <span class="tr-mark tr-mark--lg tr-mark--logo"><img [src]="v.logoUrl" alt="" /></span> } @else { <span class="tr-mark tr-mark--lg" aria-hidden="true">{{ v.initials }}</span> }
                 <div><span class="tr-sign__by">Prepared by {{ v.ownerName }}</span>@if (v.signoff) { <span class="tr-sign__line">{{ v.signoff }}</span> }</div>
               </div>
               <div class="tr-foot tr-sign__foot"><span>{{ v.confidential }}</span><span>{{ v.reportId }}</span></div>
@@ -293,6 +293,9 @@ import { ReportView } from './tech-report.view';
     .tr-mark { flex: none; width: 40px; height: 40px; border-radius: 10px; background: var(--navy); color: #fff; display: grid; place-items: center; font-size: 15px; font-weight: 700; letter-spacing: .02em; }
     .tr-mark--light { background: #fff; color: var(--navy); }
     .tr-mark--lg { width: 44px; height: 44px; }
+    /* A brand logo sits on white so light logos stay visible (handoff: "show it on a white square instead"). */
+    .tr-mark--logo { background: #fff; box-shadow: inset 0 0 0 1px var(--card-border); overflow: hidden; }
+    .tr-mark--logo img { width: 78%; height: 78%; object-fit: contain; display: block; }
     .tr-btn { height: 44px; padding: 0 22px; border-radius: 999px; font: 700 15px/1 "Helvetica Neue", Helvetica, Arial, sans-serif; display: inline-flex; align-items: center; justify-content: center; gap: 8px; white-space: nowrap; border: 0; cursor: pointer; text-decoration: none; }
     .tr-btn--primary { background: var(--navy); color: #fff; }
     .tr-btn--ghost { background: #fff; color: var(--ink); box-shadow: inset 0 0 0 1px #d9d4c8; }

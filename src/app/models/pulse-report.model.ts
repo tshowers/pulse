@@ -71,6 +71,8 @@ export interface ReportCover {
   ownerTagline: string;
   /** "taliferro.com", or ''. */
   ownerWebsite: string;
+  /** The owner's brand logo (Profile > Brand), or '' for initials. */
+  ownerLogoUrl?: string;
 }
 
 /** The respondent's private page. Full report only once released. */

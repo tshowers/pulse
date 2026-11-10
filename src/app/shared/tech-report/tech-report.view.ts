@@ -35,6 +35,8 @@ export interface ReportView {
   mode: 'full' | 'preview';
   ownerName: string;
   initials: string;
+  /** The owner's brand logo; '' shows the initials instead. */
+  logoUrl: string;
   productName: string;
   eyebrow: string;
   client: string;
@@ -184,6 +186,7 @@ export function buildReportView ( input: ReportViewInput ): ReportView | null {
     mode: input.mode,
     ownerName,
     initials: initialsOf( ownerName ) || '•',
+    logoUrl: cover.ownerLogoUrl || '',
     productName,
     eyebrow: `${productName} · Confidential`,
     client,

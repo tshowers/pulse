@@ -50,6 +50,12 @@ describe( 'the report view', () => {
     expect( [view.printHeaderLeft, view.printHeaderRight, view.printFooterLeft] ).toEqual( ['TALIFERRO TECH · TECH DIAGNOSIS', 'ACME STORAGE', 'CONFIDENTIAL · TR-2026-0142'] );
   } );
 
+  it( 'uses the owner\'s brand logo when there is one, initials otherwise', () => {
+    expect( buildReportView( input )!.logoUrl ).toBe( '' );
+    expect( buildReportView( input )!.initials ).toBe( 'TT' );
+    expect( buildReportView( { ...input, cover: { ...COVER, ownerLogoUrl: 'https://x/logo.png' } } )!.logoUrl ).toBe( 'https://x/logo.png' );
+  } );
+
   it( 'the preview counts what is locked from the preview alone', () => {
     const view = buildReportView( { ...input, mode: 'preview', report: null, preview: {
       client: 'Acme Storage', project: 'P', status: 'at_risk', statusNote: '', verdict: 'V', actions: REPORT.actions,
