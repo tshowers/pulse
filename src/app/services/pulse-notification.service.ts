@@ -29,7 +29,7 @@ export class PulseNotificationService {
   show ( header: string, description: string, type: NotifyType = 'info' ): void {
     const toast: Toast = { id: this.nextId++, header, description, type };
     this.toastsSubject.next( [...this.toastsSubject.value, toast] );
-    this.sound.playSound( 'notification' );
+    this.sound.playSound( type === 'error' ? 'error' : 'notification' );
     setTimeout( () => this.dismiss( toast.id ), 5000 );
   }
 

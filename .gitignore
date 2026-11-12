@@ -51,3 +51,11 @@ firebase-debug.log
 
 # Landing hero videos: served from the local build only, not kept in git
 /src/assets/video/*.mp4
+
+# Videos: never pushed to GitHub (deploys use the local copies)
+*.mp4
+*.mov
+*.m4v
+*.webm
+*.avi
+*.mkv

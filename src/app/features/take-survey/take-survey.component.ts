@@ -9,6 +9,7 @@ import { SurveyApiService } from '../../services/survey-api.service';
 import { IconComponent } from '../../shared/icon/icon.component';
 import { startMetaPixel, trackMetaPixel, trackMetaPixelCustom } from '../../shared/meta-pixel';
 import { typeMeta } from '../pulse/pulse-state';
+import { environment } from '../../../environments/environment';
 
 type Phase = 'loading' | 'unavailable' | 'closed' | 'answer' | 'identity' | 'sending' | 'done' | 'already';
 type Answer = string | number | string[];
@@ -49,6 +50,9 @@ export class TakeSurveyComponent implements OnInit {
 
   private surveyId = '';
   private postId = '';
+  /** One page load, for the drop-off funnel (backend survey/pulseFunnel.service.js). */
+  private readonly visitId = Math.random().toString( 36 ).slice( 2 ) + Date.now().toString( 36 );
+  private source = 'direct';
   private digitBuffer = '';
   private digitTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -109,6 +113,7 @@ export class TakeSurveyComponent implements OnInit {
     this.surveyId = this.route.snapshot.paramMap.get( 'id' ) || '';
     this.postId = this.route.snapshot.queryParamMap.get( 'p' ) || '';
     const previewRequested = this.route.snapshot.queryParamMap.get( 'preview' ) === '1';
+    this.source = this.readSource();
 
     try {
       let survey: PublicSurvey | null;
@@ -140,6 +145,7 @@ export class TakeSurveyComponent implements OnInit {
         this.phase.set( 'unavailable' );
       } else {
         this.phase.set( 'answer' );
+        this.progressPing( 'start' );
       }
     } catch {
       this.phase.set( 'unavailable' );
@@ -183,11 +189,13 @@ export class TakeSurveyComponent implements OnInit {
       return;
     }
     if ( this.phase() !== 'answer' || !this.canAdvance() ) return;
+    this.progressPing( 'answered', this.question()?.id, this.index() + 1 );
     if ( !this.isLast() ) {
       this.index.update( ( i ) => i + 1 );
       this.focusAnswer();
     } else if ( this.survey()?.collectIdentity ) {
       this.phase.set( 'identity' );
+      this.progressPing( 'identity' );
       setTimeout( () => document.getElementById( 'ts-name' )?.focus() );
     } else {
       void this.send();
@@ -228,6 +236,7 @@ export class TakeSurveyComponent implements OnInit {
         submittedAt: new Date(),
       } ) );
       this.rememberAnswered();
+      this.progressPing( 'submitted' );
       // Paid-report pulse: straight to their report preview.
       if ( result?.report?.token ) {
         this.trackFinished( result.report.token, result.report.path );
@@ -246,6 +255,39 @@ export class TakeSurveyComponent implements OnInit {
       this.error.set( code === 'SURVEY_OWNER_CANNOT_RESPOND'
         ? "You made this pulse, so you can try it but can't answer it."
         : ( error as HttpErrorResponse )?.error?.error || "Your answers didn't send. Check your connection and try again." );
+    }
+  }
+
+  /**
+   * Tell the backend how far this visit got, so the owner can see where
+   * people quit. Fire and forget: keepalive lets it finish even if they
+   * close the tab right after. Never in preview.
+   */
+  private progressPing ( event: 'start' | 'answered' | 'identity' | 'submitted', questionId?: string, step?: number ): void {
+    if ( this.preview() || typeof fetch === 'undefined' ) return;
+    try {
+      void fetch( `${ environment.backendURL }/public/surveys/${ encodeURIComponent( this.surveyId ) }/progress`, {
+        method: 'POST',
+        keepalive: true,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify( { visitId: this.visitId, event, questionId, step, source: this.source, mobile: window.matchMedia?.( '(max-width: 700px)' ).matches === true } ),
+      } ).catch( () => undefined );
+    } catch { /* never block answering */ }
+  }
+
+  /** Where this visit came from: utm_source, a Facebook click, the referring site, or direct. */
+  private readSource (): string {
+    const params = this.route.snapshot.queryParamMap;
+    const utm = params.get( 'utm_source' );
+    if ( utm ) return utm;
+    if ( params.get( 'fbclid' ) ) return 'facebook';
+    try {
+      const host = document.referrer ? new URL( document.referrer ).hostname.replace( /^www\./, '' ) : '';
+      if ( /(^|\.)(facebook|fb)\.com$/.test( host ) ) return 'facebook';
+      if ( /(^|\.)instagram\.com$/.test( host ) ) return 'instagram';
+      return host || 'direct';
+    } catch {
+      return 'direct';
     }
   }
 
